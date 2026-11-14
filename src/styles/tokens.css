@@ -27,6 +27,23 @@
   --belt-black: #1c1a17;
   --belt-outline: #1c1a17;
 
+  /*
+   * Illustrations. Diagrams are drawn on the same cream paper as the painted artwork, so these
+   * have one value for both themes; the dark theme dims the whole frame instead (graphics.css).
+   */
+  --art-paper: #f5efdd;
+  --art-ink: #26221d;
+  --art-gi-light: #fbf7ea;
+  --art-gi-light-far: #e2dac4;
+  --art-gi-dark: #4a6594;
+  --art-gi-dark-far: #384f78;
+  --art-skin: #e3bc98;
+  --art-hair: #2f2924;
+  --art-belt: #b8322a;
+  --art-mat: #cdc3aa;
+  --art-shadow: rgb(90 70 40 / 0.14);
+  --art-highlight: #d08a1c;
+
   /* Technique types */
   --type-sweep: #a35f00;
   --type-pass: #1f4e8c;

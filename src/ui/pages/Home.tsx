@@ -6,6 +6,7 @@ import { beltRank } from '../../core/rank';
 import { cardId } from '../../core/srs';
 import { progressSummary } from '../../core/study';
 import { Loading, ProgressDot } from '../components/common';
+import { ArtworkFrame, HERO_DOJO_ARTWORK } from '../graphics/Artwork';
 import { Belt } from '../graphics/Belt';
 import { Icon, type IconName } from '../graphics/icons';
 import { ProgressRing } from '../graphics/ProgressRing';
@@ -141,6 +142,12 @@ export default function Home() {
   return (
     <div className="stack">
       <section className="hero card">
+        <ArtworkFrame
+          src={HERO_DOJO_ARTWORK}
+          alt="Sunlit tatami mat room with a folded white gi and black belt"
+          className="hero-artwork"
+          eager
+        />
         <div className="hero-text">
           <p className="eyebrow">Your training</p>
           <h1>Learn the fundamentals, one idea at a time</h1>

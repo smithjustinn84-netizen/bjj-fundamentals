@@ -126,3 +126,253 @@
   stroke-dashoffset: 260;
   animation: draw 900ms var(--ease-out) forwards;
 }
+
+/* Framed illustrations: paintings and diagrams share one sheet of paper. */
+.artwork-frame {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--art-paper);
+}
+.artwork-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@media (prefers-color-scheme: dark) {
+  /* Cream paper glares on a dark page, so take the whole sheet down a little. */
+  .artwork-frame {
+    filter: brightness(0.86) contrast(1.04);
+  }
+}
+.hero-artwork {
+  grid-column: 1 / -1;
+  aspect-ratio: 16 / 6;
+  max-height: 15rem;
+}
+.position-artwork {
+  aspect-ratio: 4 / 3;
+  max-width: 32rem;
+  margin-bottom: var(--space-4);
+}
+.concept-artwork {
+  aspect-ratio: 16 / 9;
+  max-width: 32rem;
+  margin-bottom: var(--space-4);
+}
+.review-artwork {
+  max-width: 22rem;
+  margin-bottom: var(--space-3);
+}
+.complete-artwork {
+  width: 9rem;
+  aspect-ratio: 1;
+  margin-inline: auto;
+  border-radius: var(--radius-lg);
+}
+/* A picture at the top of a card in a list. */
+.card-artwork {
+  max-width: none;
+  margin-bottom: var(--space-3);
+}
+/* A small picture in a list row. */
+.thumb-artwork {
+  flex: none;
+  width: 6.5rem;
+  margin: 0;
+  border-radius: var(--radius-sm);
+}
+@media (max-width: 480px) {
+  .thumb-artwork {
+    display: none;
+  }
+}
+
+/* A technique shown as where it starts and where it ends. */
+.transition-artwork {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 36rem;
+  margin: 0 0 var(--space-4);
+}
+.transition-artwork.review-artwork {
+  max-width: 26rem;
+}
+.transition-artwork .artwork-frame {
+  max-width: none;
+  margin: 0;
+}
+.transition-artwork p {
+  margin: var(--space-1) 0 0;
+  text-align: center;
+}
+/* The arrow takes the colour of the technique type, like its tag. */
+.transition-arrow {
+  width: 2.5rem;
+  /* Sit level with the pictures, not the captions under them. */
+  margin-bottom: var(--space-5);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.type-sweep {
+  color: var(--type-sweep);
+}
+.type-pass {
+  color: var(--type-pass);
+}
+.type-escape {
+  color: var(--type-escape);
+}
+.type-submission {
+  color: var(--type-submission);
+}
+.type-takedown {
+  color: var(--type-takedown);
+}
+.type-transition {
+  color: var(--type-transition);
+}
+
+/* Diagrams */
+.diagram-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.dgm-shadow {
+  fill: var(--art-shadow);
+}
+.dgm-mat {
+  fill: none;
+  stroke: var(--art-mat);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+.dgm-mat-fill {
+  fill: var(--art-gi-light-far);
+  stroke: var(--art-mat);
+  stroke-width: 2.5;
+  opacity: 0.45;
+}
+.dgm-arrow {
+  fill: none;
+  stroke: var(--art-belt);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.dgm-ring {
+  fill: none;
+  stroke: var(--art-belt);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+.dgm-guide {
+  fill: none;
+  stroke: var(--art-ink);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 5;
+  opacity: 0.5;
+}
+.dgm-zone {
+  fill: var(--art-highlight);
+  fill-opacity: 0.16;
+  stroke: var(--art-highlight);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+  stroke-linejoin: round;
+}
+/* A bone doing structural work: a frame, an underhook. */
+.dgm-bone {
+  fill: none;
+  stroke: var(--art-highlight);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.dgm-dot {
+  fill: var(--art-belt);
+  stroke: var(--art-paper);
+  stroke-width: 1.5;
+}
+.dgm-gi {
+  fill: var(--art-gi-light);
+  stroke: var(--art-ink);
+  stroke-width: 2.25;
+  stroke-linejoin: round;
+}
+.dgm-seam {
+  fill: none;
+  stroke: var(--art-ink);
+  stroke-width: 2.25;
+  stroke-linecap: round;
+}
+.dgm-gi-belt {
+  stroke: var(--art-belt);
+  stroke-width: 12;
+}
+.dgm-good,
+.dgm-bad {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.dgm-good {
+  stroke: var(--art-gi-dark);
+}
+.dgm-bad {
+  stroke: var(--art-belt);
+}
+.dgm-ghost {
+  opacity: 0.28;
+}
+
+/* Jointed figures */
+.fig path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.fig .fig-ink {
+  stroke: var(--art-ink);
+}
+.fig-light .fig-cloth {
+  stroke: var(--art-gi-light);
+}
+.fig-light .fig-cloth-far {
+  stroke: var(--art-gi-light-far);
+}
+.fig-dark .fig-cloth {
+  stroke: var(--art-gi-dark);
+}
+.fig-dark .fig-cloth-far {
+  stroke: var(--art-gi-dark-far);
+}
+/* The belt is a short stretch of the spine, cut square so it reads as a band across the waist. */
+.fig .fig-belt {
+  stroke-linecap: butt;
+}
+.fig-light .fig-belt {
+  stroke: var(--art-belt);
+}
+.fig-dark .fig-belt {
+  stroke: var(--art-ink);
+}
+.fig-skin {
+  fill: var(--art-skin);
+  stroke: var(--art-ink);
+  stroke-width: 2.25;
+}
+.fig .fig-hair {
+  fill: var(--art-hair);
+  stroke: var(--art-ink);
+  stroke-width: 2.25;
+}

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useLibrary } from '../../bindings';
 import { cardId } from '../../core/srs';
 import { Loading, ProgressDot } from '../components/common';
+import { ConceptArtwork } from '../graphics/ConceptSvg';
 import { itemPath, newItemPath } from '../routes';
 
 export default function Concepts() {
@@ -23,6 +24,7 @@ export default function Concepts() {
           <li key={c.id}>
             <Link to={itemPath('concept', c.id)} className="tile">
               <span className="tile-num">{i + 1}</span>
+              <ConceptArtwork id={c.id} name={c.name} className="thumb-artwork" />
               <span className="grow">
                 <strong>{c.name}</strong>
                 <span className="muted small block">{c.summary}</span>

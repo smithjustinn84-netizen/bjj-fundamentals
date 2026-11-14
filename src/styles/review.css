@@ -112,26 +112,6 @@
 .session-complete > * + * {
   margin-top: var(--space-4);
 }
-.complete-mark {
-  width: 4.5rem;
-  height: 4.5rem;
-  fill: none;
-  stroke: var(--ok);
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-/* The circle draws first, then the tick. Dash lengths are a little over each path's length. */
-.complete-mark circle {
-  stroke-dasharray: 180;
-  stroke-dashoffset: 180;
-  animation: draw var(--dur-slow) var(--ease-out) forwards;
-}
-.complete-mark path {
-  stroke-dasharray: 40;
-  stroke-dashoffset: 40;
-  animation: draw var(--dur-base) var(--ease-out) var(--dur-slow) forwards;
-}
 .breakdown-bar {
   display: flex;
   gap: 2px;

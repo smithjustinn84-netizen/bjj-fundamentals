@@ -3,6 +3,7 @@ import { useLibrary } from '../../bindings';
 import { cardId } from '../../core/srs';
 import { Bullets, Loading, Missing, NotesBlock, ProgressDot, Section } from '../components/common';
 import { LinkedVideos } from '../components/VideoList';
+import { ConceptArtwork } from '../graphics/ConceptSvg';
 import { editPath, itemPath, ROUTES } from '../routes';
 
 export default function ConceptDetail() {
@@ -35,6 +36,7 @@ export default function ConceptDetail() {
         </Link>
       </div>
       <div className="card">
+        <ConceptArtwork id={concept.id} name={concept.name} />
         <Section title="Key points">
           <Bullets items={concept.keyPoints} />
         </Section>

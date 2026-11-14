@@ -6,6 +6,8 @@ import { cardId, describeInterval, newReviewState } from '../../core/srs';
 import { buildQueue, type Deck } from '../../core/study';
 import { Loading } from '../components/common';
 import { CardAnswer, cardPrompt } from '../components/StudyCard';
+import { ArtworkFrame, PositionArtwork, REVIEW_COMPLETE_ARTWORK, TransitionArtwork } from '../graphics/Artwork';
+import { ConceptArtwork } from '../graphics/ConceptSvg';
 import { EmptyState } from '../graphics/EmptyState';
 import { Icon } from '../graphics/icons';
 import { prefersReducedMotion } from '../graphics/motion';
@@ -58,10 +60,11 @@ function SessionComplete({ doneCount, tally, onAgain }: { doneCount: number; tal
   return (
     <div className="stack narrow-page">
       <div className="card center session-complete">
-        <svg className="complete-mark" viewBox="0 0 64 64" aria-hidden="true">
-          <circle cx="32" cy="32" r="28" />
-          <path d="m20 33 8.5 8.5L45 24" />
-        </svg>
+        <ArtworkFrame
+          src={REVIEW_COMPLETE_ARTWORK}
+          alt="Coiled black belt resting on a tatami mat"
+          className="complete-artwork"
+        />
         <h1>Session complete</h1>
         <p className="lead">You reviewed {plural(doneCount, 'card')}. Nice work.</p>
         <GradeBreakdown tally={tally} />
@@ -193,6 +196,7 @@ export default function Review() {
   const { current } = session;
   const prompt = current ? cardPrompt(current, lib) : null;
   if (!current || !prompt) return <Loading />;
+  const transition = lib.transitionById.get(current.id);
   const now = Date.now();
   const state = lib.reviews.get(cardId(current.kind, current.id)) ?? newReviewState(current.kind, current.id, now);
 
@@ -222,6 +226,27 @@ export default function Review() {
             <h2 className="question">{prompt.question}</h2>
             {revealed ? (
               <div className="answer">
+                {current.kind === 'position' && (
+                  <PositionArtwork
+                    id={current.id}
+                    name={lib.positionById.get(current.id)?.name ?? 'position'}
+                    className="review-artwork"
+                  />
+                )}
+                {current.kind === 'concept' && (
+                  <ConceptArtwork
+                    id={current.id}
+                    name={lib.conceptById.get(current.id)?.name ?? 'concept'}
+                    className="review-artwork"
+                  />
+                )}
+                {current.kind === 'transition' && transition && (
+                  <TransitionArtwork
+                    transition={transition}
+                    positionById={lib.positionById}
+                    className="review-artwork"
+                  />
+                )}
                 <CardAnswer item={current} lib={lib} />
                 <p className="small">
                   <Link to={itemPath(current.kind, current.id)} target="_blank">

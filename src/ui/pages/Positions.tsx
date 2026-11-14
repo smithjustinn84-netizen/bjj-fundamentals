@@ -8,6 +8,7 @@ import { cardId } from '../../core/srs';
 import { Loading, ProgressDot } from '../components/common';
 import { PositionMap } from '../components/PositionMap';
 import { TransitionLink } from '../components/TransitionLink';
+import { PositionArtwork } from '../graphics/Artwork';
 import { EmptyState } from '../graphics/EmptyState';
 import { Icon, type IconName } from '../graphics/icons';
 import { useMediaQuery } from '../graphics/motion';
@@ -41,6 +42,7 @@ function PositionList({ lib }: { lib: Library }) {
                 const outgoing = lib.transitions.filter((t) => t.fromId === p.id);
                 return (
                   <article key={p.id} className="card position-card">
+                    <PositionArtwork id={p.id} name={p.name} className="card-artwork" />
                     <h3>
                       <ProgressDot state={lib.reviews.get(cardId('position', p.id))} />{' '}
                       <Link to={itemPath('position', p.id)}>{p.name}</Link>

@@ -4,6 +4,7 @@ import { TRANSITION_LABELS } from '../../core/labels';
 import { cardId } from '../../core/srs';
 import { Bullets, Loading, Missing, NotesBlock, ProgressDot, Section } from '../components/common';
 import { LinkedVideos } from '../components/VideoList';
+import { TransitionArtwork } from '../graphics/Artwork';
 import { editPath, itemPath, ROUTES } from '../routes';
 
 export default function TransitionDetail() {
@@ -58,6 +59,7 @@ export default function TransitionDetail() {
         </div>
       </div>
       <div className="card">
+        <TransitionArtwork transition={transition} positionById={lib.positionById} />
         <Section title="Steps">
           <Bullets items={transition.steps} ordered />
         </Section>
