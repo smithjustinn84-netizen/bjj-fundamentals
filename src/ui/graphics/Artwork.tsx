@@ -1,19 +1,9 @@
 import { useState } from 'react';
 import type { Position, Transition } from '../../core/models';
 import { TapArtwork } from './ConceptSvg';
-import { hasPositionSvg, PositionSvg } from './PositionSvg';
-
-const POSITION_ARTWORK: Record<string, string> = {
-  standing: './artwork/positions/standing.webp',
-  'closed-guard': './artwork/positions/closed-guard.webp',
-  'open-guard': './artwork/positions/open-guard.webp',
-  'side-control': './artwork/positions/side-control.webp',
-  mount: './artwork/positions/mount.webp',
-  'back-control': './artwork/positions/back-control.webp',
-};
+import { hasPositionArtwork, PositionArtwork } from './PositionSvg';
 
 export const HERO_DOJO_ARTWORK = './artwork/hero-dojo.webp';
-export const REVIEW_COMPLETE_ARTWORK = './artwork/review-complete.webp';
 
 export function ArtworkFrame({
   src,
@@ -33,23 +23,6 @@ export function ArtworkFrame({
       <img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" onError={() => setFailed(true)} />
     </figure>
   );
-}
-
-export function PositionArtwork({ id, name, className = '' }: { id: string; name: string; className?: string }) {
-  const src = POSITION_ARTWORK[id];
-  if (src) {
-    return (
-      <ArtworkFrame src={src} alt={`Illustration of ${name}`} className={`position-artwork ${className}`.trim()} />
-    );
-  }
-  if (hasPositionSvg(id)) {
-    return <PositionSvg id={id} name={name} className={className} />;
-  }
-  return null;
-}
-
-function hasPositionArtwork(id: string): boolean {
-  return id in POSITION_ARTWORK || hasPositionSvg(id);
 }
 
 /**

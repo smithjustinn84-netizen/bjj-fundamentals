@@ -127,7 +127,7 @@
   animation: draw 900ms var(--ease-out) forwards;
 }
 
-/* Framed illustrations: paintings and diagrams share one sheet of paper. */
+/* Framed illustrations: the hero painting and the diagrams share one sheet of paper. */
 .artwork-frame {
   margin: 0;
   overflow: hidden;
@@ -165,12 +165,6 @@
 .review-artwork {
   max-width: 22rem;
   margin-bottom: var(--space-3);
-}
-.complete-artwork {
-  width: 9rem;
-  aspect-ratio: 1;
-  margin-inline: auto;
-  border-radius: var(--radius-lg);
 }
 /* A picture at the top of a card in a list. */
 .card-artwork {

@@ -31,7 +31,7 @@ function Cloth({ d, width, className }: { d: string; width: number; className: s
 
 /**
  * One jointed grappler. `gi` picks the cloth: the light gi wears the red belt, the dark gi a black one,
- * matching the painted illustrations. `parts` draws only some of the body, so a scene can put one
+ * the same in every scene. `parts` draws only some of the body, so a scene can put one
  * person's leg in front of the other person (half guard, back control hooks).
  */
 export function Figure({

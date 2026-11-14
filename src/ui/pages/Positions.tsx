@@ -8,10 +8,10 @@ import { cardId } from '../../core/srs';
 import { Loading, ProgressDot } from '../components/common';
 import { PositionMap } from '../components/PositionMap';
 import { TransitionLink } from '../components/TransitionLink';
-import { PositionArtwork } from '../graphics/Artwork';
 import { EmptyState } from '../graphics/EmptyState';
 import { Icon, type IconName } from '../graphics/icons';
 import { useMediaQuery } from '../graphics/motion';
+import { PositionArtwork } from '../graphics/PositionSvg';
 import { itemPath, newItemPath } from '../routes';
 
 /**

@@ -5,7 +5,7 @@ import { cardId } from '../../core/srs';
 import { Bullets, Loading, Missing, NotesBlock, ProgressDot, Section } from '../components/common';
 import { TransitionLink } from '../components/TransitionLink';
 import { LinkedVideos } from '../components/VideoList';
-import { PositionArtwork } from '../graphics/Artwork';
+import { PositionArtwork } from '../graphics/PositionSvg';
 import { editPath, itemPath, newItemPath, ROUTES } from '../routes';
 
 export default function PositionDetail() {

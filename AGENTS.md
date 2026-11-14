@@ -51,8 +51,8 @@ Where does new code go?
 
 - Styles are plain CSS in `src/styles/`, one file per area (`tokens`, `base`, `motion`, `shell`, `graphics`, then one per screen), imported in that order from `src/main.tsx`.
 - Colours, radii, durations and easings come from `tokens.css`. No hex colours anywhere else; a new colour is a new token with a light and a dark value.
-- Graphics are hand-written inline SVG components in `src/ui/graphics/` coloured through tokens, plus painted illustrations in `public/artwork/` (WebP, rendered via `src/ui/graphics/Artwork.tsx`). No font files, no icon or animation library.
-- Paintings and diagrams share one sheet of paper: diagrams use only the `--art-*` tokens, which have a single value for both themes; the dark theme dims the whole `.artwork-frame` instead. This is the one exception to "a light and a dark value".
+- Graphics are hand-written inline SVG components in `src/ui/graphics/` coloured through tokens. The only image files are the painted home-page hero and the touch icon in `public/artwork/`; every other picture is SVG, so do not add more paintings. No font files, no icon or animation library.
+- The hero and the diagrams share one sheet of paper: diagrams use only the `--art-*` tokens, which have a single value for both themes; the dark theme dims the whole `.artwork-frame` instead. This is the one exception to "a light and a dark value".
 - People in diagrams are `Figure`s (`ui/graphics/Figure.tsx`) posed by joint positions inside a `Diagram`; add a scene by adding poses to `ConceptSvg.tsx` or `PositionSvg.tsx`, not by drawing body shapes by hand. A technique's picture is its start and end positions (`TransitionArtwork`).
 - Motion is CSS. `motion.css` ends with a `prefers-reduced-motion` block that switches every animation off; scripted motion checks `prefersReducedMotion()` from `ui/graphics/motion.ts`.
 - Anything a graphic has to calculate (where map boxes sit, how arrows curve, which belt a percentage earns, how a pose becomes limbs) is a pure function in `core/` with a test (`mapLayout.ts`, `rank.ts`, `figure.ts`). Components only draw the result.

@@ -28,7 +28,7 @@
   --belt-outline: #1c1a17;
 
   /*
-   * Illustrations. Diagrams are drawn on the same cream paper as the painted artwork, so these
+   * Illustrations. Diagrams are drawn on the same cream paper as the painted hero, so these
    * have one value for both themes; the dark theme dims the whole frame instead (graphics.css).
    */
   --art-paper: #f5efdd;

@@ -4,9 +4,14 @@ import { arrowPath, type Point } from '../../core/figure';
 /**
  * Every scene is drawn in the same space with the mat at y = 196 and the action centred on x = 200,
  * so figures are one size everywhere. `wide` is a 16:9 window on it; `tall` is a closer 4:3 window
- * that sits beside the paintings.
+ * for position pictures.
  */
 const VIEW_BOX = { wide: '40 28 320 180', tall: '70 13 260 195' } as const;
+/** The mat seen from overhead, sized to sit just inside each window. */
+const MAT_FROM_ABOVE = {
+  wide: { x: 64, y: 40, width: 272, height: 156 },
+  tall: { x: 82, y: 24, width: 236, height: 178 },
+} as const;
 type DiagramShape = keyof typeof VIEW_BOX;
 
 /** Where the mat is, for scenes to stand their figures on. */
@@ -35,7 +40,7 @@ export function Diagram({
             <line className="dgm-mat" x1="60" y1={MAT_Y} x2="340" y2={MAT_Y} />
           </>
         ) : (
-          <rect className="dgm-mat-fill" x="64" y="40" width="272" height="156" rx="6" />
+          <rect className="dgm-mat-fill" {...MAT_FROM_ABOVE[shape]} rx="6" />
         )}
         {children}
       </svg>

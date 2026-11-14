@@ -6,11 +6,12 @@ import { cardId, describeInterval, newReviewState } from '../../core/srs';
 import { buildQueue, type Deck } from '../../core/study';
 import { Loading } from '../components/common';
 import { CardAnswer, cardPrompt } from '../components/StudyCard';
-import { ArtworkFrame, PositionArtwork, REVIEW_COMPLETE_ARTWORK, TransitionArtwork } from '../graphics/Artwork';
+import { TransitionArtwork } from '../graphics/Artwork';
 import { ConceptArtwork } from '../graphics/ConceptSvg';
 import { EmptyState } from '../graphics/EmptyState';
 import { Icon } from '../graphics/icons';
 import { prefersReducedMotion } from '../graphics/motion';
+import { PositionArtwork } from '../graphics/PositionSvg';
 import { ProgressBar } from '../graphics/ProgressBar';
 import { itemPath, ROUTES } from '../routes';
 import { type GradeTally, useReviewSession } from './useReviewSession';
@@ -60,11 +61,10 @@ function SessionComplete({ doneCount, tally, onAgain }: { doneCount: number; tal
   return (
     <div className="stack narrow-page">
       <div className="card center session-complete">
-        <ArtworkFrame
-          src={REVIEW_COMPLETE_ARTWORK}
-          alt="Coiled black belt resting on a tatami mat"
-          className="complete-artwork"
-        />
+        <svg className="complete-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="28" />
+          <path d="m20 33 8.5 8.5L45 24" />
+        </svg>
         <h1>Session complete</h1>
         <p className="lead">You reviewed {plural(doneCount, 'card')}. Nice work.</p>
         <GradeBreakdown tally={tally} />
