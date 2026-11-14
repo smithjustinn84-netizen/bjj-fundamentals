@@ -1,0 +1,71 @@
+import { NavLink, Route, Routes } from 'react-router-dom';
+import { useDueCount } from './data';
+import { ErrorBoundary } from './ui/components/ErrorBoundary';
+import Backup from './ui/pages/Backup';
+import ConceptDetail from './ui/pages/ConceptDetail';
+import Concepts from './ui/pages/Concepts';
+import EditorPage from './ui/pages/editor/EditorPage';
+import Home from './ui/pages/Home';
+import NotFound from './ui/pages/NotFound';
+import PositionDetail from './ui/pages/PositionDetail';
+import Positions from './ui/pages/Positions';
+import Review from './ui/pages/Review';
+import TransitionDetail from './ui/pages/TransitionDetail';
+import Videos from './ui/pages/Videos';
+import { ROUTES } from './ui/routes';
+
+function ReviewNavLink() {
+  const dueCount = useDueCount();
+  return (
+    <NavLink to={ROUTES.review}>
+      Review
+      {dueCount > 0 && (
+        <span className="badge" role="img" aria-label={`${dueCount} due`}>
+          {dueCount}
+        </span>
+      )}
+    </NavLink>
+  );
+}
+
+export default function App() {
+  return (
+    <div className="app">
+      <header className="topbar">
+        <NavLink to={ROUTES.home} className="brand" end>
+          <span className="belt" aria-hidden="true" />
+          BJJ Fundamentals
+        </NavLink>
+        <nav className="nav" aria-label="Main">
+          <NavLink to={ROUTES.concepts}>Concepts</NavLink>
+          <NavLink to={ROUTES.positions}>Positions</NavLink>
+          <ErrorBoundary>
+            <ReviewNavLink />
+          </ErrorBoundary>
+          <NavLink to={ROUTES.videos}>Videos</NavLink>
+          <NavLink to={ROUTES.backup}>Backup</NavLink>
+        </nav>
+      </header>
+      <main className="content">
+        <ErrorBoundary>
+          <Routes>
+            <Route path={ROUTES.home} element={<Home />} />
+            <Route path={ROUTES.concepts} element={<Concepts />} />
+            <Route path={`${ROUTES.concepts}/:id`} element={<ConceptDetail />} />
+            <Route path={ROUTES.positions} element={<Positions />} />
+            <Route path={`${ROUTES.positions}/:id`} element={<PositionDetail />} />
+            <Route path="/transitions/:id" element={<TransitionDetail />} />
+            <Route path={ROUTES.review} element={<Review />} />
+            <Route path={ROUTES.videos} element={<Videos />} />
+            <Route path={ROUTES.backup} element={<Backup />} />
+            <Route path="/edit/:kind/:id" element={<EditorPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </ErrorBoundary>
+      </main>
+      <footer className="footer">
+        Everything is stored on this device only. Export a backup from the Backup page.
+      </footer>
+    </div>
+  );
+}

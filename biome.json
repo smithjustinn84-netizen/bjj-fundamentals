@@ -1,0 +1,112 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.6.7/schema.json",
+  "files": { "includes": ["src/**", "*.ts", "*.json", "index.html"] },
+  "formatter": { "indentStyle": "space", "indentWidth": 2, "lineWidth": 120 },
+  "javascript": { "formatter": { "quoteStyle": "single" } },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "linter": {
+    "rules": {
+      "preset": "recommended",
+      "correctness": {
+        "noUnusedImports": "error",
+        "noUnusedVariables": "error",
+        "useExhaustiveDependencies": "error",
+        "useHookAtTopLevel": "error"
+      },
+      "suspicious": { "noExplicitAny": "error", "noConsole": { "level": "error", "options": { "allow": ["error"] } } },
+      "style": {
+        "noNonNullAssertion": "error",
+        "useImportType": "error",
+        "noRestrictedGlobals": {
+          "level": "error",
+          "options": {
+            "deniedGlobals": {
+              "fetch": "This app makes no network calls. See AGENTS.md.",
+              "XMLHttpRequest": "This app makes no network calls. See AGENTS.md.",
+              "WebSocket": "This app makes no network calls. See AGENTS.md.",
+              "EventSource": "This app makes no network calls. See AGENTS.md.",
+              "localStorage": "All persistence goes through src/data (IndexedDB) so it is included in backups.",
+              "sessionStorage": "All persistence goes through src/data (IndexedDB) so it is included in backups."
+            }
+          }
+        }
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["src/domain/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "react": "domain/ is pure TypeScript: no React. Put this in src/ui.",
+                  "react-dom": "domain/ is pure TypeScript: no React. Put this in src/ui.",
+                  "react-router-dom": "domain/ is pure TypeScript: no routing. Put this in src/ui.",
+                  "dexie": "domain/ is pure TypeScript: no database. Put this in src/data.",
+                  "dexie-react-hooks": "domain/ is pure TypeScript: no database. Put this in src/data."
+                },
+                "patterns": [
+                  {
+                    "group": ["**/data", "**/data/**", "**/ui", "**/ui/**"],
+                    "message": "domain/ must not depend on data/ or ui/. Dependencies point inward: ui -> data -> domain."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/data/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "react-router-dom": "data/ knows nothing about routing. Put this in src/ui."
+                },
+                "patterns": [
+                  {
+                    "group": ["**/ui", "**/ui/**"],
+                    "message": "data/ must not depend on ui/. Dependencies point inward: ui -> data -> domain."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/ui/**", "src/*.tsx"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "dexie": "UI never touches the database directly. Use the hooks and repositories exported from src/data.",
+                  "dexie-react-hooks": "UI never touches the database directly. Add a hook to src/data/index.ts instead."
+                },
+                "patterns": [
+                  {
+                    "group": ["**/data/*"],
+                    "message": "Import from src/data (its index) only. If what you need is not exported there, export it there."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
