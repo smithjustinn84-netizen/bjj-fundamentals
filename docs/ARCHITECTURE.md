@@ -47,5 +47,5 @@ The day-to-day rules are in [AGENTS.md](../AGENTS.md). This page explains why th
 - IndexedDB is per browser and per device. The JSON backup is the only way to move or protect data.
 - Import replaces everything; there is no merge.
 - The streak looks back 400 days (`STREAK_WINDOW_DAYS`), so it tops out there.
-- Nothing runs `npm run check` automatically: jj has no commit hooks and there is no CI yet.
+- `npm run check` runs in CI after a push, not before a commit: jj has no commit hooks.
 - There are no automated UI tests. Domain and data are covered by unit tests; screens are checked by hand.
