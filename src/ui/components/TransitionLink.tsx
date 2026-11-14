@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { TRANSITION_LABELS } from '../../domain/labels';
-import type { Position, Transition } from '../../domain/types';
+import { TRANSITION_LABELS } from '../../core/labels';
+import type { Position, Transition } from '../../core/models';
 import { itemPath } from '../routes';
 
 interface Props {

@@ -13,12 +13,22 @@ describe('parseYouTubeId', () => {
     [`https://www.youtube.com/embed/${ID}?start=10`],
     [`https://www.youtube.com/live/${ID}`],
     [`youtube.com/watch?v=${ID}`],
+    [`HTTPS://WWW.YouTube.com/watch?feature=share&v=${ID}#t=5`],
+    [`  https://youtu.be/${ID}  `],
     [ID],
   ])('extracts the id from %s', (url) => {
     expect(parseYouTubeId(url)).toBe(ID);
   });
 
-  it.each([['https://vimeo.com/123'], ['not a url'], ['https://youtube.com/watch?v=short']])('rejects %s', (url) => {
+  it.each([
+    ['https://vimeo.com/123'],
+    ['not a url'],
+    ['https://youtube.com/watch?v=short'],
+    ['https://evil.example/watch?v=dQw4w9WgXcQ'],
+    ['https://youtube.com.evil.example/watch?v=dQw4w9WgXcQ'],
+    ['https://example.com/?u=youtube.com/watch?v=dQw4w9WgXcQ'],
+    [''],
+  ])('rejects %s', (url) => {
     expect(parseYouTubeId(url)).toBeNull();
   });
 });

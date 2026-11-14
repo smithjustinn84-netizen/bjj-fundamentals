@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { BACKUP_APP, BACKUP_SCHEMA_VERSION, BackupError, backupFilename, validateBackup } from './backup';
-import { concept, position, transition } from './testFixtures';
+import { concept, position, transition } from './testing/testFixtures';
 
 function file(data: Record<string, unknown>) {
   return { app: BACKUP_APP, schemaVersion: BACKUP_SCHEMA_VERSION, exportedAt: 123, data };

@@ -6,25 +6,43 @@ export function isYouTubeId(value: string): boolean {
   return ID_RE.test(value);
 }
 
+interface ParsedLink {
+  host: string;
+  path: string;
+  query: Map<string, string>;
+  hash: string;
+}
+
+const LINK_RE = /^(?:https?:\/\/)?([^/?#\s]+)([^?#\s]*)(?:\?([^#\s]*))?(?:#(\S*))?$/i;
+
+/**
+ * Split a link into its parts by hand. The platform `URL` class is not used because it is a browser/Node API,
+ * not part of the language, and core must run anywhere.
+ */
+function parseLink(input: string): ParsedLink | null {
+  const match = LINK_RE.exec(input.trim());
+  if (!match) return null;
+  const query = new Map<string, string>();
+  for (const pair of (match[3] ?? '').split('&')) {
+    const [key, value = ''] = pair.split('=');
+    // First occurrence wins, as with URLSearchParams.get.
+    if (key && !query.has(key)) query.set(key, value);
+  }
+  return { host: (match[1] ?? '').toLowerCase(), path: match[2] ?? '', query, hash: match[4] ?? '' };
+}
+
 export function parseYouTubeId(input: string): string | null {
   const raw = input.trim();
   if (ID_RE.test(raw)) return raw;
-  let url: URL;
-  try {
-    url = new URL(raw.includes('://') ? raw : `https://${raw}`);
-  } catch {
-    return null;
-  }
-  const host = url.hostname.replace(/^(www\.|m\.|music\.)/, '');
+  const link = parseLink(raw);
+  if (!link) return null;
+  const host = link.host.replace(/^(www\.|m\.|music\.)/, '');
   let id: string | null = null;
   if (host === 'youtu.be') {
-    id = url.pathname.split('/')[1] ?? null;
+    id = link.path.split('/')[1] ?? null;
   } else if (host === 'youtube.com' || host === 'youtube-nocookie.com') {
-    if (url.pathname === '/watch') id = url.searchParams.get('v');
-    else {
-      const m = url.pathname.match(/^\/(?:shorts|embed|live|v)\/([^/?#]+)/);
-      if (m) id = m[1] ?? null;
-    }
+    if (link.path === '/watch') id = link.query.get('v') ?? null;
+    else id = link.path.match(/^\/(?:shorts|embed|live|v)\/([^/]+)/)?.[1] ?? null;
   }
   return id && ID_RE.test(id) ? id : null;
 }
@@ -50,17 +68,12 @@ export function parseTime(input: string | null | undefined): number | null {
 
 /** Pull the start time out of a YouTube URL (t=, start=, or #t=). */
 export function parseYouTubeStart(input: string): number | null {
-  const raw = input.trim();
-  let url: URL;
-  try {
-    url = new URL(raw.includes('://') ? raw : `https://${raw}`);
-  } catch {
-    return null;
-  }
-  const fromQuery = url.searchParams.get('t') ?? url.searchParams.get('start');
+  const link = parseLink(input);
+  if (!link) return null;
+  const fromQuery = link.query.get('t') ?? link.query.get('start');
   if (fromQuery) return parseTime(fromQuery);
-  const hash = url.hash.match(/t=([^&]+)/);
-  return hash ? parseTime(hash[1]) : null;
+  const fromHash = link.hash.match(/(?:^|&)t=([^&]+)/);
+  return fromHash ? parseTime(fromHash[1]) : null;
 }
 
 export function formatTime(totalSeconds: number): string {

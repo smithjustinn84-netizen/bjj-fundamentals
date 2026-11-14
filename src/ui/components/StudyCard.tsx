@@ -1,7 +1,7 @@
-import { assertNever } from '../../domain/assertNever';
-import { ROLE_LABELS, TRANSITION_LABELS } from '../../domain/labels';
-import type { Library } from '../../domain/library';
-import type { StudyItem } from '../../domain/study';
+import { assertNever } from '../../core/assertNever';
+import { ROLE_LABELS, TRANSITION_LABELS } from '../../core/labels';
+import type { Library } from '../../core/library';
+import type { StudyItem } from '../../core/study';
 import { Bullets } from './common';
 
 /** The question side of a review card, or null if the item no longer exists. */

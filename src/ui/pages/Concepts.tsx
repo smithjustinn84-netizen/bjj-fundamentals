@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { useLibrary } from '../../data';
-import { cardId } from '../../domain/srs';
+import { useLibrary } from '../../bindings';
+import { cardId } from '../../core/srs';
 import { Loading, ProgressDot } from '../components/common';
 import { itemPath, newItemPath } from '../routes';
 

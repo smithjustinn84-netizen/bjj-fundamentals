@@ -1,7 +1,7 @@
 import { type ChangeEvent, useRef, useState } from 'react';
-import { backups, reviews, useTableCounts } from '../../data';
-import { BACKUP_TABLES, BackupError, backupFilename, validateBackup } from '../../domain/backup';
-import { TABLE_LABELS } from '../../domain/labels';
+import { backups, reviews, useTableCounts } from '../../bindings';
+import { BACKUP_TABLES, BackupError, backupFilename, validateBackup } from '../../core/backup';
+import { TABLE_LABELS } from '../../core/labels';
 import { downloadJson } from '../download';
 
 type Message = { kind: 'ok' | 'error'; text: string };
@@ -70,8 +70,7 @@ export default function Backup() {
     );
     if (!confirmed) return;
     await backups.eraseAll();
-    // The database connection is closed for good; reloading reopens it and re-creates the starter content.
-    location.reload();
+    setMessage({ kind: 'ok', text: 'Everything erased. You are back to the starter content.' });
   }
 
   return (

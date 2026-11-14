@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { buildLibrary } from './library';
+import type { ReviewState } from './models';
 import { DAY_MS, newReviewState } from './srs';
 import { buildQueue, progressSummary } from './study';
-import { concept, position, transition } from './testFixtures';
-import type { ReviewState } from './types';
+import { concept, position, transition } from './testing/testFixtures';
 
 const NOW = 1_000_000_000_000;
 

@@ -1,9 +1,25 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.6.7/schema.json",
-  "files": { "includes": ["src/**", "*.ts", "*.json", "index.html"] },
-  "formatter": { "indentStyle": "space", "indentWidth": 2, "lineWidth": 120 },
-  "javascript": { "formatter": { "quoteStyle": "single" } },
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "files": {
+    "includes": ["src/**", "*.ts", "*.json", "index.html"]
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 120
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
   "linter": {
     "rules": {
       "preset": "recommended",
@@ -13,7 +29,15 @@
         "useExhaustiveDependencies": "error",
         "useHookAtTopLevel": "error"
       },
-      "suspicious": { "noExplicitAny": "error", "noConsole": { "level": "error", "options": { "allow": ["error"] } } },
+      "suspicious": {
+        "noExplicitAny": "error",
+        "noConsole": {
+          "level": "error",
+          "options": {
+            "allow": ["error"]
+          }
+        }
+      },
       "style": {
         "noNonNullAssertion": "error",
         "useImportType": "error",
@@ -25,8 +49,8 @@
               "XMLHttpRequest": "This app makes no network calls. See AGENTS.md.",
               "WebSocket": "This app makes no network calls. See AGENTS.md.",
               "EventSource": "This app makes no network calls. See AGENTS.md.",
-              "localStorage": "All persistence goes through src/data (IndexedDB) so it is included in backups.",
-              "sessionStorage": "All persistence goes through src/data (IndexedDB) so it is included in backups."
+              "localStorage": "All persistence goes through the AppStorage interface in src/core/storage.ts so it is included in backups.",
+              "sessionStorage": "All persistence goes through the AppStorage interface in src/core/storage.ts so it is included in backups."
             }
           }
         }
@@ -35,7 +59,7 @@
   },
   "overrides": [
     {
-      "includes": ["src/domain/**"],
+      "includes": ["src/core/**"],
       "linter": {
         "rules": {
           "style": {
@@ -43,16 +67,64 @@
               "level": "error",
               "options": {
                 "paths": {
-                  "react": "domain/ is pure TypeScript: no React. Put this in src/ui.",
-                  "react-dom": "domain/ is pure TypeScript: no React. Put this in src/ui.",
-                  "react-router-dom": "domain/ is pure TypeScript: no routing. Put this in src/ui.",
-                  "dexie": "domain/ is pure TypeScript: no database. Put this in src/data.",
-                  "dexie-react-hooks": "domain/ is pure TypeScript: no database. Put this in src/data."
+                  "react": "src/core has no UI or storage-engine dependencies. This belongs in src/ui, src/bindings or src/storage.",
+                  "react-dom": "src/core has no UI or storage-engine dependencies. This belongs in src/ui, src/bindings or src/storage.",
+                  "react-dom/client": "src/core has no UI or storage-engine dependencies. This belongs in src/ui, src/bindings or src/storage.",
+                  "react-router-dom": "src/core has no UI or storage-engine dependencies. This belongs in src/ui, src/bindings or src/storage.",
+                  "dexie": "src/core has no UI or storage-engine dependencies. This belongs in src/ui, src/bindings or src/storage."
                 },
                 "patterns": [
                   {
-                    "group": ["**/data", "**/data/**", "**/ui", "**/ui/**"],
-                    "message": "domain/ must not depend on data/ or ui/. Dependencies point inward: ui -> data -> domain."
+                    "group": ["**/storage/**", "**/bindings", "**/bindings/**", "**/ui", "**/ui/**"],
+                    "message": "Dependencies point inward: ui -> bindings -> storage -> core. core imports nothing outside itself."
+                  }
+                ]
+              }
+            },
+            "noRestrictedGlobals": {
+              "level": "error",
+              "options": {
+                "deniedGlobals": {
+                  "fetch": "This app makes no network calls. See AGENTS.md.",
+                  "XMLHttpRequest": "This app makes no network calls. See AGENTS.md.",
+                  "WebSocket": "This app makes no network calls. See AGENTS.md.",
+                  "EventSource": "This app makes no network calls. See AGENTS.md.",
+                  "localStorage": "All persistence goes through the AppStorage interface in src/core/storage.ts so it is included in backups.",
+                  "sessionStorage": "All persistence goes through the AppStorage interface in src/core/storage.ts so it is included in backups.",
+                  "window": "src/core must run without a browser. Pass this in through CoreEnv or keep it in src/bindings or src/ui.",
+                  "document": "src/core must run without a browser. Pass this in through CoreEnv or keep it in src/bindings or src/ui.",
+                  "navigator": "src/core must run without a browser. Pass this in through CoreEnv or keep it in src/bindings or src/ui.",
+                  "location": "src/core must run without a browser. Pass this in through CoreEnv or keep it in src/bindings or src/ui.",
+                  "crypto": "src/core must run without a browser. Pass this in through CoreEnv or keep it in src/bindings or src/ui.",
+                  "indexedDB": "src/core must run without a browser. Pass this in through CoreEnv or keep it in src/bindings or src/ui.",
+                  "history": "src/core must run without a browser. Pass this in through CoreEnv or keep it in src/bindings or src/ui.",
+                  "alert": "src/core must run without a browser. Pass this in through CoreEnv or keep it in src/bindings or src/ui.",
+                  "confirm": "src/core must run without a browser. Pass this in through CoreEnv or keep it in src/bindings or src/ui.",
+                  "prompt": "src/core must run without a browser. Pass this in through CoreEnv or keep it in src/bindings or src/ui."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/storage/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "react": "A storage engine knows nothing about the UI.",
+                  "react-dom": "A storage engine knows nothing about the UI.",
+                  "react-router-dom": "A storage engine knows nothing about the UI."
+                },
+                "patterns": [
+                  {
+                    "group": ["**/bindings", "**/bindings/**", "**/ui", "**/ui/**"],
+                    "message": "Dependencies point inward: ui -> bindings -> storage -> core. core imports nothing outside itself."
                   }
                 ]
               }
@@ -62,7 +134,7 @@
       }
     },
     {
-      "includes": ["src/data/**"],
+      "includes": ["src/bindings/**"],
       "linter": {
         "rules": {
           "style": {
@@ -70,12 +142,12 @@
               "level": "error",
               "options": {
                 "paths": {
-                  "react-router-dom": "data/ knows nothing about routing. Put this in src/ui."
+                  "dexie": "Only src/storage talks to a storage engine. Use the AppStorage it returns."
                 },
                 "patterns": [
                   {
                     "group": ["**/ui", "**/ui/**"],
-                    "message": "data/ must not depend on ui/. Dependencies point inward: ui -> data -> domain."
+                    "message": "Dependencies point inward: ui -> bindings -> storage -> core. core imports nothing outside itself."
                   }
                 ]
               }
@@ -93,13 +165,18 @@
               "level": "error",
               "options": {
                 "paths": {
-                  "dexie": "UI never touches the database directly. Use the hooks and repositories exported from src/data.",
-                  "dexie-react-hooks": "UI never touches the database directly. Add a hook to src/data/index.ts instead."
+                  "dexie": "UI never touches storage. Use the hooks and services exported from src/bindings."
                 },
                 "patterns": [
                   {
-                    "group": ["**/data/*"],
-                    "message": "Import from src/data (its index) only. If what you need is not exported there, export it there."
+                    "group": [
+                      "**/storage",
+                      "**/storage/**",
+                      "**/core/storage",
+                      "**/core/memoryStorage",
+                      "**/core/core"
+                    ],
+                    "message": "UI gets data and actions from src/bindings only. If what you need is not exported there, export it there."
                   }
                 ]
               }

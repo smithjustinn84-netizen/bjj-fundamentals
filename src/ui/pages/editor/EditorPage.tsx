@@ -1,9 +1,9 @@
 import type { ComponentType } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { items, useLibrary } from '../../../data';
-import { KIND_LABELS } from '../../../domain/labels';
-import { itemName } from '../../../domain/library';
-import { type ItemKind, isItemKind } from '../../../domain/types';
+import { items, useLibrary } from '../../../bindings';
+import { KIND_LABELS } from '../../../core/labels';
+import { itemName } from '../../../core/library';
+import { type ItemKind, isItemKind } from '../../../core/models';
 import { Loading, Missing } from '../../components/common';
 import { itemPath, listPath, NEW_ITEM_ID, ROUTES } from '../../routes';
 import { ConceptForm } from './ConceptForm';

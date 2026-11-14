@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { items, type PositionInput } from '../../../data';
-import { CATEGORY_LABELS } from '../../../domain/labels';
-import { POSITION_CATEGORIES, type Position, type PositionCategory } from '../../../domain/types';
+import { items } from '../../../bindings';
+import { CATEGORY_LABELS } from '../../../core/labels';
+import { POSITION_CATEGORIES, type Position, type PositionCategory } from '../../../core/models';
+import type { PositionInput } from '../../../core/services/items';
 import {
   Field,
   FormShell,

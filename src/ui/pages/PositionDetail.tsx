@@ -1,7 +1,7 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { items, useLibrary } from '../../data';
-import { CATEGORY_LABELS, ROLE_LABELS } from '../../domain/labels';
-import { cardId } from '../../domain/srs';
+import { items, useLibrary } from '../../bindings';
+import { CATEGORY_LABELS, ROLE_LABELS } from '../../core/labels';
+import { cardId } from '../../core/srs';
 import { Bullets, Loading, Missing, NotesBlock, ProgressDot, Section } from '../components/common';
 import { TransitionLink } from '../components/TransitionLink';
 import { LinkedVideos } from '../components/VideoList';

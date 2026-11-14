@@ -1,5 +1,5 @@
 import type { BackupTable } from './backup';
-import type { ItemKind, PositionCategory, TransitionType } from './types';
+import type { ItemKind, PositionCategory, TransitionType } from './models';
 
 export const CATEGORY_LABELS: Record<PositionCategory, string> = {
   standing: 'Standing',

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildLibrary, itemName } from './library';
-import { concept, position, transition } from './testFixtures';
+import { concept, position, transition } from './testing/testFixtures';
 
 describe('buildLibrary', () => {
   const lib = buildLibrary(

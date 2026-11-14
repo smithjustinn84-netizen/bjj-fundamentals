@@ -1,4 +1,4 @@
-import type { Concept, Position, Transition } from './types';
+import type { Concept, Position, Transition } from '../models';
 
 /** Minimal valid entities for tests. Override only the fields a test cares about. */
 

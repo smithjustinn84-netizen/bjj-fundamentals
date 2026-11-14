@@ -1,7 +1,7 @@
 import { type FormEvent, useState } from 'react';
-import { useLibrary, videos } from '../../data';
-import { type ItemKind, isItemKind } from '../../domain/types';
-import { formatTime, parseTime, parseYouTubeId, parseYouTubeStart } from '../../domain/youtube';
+import { useLibrary, videos } from '../../bindings';
+import { type ItemKind, isItemKind } from '../../core/models';
+import { formatTime, parseTime, parseYouTubeId, parseYouTubeStart } from '../../core/youtube';
 
 interface ItemRef {
   kind: ItemKind;

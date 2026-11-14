@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
-import { useLibrary } from '../../data';
-import { cardId } from '../../domain/srs';
+import { useLibrary } from '../../bindings';
+import { cardId } from '../../core/srs';
 import { Bullets, Loading, Missing, NotesBlock, ProgressDot, Section } from '../components/common';
 import { LinkedVideos } from '../components/VideoList';
 import { editPath, itemPath, ROUTES } from '../routes';

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useLibrary, useVideos } from '../../data';
-import { itemName } from '../../domain/library';
+import { useLibrary, useVideos } from '../../bindings';
+import { itemName } from '../../core/library';
 import { Loading } from '../components/common';
 import { VideoForm } from '../components/VideoForm';
 import { VideoRow } from '../components/VideoList';

@@ -27,9 +27,13 @@ npm run dev
 ## How the code is organised
 
 ```
-src/domain/   Pure logic: types, scheduling, queue building, backup validation, YouTube parsing, starter content
-src/data/     IndexedDB (Dexie): schema, repositories, queries. src/data/index.ts is the only door in.
-src/ui/       React pages and components
+src/core/       The app itself: models, spaced repetition, app logic, and the storage interface.
+                Plain TypeScript with zero DOM/browser dependencies (compiler-enforced).
+src/storage/    Storage engines implementing core's AppStorage interface. Today: IndexedDB via Dexie.
+src/bindings/   Composition root: picks the storage engine, builds the core, exposes React hooks.
+src/ui/         React pages and components
 ```
 
-Imports only point inward (`ui → data → domain`), and the linter enforces it. Read [AGENTS.md](AGENTS.md) before changing anything; the reasoning is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). To change the starter content, edit `src/domain/seed.ts`.
+Imports only point inward (`ui → bindings → storage → core`), and the compiler and linter enforce it. Moving to native SQLite or Capacitor means adding one file in `src/storage/` that passes the shared contract tests, and changing one line in `src/bindings/index.ts`.
+
+Read [AGENTS.md](AGENTS.md) before changing anything; the reasoning is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). To change the starter content, edit `src/core/seed.ts`.

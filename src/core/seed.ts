@@ -1,4 +1,5 @@
-import type { Concept, Position, Transition } from './types';
+import type { BackupData } from './backup';
+import type { Concept, Position, Transition } from './models';
 
 /**
  * Starter content: a small, beginner-level set of ideas. Kept deliberately short —
@@ -528,14 +529,26 @@ const transitions: Stamped<Transition>[] = [
   },
 ];
 
-export function seedConcepts(now: number): Concept[] {
+function seedConcepts(now: number): Concept[] {
   return concepts.map((c) => ({ ...c, notes: '', createdAt: now, updatedAt: now }));
 }
 
-export function seedPositions(now: number): Position[] {
+function seedPositions(now: number): Position[] {
   return positions.map((p) => ({ ...p, notes: '', createdAt: now, updatedAt: now }));
 }
 
-export function seedTransitions(now: number): Transition[] {
+function seedTransitions(now: number): Transition[] {
   return transitions.map((t) => ({ ...t, notes: '', createdAt: now, updatedAt: now }));
+}
+
+/** Everything a brand-new installation starts with. Storage engines insert this once, when first created. */
+export function starterContent(now: number): BackupData {
+  return {
+    concepts: seedConcepts(now),
+    positions: seedPositions(now),
+    transitions: seedTransitions(now),
+    videos: [],
+    reviews: [],
+    reviewLog: [],
+  };
 }

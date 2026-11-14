@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { type ConceptInput, items } from '../../../data';
-import type { Concept } from '../../../domain/types';
+import { items } from '../../../bindings';
+import type { Concept } from '../../../core/models';
+import type { ConceptInput } from '../../../core/services/items';
 import {
   Field,
   FormShell,

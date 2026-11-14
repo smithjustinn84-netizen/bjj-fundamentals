@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { items, type TransitionInput } from '../../../data';
-import { TRANSITION_LABELS } from '../../../domain/labels';
-import { TRANSITION_TYPES, type Transition, type TransitionType } from '../../../domain/types';
+import { items } from '../../../bindings';
+import { TRANSITION_LABELS } from '../../../core/labels';
+import { TRANSITION_TYPES, type Transition, type TransitionType } from '../../../core/models';
+import type { TransitionInput } from '../../../core/services/items';
 import { Field, FormShell, fromLines, type ItemFormProps, NameField, NotesField, toLines } from './shared';
 
 interface Draft {

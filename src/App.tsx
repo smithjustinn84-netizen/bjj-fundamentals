@@ -1,5 +1,5 @@
 import { NavLink, Route, Routes } from 'react-router-dom';
-import { useDueCount } from './data';
+import { useDueCount } from './bindings';
 import { ErrorBoundary } from './ui/components/ErrorBoundary';
 import Backup from './ui/pages/Backup';
 import ConceptDetail from './ui/pages/ConceptDetail';

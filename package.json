@@ -5,17 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "npm run typecheck && vite build",
     "preview": "vite preview",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.core.json --noEmit",
     "test": "vitest run",
-    "check": "biome check . && tsc --noEmit && vitest run && vite build"
+    "check": "biome check . && npm run typecheck && vitest run && vite build"
   },
   "dependencies": {
     "dexie": "^4.4.7",
-    "dexie-react-hooks": "^4.4.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router-dom": "^7.18.5"

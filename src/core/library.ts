@@ -1,5 +1,5 @@
 import { assertNever } from './assertNever';
-import type { Concept, ItemKind, Position, ReviewState, Transition } from './types';
+import type { Concept, ItemKind, Position, ReviewState, Transition } from './models';
 
 /** An in-memory snapshot of everything the UI needs to render lists and look items up. */
 export interface Library {

@@ -1,5 +1,5 @@
-import { assertNever } from '../domain/assertNever';
-import type { ItemKind } from '../domain/types';
+import { assertNever } from '../core/assertNever';
+import type { ItemKind } from '../core/models';
 
 /** Every path in the app is built here, so a route can be renamed in one place. */
 export const ROUTES = {

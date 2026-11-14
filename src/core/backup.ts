@@ -9,7 +9,7 @@ import {
   TRANSITION_TYPES,
   type Transition,
   type VideoBookmark,
-} from './types';
+} from './models';
 import { isYouTubeId } from './youtube';
 
 /**

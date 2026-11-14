@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { useLibrary, useStudyStats } from '../../data';
-import { cardId } from '../../domain/srs';
-import { progressSummary } from '../../domain/study';
+import { useLibrary, useStudyStats } from '../../bindings';
+import { cardId } from '../../core/srs';
+import { progressSummary } from '../../core/study';
 import { Loading, ProgressDot } from '../components/common';
 import { itemPath, ROUTES } from '../routes';
 

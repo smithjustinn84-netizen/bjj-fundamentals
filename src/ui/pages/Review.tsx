@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useLibrary } from '../../data';
-import { cardId, describeInterval, newReviewState } from '../../domain/srs';
-import { buildQueue, type Deck } from '../../domain/study';
-import type { Grade } from '../../domain/types';
+import { useLibrary } from '../../bindings';
+import type { Grade } from '../../core/models';
+import { cardId, describeInterval, newReviewState } from '../../core/srs';
+import { buildQueue, type Deck } from '../../core/study';
 import { Loading } from '../components/common';
 import { CardAnswer, cardPrompt } from '../components/StudyCard';
 import { itemPath, ROUTES } from '../routes';

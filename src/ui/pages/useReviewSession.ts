@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { reviews } from '../../data';
-import { itemName, type Library } from '../../domain/library';
-import type { StudyItem } from '../../domain/study';
-import type { Grade } from '../../domain/types';
+import { reviews } from '../../bindings';
+import { itemName, type Library } from '../../core/library';
+import type { Grade } from '../../core/models';
+import type { StudyItem } from '../../core/study';
 
 export type SessionStatus = 'idle' | 'active' | 'finished';
 

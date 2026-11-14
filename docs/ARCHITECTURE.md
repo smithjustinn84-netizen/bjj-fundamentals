@@ -2,50 +2,71 @@
 
 The day-to-day rules are in [AGENTS.md](../AGENTS.md). This page explains why they are what they are.
 
-## Layers
+## Shape
 
 ```
-            ┌──────────────────────────────────────────────┐
-  src/ui    │ pages, components, routes                    │  React
-            └───────────────┬──────────────────┬───────────┘
-                            │ hooks, commands  │ types, pure functions
-            ┌───────────────▼────────────┐     │
-  src/data  │ repositories, queries, db  │     │             Dexie
-            └───────────────┬────────────┘     │
-                            │                  │
-            ┌───────────────▼──────────────────▼───────────┐
-  src/domain│ types, srs, study, library, backup, youtube  │  plain TypeScript
-            └──────────────────────────────────────────────┘
+   src/ui            pages, components, routes                 React
+      │
+      ▼
+   src/bindings      composition root + React hooks            picks the storage engine
+      │        \
+      │         ▼
+      │      src/storage   dexieStorage.ts                     IndexedDB (replaceable)
+      │         │  implements
+      ▼         ▼
+   src/core   ┌──────────────────────────────────────────────────────────┐
+              │ models · srs · study · library · backup · youtube · seed │  plain TypeScript
+              │ storage.ts   ← the AppStorage interface                  │  no DOM, no browser,
+              │ services/    ← all app logic, written against AppStorage │  no React, no Dexie
+              │ core.ts      ← createCore({ storage, newId, now })       │
+              └──────────────────────────────────────────────────────────┘
 ```
 
-- **Domain** is everything that would still be true if the app were rewritten for another UI or another database: what a position is, how a review is scheduled, what a valid backup looks like. It is pure, so it is tested without mocks and cannot break because of a browser or library change.
-- **Data** is the only code that knows IndexedDB exists. `src/data/index.ts` is its whole public surface: live-query hooks for reading and four objects (`items`, `videos`, `reviews`, `backups`) for writing. Swapping Dexie for something else, or adding sync, would be contained here.
-- **UI** renders the domain and calls the data layer. A component that needs data it cannot get from `src/data` adds a hook or method there instead of reaching around it.
+`src/core` is the application. It can be lifted into a Capacitor app, a React Native app, a CLI or a server and run unchanged, because the three things it needs from outside are handed to it through `CoreEnv`:
+
+- **`storage`**: an `AppStorage`. Six repositories with plain reads and writes by id, a `transaction`, a `subscribe` for change notifications, and `reset`.
+- **`newId`**: so core never calls `crypto`.
+- **`now`**: so core never reads the clock, and tests control time.
+
+The interface is deliberately small. Filtering, sorting, cascading deletes and backup import are done in core services by composing those few methods. That costs a little efficiency (services read whole tables) and buys a storage engine that is around a hundred lines and knows nothing about BJJ.
+
+## How the boundary is enforced
+
+| Guard | Catches |
+| --- | --- |
+| `tsconfig.core.json` compiles `src/core` with `lib: ["ES2022"]` and no ambient types | Any browser or Node global in core (`document`, `window`, `crypto`, `URL`, `indexedDB`, `fetch`, timers). It caught the original YouTube parser using `URL`. |
+| `biome.json` `noRestrictedImports` / `noRestrictedGlobals` per folder | Imports that point outward, `dexie` outside `src/storage`, React inside core |
+| `core/testing/storageContract.ts`, run against every engine | An engine that behaves differently from the others (rollback, notifications, first-run data, restart) |
+| Core service tests run on `memoryStorage` | Core logic that secretly depends on IndexedDB behaviour |
 
 ## How SOLID shows up
 
-- **Single responsibility.** One reason to change per module: `srs.ts` changes when scheduling changes, `itemRepository.ts` when storage of items changes, `ConceptForm.tsx` when the concept form changes. `useReviewSession` holds session state; `Review.tsx` only renders it.
-- **Open/closed.** Things that vary by item kind are tables keyed by kind (`FORMS`, `KIND_LABELS`) or exhaustive switches. Adding a kind adds entries; the compiler lists every place that needs one.
-- **Liskov.** Every item form satisfies the same `ItemFormProps`, so the editor page treats them identically.
-- **Interface segregation.** There is no single "database service". A component that only adds videos imports `videos`, and cannot delete positions by accident.
-- **Dependency inversion.** Repositories receive the database as an argument. Domain logic receives `now` as an argument. Nothing in the inner layers reaches out for a global.
+- **Single responsibility.** `srs.ts` changes when scheduling changes, `services/items.ts` when item rules change, `dexieStorage.ts` when IndexedDB details change, `ConceptForm.tsx` when that form changes.
+- **Open/closed.** A new storage engine is a new file, not an edit to existing ones. Things that vary by item kind are tables keyed by kind or exhaustive switches.
+- **Liskov.** Any `AppStorage` can replace any other; the contract suite is the proof. Every item form satisfies the same `ItemFormProps`.
+- **Interface segregation.** UI code imports the one service it needs (`videos`, `reviews`, ...), not a single "database" object.
+- **Dependency inversion.** Core defines the storage interface and the engine implements it, so the dependency points at core. Ids and time are injected.
 
 ## Decisions
 
 | Decision | Why | Revisit when |
 | --- | --- | --- |
-| Factories and modules, not classes, interfaces or a DI container | One implementation of each thing exists. A factory taking `db` gives testability without the ceremony. | A second storage backend appears. |
-| Biome for lint and format, not ESLint + Prettier | `typescript-eslint` did not support TypeScript 7 when this was set up. Biome is one dependency and one config. Layer boundaries are `noRestrictedImports` overrides in `biome.json`. | Type-aware lint rules become necessary. |
-| The whole library is loaded into memory (`useLibrary`) | Tens of rows. Simpler than per-screen queries, and every screen stays consistent. | Thousands of items. |
-| Backups are validated field by field, by hand | A backup is a user-supplied file. The checks are tied to the types, so a new field cannot be forgotten. A schema library would be a dependency for about 100 lines. | Validation rules get complicated. |
-| Hash routing (`/#/positions`) | Works from any static host or subfolder with no server rewrite rules. | The app gets a server. |
-| YouTube bookmarks are links, not embedded players | An embed would load third-party code and make network calls, breaking the offline and privacy guarantees. | The user asks for inline playback and accepts that trade. |
-| `confirm()` for destructive actions | Zero code, accessible, impossible to mis-style. | A design pass wants custom dialogs. |
+| Narrow CRUD interface, logic in core | Maximum portability, minimum per-engine code. Data is tens to hundreds of rows. | Tables reach tens of thousands of rows; then add specific indexed reads to the interface, as `reviewLog.since` already is. |
+| Engines insert `initialData` on first creation | Every engine has a natural "database created" hook (Dexie `populate`, SQLite `user_version`), so no startup step or seeding flag is needed. Core still owns the content. | An engine has no such hook. |
+| Change notification is one coarse `subscribe` | One event re-runs the few visible queries; simple to implement on any engine. Dexie's version also reports other tabs. | Re-running queries shows up in profiling. |
+| `useQuery` instead of `dexie-react-hooks` | UI reactivity no longer depends on the engine. | A data library (TanStack Query etc.) is adopted. |
+| The in-memory storage ships in core | It makes core tests need no database and is the reference implementation for new engines. | Never, unless it stops matching the contract. |
+| Factories and modules, not classes or a DI container | One composition root, a handful of dependencies. | The dependency graph grows. |
+| Biome for lint and format, not ESLint + Prettier | `typescript-eslint` did not support TypeScript 7 when this was set up. | Type-aware lint rules become necessary. |
+| Backups are validated field by field, by hand | A backup is a user-supplied file. The checks are tied to the models, so a new field cannot be forgotten. | Validation rules get complicated. |
+| Hash routing (`/#/positions`) | Works from any static host, subfolder or `file://`-style webview with no rewrite rules. | The app gets a server. |
+| YouTube bookmarks are links, not embedded players | An embed would load third-party code and make network calls. | The user asks for inline playback and accepts that trade. |
 
 ## Known limits
 
 - IndexedDB is per browser and per device. The JSON backup is the only way to move or protect data.
 - Import replaces everything; there is no merge.
 - The streak looks back 400 days (`STREAK_WINDOW_DAYS`), so it tops out there.
+- Only the IndexedDB engine exists. The SQLite/Capacitor path is designed for and contract-tested in shape, but not built.
 - `npm run check` runs in CI after a push, not before a commit: jj has no commit hooks.
-- There are no automated UI tests. Domain and data are covered by unit tests; screens are checked by hand.
+- There are no automated UI tests. Core and storage are covered by unit and contract tests; screens are checked by hand.

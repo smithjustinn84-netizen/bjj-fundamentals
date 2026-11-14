@@ -1,6 +1,6 @@
 import type { FormEvent, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import type { Library } from '../../../domain/library';
+import type { Library } from '../../../core/library';
 
 /** What every item form receives. A new kind of item only needs a component with these props. */
 export interface ItemFormProps {

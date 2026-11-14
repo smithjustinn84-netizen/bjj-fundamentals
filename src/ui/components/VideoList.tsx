@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useLinkedVideos, videos } from '../../data';
-import { KIND_LABELS } from '../../domain/labels';
-import type { ItemKind, VideoBookmark } from '../../domain/types';
-import { formatTime, watchUrl } from '../../domain/youtube';
+import { useLinkedVideos, videos } from '../../bindings';
+import { KIND_LABELS } from '../../core/labels';
+import type { ItemKind, VideoBookmark } from '../../core/models';
+import { formatTime, watchUrl } from '../../core/youtube';
 import { itemPath } from '../routes';
 import { VideoForm } from './VideoForm';
 

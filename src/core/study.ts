@@ -1,6 +1,6 @@
 import type { Library } from './library';
+import type { ItemKind } from './models';
 import { cardId, isLearned } from './srs';
-import type { ItemKind } from './types';
 
 /** One thing that can be studied as a flashcard. */
 export interface StudyItem {

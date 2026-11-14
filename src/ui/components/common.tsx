@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { isLearned } from '../../domain/srs';
-import type { ReviewState } from '../../domain/types';
+import type { ReviewState } from '../../core/models';
+import { isLearned } from '../../core/srs';
 
 export function Loading() {
   return <p className="muted">Loading…</p>;

@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import { useLibrary } from '../../data';
-import { CATEGORY_LABELS } from '../../domain/labels';
-import { cardId } from '../../domain/srs';
-import { POSITION_CATEGORIES } from '../../domain/types';
+import { useLibrary } from '../../bindings';
+import { CATEGORY_LABELS } from '../../core/labels';
+import { POSITION_CATEGORIES } from '../../core/models';
+import { cardId } from '../../core/srs';
 import { Loading, ProgressDot } from '../components/common';
 import { TransitionLink } from '../components/TransitionLink';
 import { itemPath, newItemPath } from '../routes';

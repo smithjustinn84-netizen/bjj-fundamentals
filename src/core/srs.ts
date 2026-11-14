@@ -1,4 +1,4 @@
-import type { Grade, ItemKind, ReviewState } from './types';
+import type { Grade, ItemKind, ReviewState } from './models';
 
 /** A simplified SM-2 scheduler. Pure functions so they are easy to test. */
 
