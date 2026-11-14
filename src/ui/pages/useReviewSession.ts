@@ -1,19 +1,25 @@
 import { useCallback, useEffect, useState } from 'react';
 import { reviews } from '../../bindings';
 import { itemName, type Library } from '../../core/library';
-import type { Grade } from '../../core/models';
+import { GRADES, type Grade } from '../../core/models';
 import type { StudyItem } from '../../core/study';
 
 export type SessionStatus = 'idle' | 'active' | 'finished';
 
+export type GradeTally = Record<Grade, number>;
+
+// Object.fromEntries cannot express "one key per grade"; GRADES lists every Grade, so the record is complete.
+const emptyTally = () => Object.fromEntries(GRADES.map((grade) => [grade, 0])) as GradeTally;
+
 /**
  * State for one review session: the queue of cards, which side is showing, and grading.
- * Holds no rendering and no scheduling rules; those live in the page and in `domain/srs`.
+ * Holds no rendering and no scheduling rules; those live in the page and in `core/srs`.
  */
 export function useReviewSession(lib: Library | undefined) {
   const [queue, setQueue] = useState<StudyItem[] | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [doneCount, setDoneCount] = useState(0);
+  const [tally, setTally] = useState(emptyTally);
   const [saving, setSaving] = useState(false);
 
   const current = queue?.[0];
@@ -28,6 +34,7 @@ export function useReviewSession(lib: Library | undefined) {
   const start = useCallback((items: StudyItem[]) => {
     setQueue(items);
     setDoneCount(0);
+    setTally(emptyTally());
     setRevealed(false);
   }, []);
 
@@ -47,6 +54,7 @@ export function useReviewSession(lib: Library | undefined) {
           return value === 'again' ? [...rest, current] : rest;
         });
         setDoneCount((n) => n + 1);
+        setTally((t) => ({ ...t, [value]: t[value] + 1 }));
         setRevealed(false);
       } finally {
         setSaving(false);
@@ -60,6 +68,7 @@ export function useReviewSession(lib: Library | undefined) {
     current: currentIsGone ? undefined : current,
     remaining: queue?.length ?? 0,
     doneCount,
+    tally,
     revealed,
     saving,
     start,

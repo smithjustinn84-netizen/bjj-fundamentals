@@ -97,3 +97,11 @@ export interface ReviewLogEntry {
   grade: Grade;
   reviewedAt: number;
 }
+
+/** Study ranks shown as a belt, lowest first. A motivational label for progress, not a real grading. */
+export const BELT_RANKS = ['white', 'blue', 'purple', 'brown', 'black'] as const;
+export type BeltRank = (typeof BELT_RANKS)[number];
+
+/** Which way the position map flows: across the screen on wide displays, down it on narrow ones. */
+export const MAP_ORIENTATIONS = ['horizontal', 'vertical'] as const;
+export type MapOrientation = (typeof MAP_ORIENTATIONS)[number];

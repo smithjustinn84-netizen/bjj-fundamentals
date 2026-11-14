@@ -12,7 +12,7 @@ Imports only point inward: `ui → bindings → storage → core`. **`src/core` 
 
 | Folder | Contains | Must not contain |
 | --- | --- | --- |
-| `src/core/` | Data models, spaced-repetition logic, queue building, validation, starter content, the storage interface (`storage.ts`) and all app logic (`services/`). | Anything from a browser or runtime: DOM, `window`, `crypto`, `URL`, `indexedDB`, `Date.now()`. No React, no Dexie. Compiled with no DOM typings, so these are compile errors. |
+| `src/core/` | Data models, spaced-repetition logic, queue building, validation, map layout, starter content, the storage interface (`storage.ts`) and all app logic (`services/`). | Anything from a browser or runtime: DOM, `window`, `crypto`, `URL`, `indexedDB`, `Date.now()`. No React, no Dexie. Compiled with no DOM typings, so these are compile errors. |
 | `src/storage/` | Implementations of `AppStorage`. Today one: `dexieStorage.ts` (IndexedDB). The only place that imports `dexie`. | App rules, React, UI text |
 | `src/bindings/` | The composition root: picks a storage engine, builds the core, exposes services and React hooks. | Business rules, JSX |
 | `src/ui/`, `src/App.tsx` | Components, pages, routes, browser-only helpers | Storage engines, business rules. Gets data and actions from `src/bindings` only. |
@@ -46,6 +46,14 @@ Where does new code go?
 - No magic numbers: name the constant and say what it means.
 - Comments explain why, not what. No commented-out code, no TODOs without an owner.
 - Tests live next to the code as `*.test.ts`. Test-only helpers live in `core/testing/`.
+
+## Look and motion
+
+- Styles are plain CSS in `src/styles/`, one file per area (`tokens`, `base`, `motion`, `shell`, `graphics`, then one per screen), imported in that order from `src/main.tsx`.
+- Colours, radii, durations and easings come from `tokens.css`. No hex colours anywhere else; a new colour is a new token with a light and a dark value.
+- Graphics are hand-written inline SVG components in `src/ui/graphics/`, coloured through tokens. No image or font files, no icon or animation library.
+- Motion is CSS. `motion.css` ends with a `prefers-reduced-motion` block that switches every animation off; scripted motion checks `prefersReducedMotion()` from `ui/graphics/motion.ts`.
+- Anything a graphic has to calculate (where map boxes sit, how arrows curve, which belt a percentage earns) is a pure function in `core/` with a test (`mapLayout.ts`, `rank.ts`). Components only draw the result.
 
 ## Recipes
 

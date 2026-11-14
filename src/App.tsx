@@ -1,6 +1,9 @@
-import { NavLink, Route, Routes } from 'react-router-dom';
+import type { MouseEvent } from 'react';
+import { NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { useDueCount } from './bindings';
 import { ErrorBoundary } from './ui/components/ErrorBoundary';
+import { BrandMark } from './ui/graphics/BrandMark';
+import { Icon } from './ui/graphics/icons';
 import Backup from './ui/pages/Backup';
 import ConceptDetail from './ui/pages/ConceptDetail';
 import Concepts from './ui/pages/Concepts';
@@ -14,10 +17,19 @@ import TransitionDetail from './ui/pages/TransitionDetail';
 import Videos from './ui/pages/Videos';
 import { ROUTES } from './ui/routes';
 
+const MAIN_ID = 'main';
+
+/** The app uses hash routing, so a plain `#main` link would navigate. Move focus by hand instead. */
+function focusMain(event: MouseEvent<HTMLAnchorElement>) {
+  event.preventDefault();
+  document.getElementById(MAIN_ID)?.focus();
+}
+
 function ReviewNavLink() {
   const dueCount = useDueCount();
   return (
     <NavLink to={ROUTES.review}>
+      <Icon name="review" />
       Review
       {dueCount > 0 && (
         <span className="badge" role="img" aria-label={`${dueCount} due`}>
@@ -29,24 +41,41 @@ function ReviewNavLink() {
 }
 
 export default function App() {
+  const { pathname } = useLocation();
   return (
     <div className="app">
+      <a className="skip-link" href={`#${MAIN_ID}`} onClick={focusMain}>
+        Skip to content
+      </a>
       <header className="topbar">
         <NavLink to={ROUTES.home} className="brand" end>
-          <span className="belt" aria-hidden="true" />
+          <BrandMark />
           BJJ Fundamentals
         </NavLink>
         <nav className="nav" aria-label="Main">
-          <NavLink to={ROUTES.concepts}>Concepts</NavLink>
-          <NavLink to={ROUTES.positions}>Positions</NavLink>
+          <NavLink to={ROUTES.concepts}>
+            <Icon name="concepts" />
+            Concepts
+          </NavLink>
+          <NavLink to={ROUTES.positions}>
+            <Icon name="map" />
+            Positions
+          </NavLink>
           <ErrorBoundary>
             <ReviewNavLink />
           </ErrorBoundary>
-          <NavLink to={ROUTES.videos}>Videos</NavLink>
-          <NavLink to={ROUTES.backup}>Backup</NavLink>
+          <NavLink to={ROUTES.videos}>
+            <Icon name="video" />
+            Videos
+          </NavLink>
+          <NavLink to={ROUTES.backup}>
+            <Icon name="backup" />
+            Backup
+          </NavLink>
         </nav>
       </header>
-      <main className="content">
+      {/* Keyed on the path so each page plays its entrance animation when the route changes. */}
+      <main id={MAIN_ID} className="content page-enter" key={pathname} tabIndex={-1}>
         <ErrorBoundary>
           <Routes>
             <Route path={ROUTES.home} element={<Home />} />

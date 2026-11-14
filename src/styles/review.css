@@ -1,0 +1,182 @@
+/* Review */
+.review-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Each grade has one colour, used by its button, the leaving card's tint and the session breakdown. */
+.grade-again {
+  --grade-color: var(--grade-again);
+}
+.grade-hard {
+  --grade-color: var(--grade-hard);
+}
+.grade-good {
+  --grade-color: var(--grade-good);
+}
+.grade-easy {
+  --grade-color: var(--grade-easy);
+}
+
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateX(40px) rotate(1.5deg);
+  }
+}
+/* Duration must match CARD_LEAVE_MS in Review.tsx. */
+@keyframes card-leave {
+  to {
+    opacity: 0;
+    transform: translateX(-60px) rotate(-3deg);
+  }
+}
+@keyframes card-flip {
+  from {
+    transform: rotateY(-90deg);
+  }
+}
+
+/* Perspective makes the flip read as a card turning over rather than squashing flat. */
+.card-stage {
+  perspective: 1200px;
+}
+.card-slot {
+  animation: card-enter var(--dur-base) var(--ease-out) both;
+}
+.card-slot.card-leaving {
+  animation: card-leave 220ms ease-in forwards;
+}
+.flashcard {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.card-leaving .flashcard {
+  border-color: var(--grade-color);
+  background: color-mix(in srgb, var(--grade-color) 12%, var(--surface));
+}
+.flashcard-flipped {
+  animation: card-flip var(--dur-slow) var(--ease-out) both;
+}
+.question {
+  font-size: 1.35rem;
+  margin-bottom: 1.25rem;
+}
+.reveal {
+  align-self: center;
+  margin-top: auto;
+}
+.answer {
+  border-top: 1px dashed var(--border);
+  padding-top: var(--space-4);
+}
+.answer h3 {
+  margin-top: var(--space-3);
+}
+.grades {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+  animation: rise-in var(--dur-base) var(--ease-out) both;
+}
+.grade {
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.6rem;
+  border-color: color-mix(in srgb, var(--grade-color) 55%, var(--border));
+  border-bottom-width: 3px;
+}
+.grade > span:first-child {
+  color: var(--grade-color);
+  font-weight: 700;
+}
+.grade:not(:disabled):hover {
+  border-color: var(--grade-color);
+  background: color-mix(in srgb, var(--grade-color) 10%, var(--surface));
+  transform: translateY(-2px);
+}
+.grade kbd {
+  margin: 0;
+}
+
+/* Session complete */
+.session-complete > * + * {
+  margin-top: var(--space-4);
+}
+.complete-mark {
+  width: 4.5rem;
+  height: 4.5rem;
+  fill: none;
+  stroke: var(--ok);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* The circle draws first, then the tick. Dash lengths are a little over each path's length. */
+.complete-mark circle {
+  stroke-dasharray: 180;
+  stroke-dashoffset: 180;
+  animation: draw var(--dur-slow) var(--ease-out) forwards;
+}
+.complete-mark path {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: draw var(--dur-base) var(--ease-out) var(--dur-slow) forwards;
+}
+.breakdown-bar {
+  display: flex;
+  gap: 2px;
+  height: 12px;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: var(--accent-soft);
+}
+.breakdown-bar > span {
+  background: var(--grade-color);
+}
+.breakdown-legend {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-2) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+}
+.breakdown-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: var(--radius-sm);
+  background: var(--grade-color);
+}
+.streak-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+.streak-line .icon {
+  color: var(--belt);
+}
+
+@media (max-width: 600px) {
+  .grades {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

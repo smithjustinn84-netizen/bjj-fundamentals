@@ -1,0 +1,118 @@
+/* Home */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-5) var(--space-6);
+  align-items: center;
+  /* A belt-red seam down the leading edge, like the border tape on a mat. */
+  border-left: 4px solid var(--belt);
+}
+.hero h1 {
+  font-size: var(--text-display);
+  max-width: 18ch;
+}
+.hero-text .row {
+  margin-top: var(--space-4);
+  align-items: center;
+}
+.hero-rank {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+  max-width: 15rem;
+}
+.rank-label {
+  margin: 0;
+}
+.stat-tiles {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.stat-tile {
+  flex: 1 1 9rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+.stat-tile .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--belt);
+}
+.stat {
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Suggested path: a vertical stepper joined by a line. */
+ol.path {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-3) 0 0;
+}
+.path-step {
+  position: relative;
+  display: flex;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+.path-step p {
+  margin: 0;
+}
+.path-step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: calc(1rem - 1px);
+  top: 2rem;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.path-done:not(:last-child)::before {
+  background: var(--ok);
+}
+.path-marker {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: var(--text-sm);
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+}
+.path-done .path-marker {
+  border-color: var(--ok);
+  background: var(--ok);
+  color: var(--surface);
+}
+.path-current .path-marker {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+@media (max-width: 700px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  .hero h1 {
+    font-size: var(--text-xl);
+  }
+  .hero-rank {
+    max-width: none;
+  }
+}

@@ -1,0 +1,101 @@
+/*
+ * Shared motion. Durations and easings come from tokens.css.
+ * The reduced-motion block at the bottom switches everything off, including animations
+ * defined in other stylesheets, so new motion needs no extra opt-out.
+ */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Each page fades and rises in when the route changes. */
+.page-enter {
+  animation: rise-in var(--dur-base) var(--ease-out) both;
+}
+
+/* Children of a .stagger list arrive one after another. */
+.stagger > * {
+  --stagger-step: 40ms;
+  animation: rise-in var(--dur-base) var(--ease-out) both;
+}
+.stagger > :nth-child(2) {
+  animation-delay: calc(var(--stagger-step) * 1);
+}
+.stagger > :nth-child(3) {
+  animation-delay: calc(var(--stagger-step) * 2);
+}
+.stagger > :nth-child(4) {
+  animation-delay: calc(var(--stagger-step) * 3);
+}
+.stagger > :nth-child(5) {
+  animation-delay: calc(var(--stagger-step) * 4);
+}
+.stagger > :nth-child(6) {
+  animation-delay: calc(var(--stagger-step) * 5);
+}
+.stagger > :nth-child(7) {
+  animation-delay: calc(var(--stagger-step) * 6);
+}
+.stagger > :nth-child(n + 8) {
+  animation-delay: calc(var(--stagger-step) * 7);
+}
+
+/* Hover and press feedback */
+button,
+.button,
+.chip,
+.tile,
+.nav a {
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+button:not(:disabled, .link):active,
+.button:active,
+.chip:active,
+.tile:active {
+  transform: scale(0.97);
+}
+.tile:hover,
+.chip:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+button.primary:not(:disabled):hover,
+.button.primary:hover {
+  box-shadow: var(--shadow-lift);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore-start lint/complexity/noImportantStyles: the override must beat every animation in every stylesheet */
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    /* biome-ignore-end lint/complexity/noImportantStyles: the override must beat every animation in every stylesheet */
+  }
+}

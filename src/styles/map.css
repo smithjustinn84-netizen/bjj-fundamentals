@@ -1,0 +1,191 @@
+/* Position map */
+.segmented {
+  display: inline-flex;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.segmented button {
+  border: 0;
+  border-radius: 0;
+  color: var(--muted);
+}
+.segmented button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* Across the page on wide screens with the details underneath; down the page otherwise, with the details alongside. */
+.map {
+  display: grid;
+  gap: var(--space-4);
+  align-items: start;
+}
+.map-vertical {
+  grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
+}
+.map-canvas {
+  padding: var(--space-3);
+}
+.map-canvas svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.map-lane {
+  fill: var(--muted);
+  /* A halo in the card colour keeps headings readable where an arrow passes behind them. */
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Arrows. --type-color comes from the .type-* classes in base.css. */
+.map-edge {
+  fill: none;
+  stroke: var(--type-color);
+  stroke-width: 2;
+  stroke-linecap: round;
+  /* With pathLength="1", a dash of 1 is the whole arrow; sliding the offset to 0 draws it in. */
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 700ms var(--ease-out) 250ms forwards;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    stroke-width var(--dur-base) var(--ease-out);
+}
+.map-edge.is-active {
+  stroke-width: 3;
+}
+.map-edge.is-dim {
+  opacity: 0.12;
+}
+.map-arrowhead path {
+  fill: var(--type-color);
+}
+@keyframes map-flow {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+.map-edge-flow {
+  fill: none;
+  stroke: var(--surface);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 2 14;
+  animation: map-flow 600ms linear infinite;
+  pointer-events: none;
+}
+
+/* Positions */
+.map-node {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.25rem 0.5rem;
+  border-width: 1.5px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  font-size: 13px;
+  line-height: 1.2;
+  animation: pop-in var(--dur-base) var(--ease-spring) both;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+.map-node:hover,
+.map-node:focus-visible {
+  border-color: var(--accent);
+}
+.map-node[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.map-node.is-dim {
+  opacity: 0.35;
+}
+/* The focus ring would be clipped by the foreignObject, so draw it inside the box. */
+.map-node:focus-visible {
+  outline-offset: -3px;
+}
+.map-node-name {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  max-width: 100%;
+  font-weight: 600;
+}
+/* Long names wrap onto a second line, then truncate. */
+.map-node-name > span:last-child {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  text-align: left;
+}
+.map-node-subs {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--type-submission);
+}
+
+.map-legend {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: var(--space-3) 0 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.map-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.map-legend-line {
+  width: 1.4rem;
+  height: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--type-color);
+}
+
+.map-vertical .map-panel {
+  position: sticky;
+  top: 4.5rem;
+}
+.map-panel-body {
+  animation: rise-in var(--dur-base) var(--ease-out) both;
+}
+.map-panel h2 a {
+  color: var(--text);
+}
+.map-panel h3 {
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 700px) {
+  .map-vertical {
+    grid-template-columns: 1fr;
+  }
+  .map-vertical .map-panel {
+    position: static;
+  }
+}

@@ -1,8 +1,15 @@
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { useLibrary, useStudyStats } from '../../bindings';
+import { useLibrary, useStudyStats, useVideos } from '../../bindings';
+import { BELT_LABELS } from '../../core/labels';
+import { beltRank } from '../../core/rank';
 import { cardId } from '../../core/srs';
 import { progressSummary } from '../../core/study';
 import { Loading, ProgressDot } from '../components/common';
+import { Belt } from '../graphics/Belt';
+import { Icon, type IconName } from '../graphics/icons';
+import { ProgressRing } from '../graphics/ProgressRing';
+import { useCountUp } from '../graphics/useCountUp';
 import { itemPath, ROUTES } from '../routes';
 
 function reviewButtonLabel(dueCount: number, started: number): string {
@@ -10,93 +17,174 @@ function reviewButtonLabel(dueCount: number, started: number): string {
   return started === 0 ? 'Start studying' : 'Study new cards';
 }
 
+function StatTile({ icon, value, label }: { icon: IconName; value: number; label: string }) {
+  const shown = useCountUp(value);
+  return (
+    <div className="stat-tile">
+      <Icon name={icon} />
+      <span className="stat">{shown}</span>
+      <span className="muted small">{label}</span>
+    </div>
+  );
+}
+
+function LearnedRing({ percent, learned, total }: { percent: number; learned: number; total: number }) {
+  const shown = useCountUp(percent);
+  return (
+    <ProgressRing percent={percent} label="Learned">
+      <span className="stat">{shown}%</span>
+      <span className="muted small">
+        {learned}/{total} learned
+      </span>
+    </ProgressRing>
+  );
+}
+
+interface PathStep {
+  title: string;
+  done: boolean;
+  body: ReactNode;
+}
+
+/** The suggested path as a vertical stepper. The first unfinished step is marked as the current one. */
+function PathSteps({ steps }: { steps: PathStep[] }) {
+  const currentIndex = steps.findIndex((step) => !step.done);
+  return (
+    <ol className="path stagger">
+      {steps.map((step, index) => {
+        const status = step.done ? 'done' : index === currentIndex ? 'current' : 'upcoming';
+        return (
+          <li
+            key={step.title}
+            className={`path-step path-${status}`}
+            aria-current={status === 'current' ? 'step' : undefined}
+          >
+            <span className="path-marker" aria-hidden="true">
+              {step.done ? <Icon name="check" /> : index + 1}
+            </span>
+            <div>
+              <strong>{step.title}</strong>
+              {step.done && <span className="visually-hidden"> (done)</span>}
+              <p className="muted">{step.body}</p>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 export default function Home() {
   const lib = useLibrary();
   const stats = useStudyStats();
-  if (!lib || !stats) return <Loading />;
+  const videos = useVideos();
+  if (!lib || !stats || !videos) return <Loading />;
 
   const progress = progressSummary(lib);
+  const rank = beltRank(progress.percentLearned);
   const nextConcept = lib.concepts.find((c) => !lib.reviews.has(cardId('concept', c.id)));
   const nextPosition = lib.positions.find((p) => !lib.reviews.has(cardId('position', p.id)));
+  const nextTechnique = lib.transitions.find((t) => !lib.reviews.has(cardId('transition', t.id)));
+
+  const steps: PathStep[] = [
+    {
+      title: 'Core concepts',
+      done: lib.concepts.length > 0 && !nextConcept,
+      body: (
+        <>
+          Posture, base, frames, and the shrimp show up everywhere.
+          {nextConcept && (
+            <>
+              {' '}
+              Next up: <Link to={itemPath('concept', nextConcept.id)}>{nextConcept.name}</Link>.
+            </>
+          )}
+        </>
+      ),
+    },
+    {
+      title: 'The main positions',
+      done: lib.positions.length > 0 && !nextPosition,
+      body: (
+        <>
+          Know what each person wants in each one.
+          {nextPosition && (
+            <>
+              {' '}
+              Next up: <Link to={itemPath('position', nextPosition.id)}>{nextPosition.name}</Link>.
+            </>
+          )}
+        </>
+      ),
+    },
+    {
+      title: 'How positions connect',
+      done: lib.transitions.length > 0 && !nextTechnique,
+      body: (
+        <>
+          Sweeps, passes, and escapes move you between them. See the <Link to={ROUTES.positions}>position map</Link>.
+        </>
+      ),
+    },
+    {
+      title: 'Save the best explanations',
+      done: videos.length > 0,
+      body: (
+        <>
+          Bookmark the exact moment in a YouTube video on any item, or on the <Link to={ROUTES.videos}>Videos</Link>{' '}
+          page.
+        </>
+      ),
+    },
+  ];
 
   return (
     <div className="stack">
       <section className="hero card">
-        <h1>Learn the fundamentals, one idea at a time</h1>
-        <p className="muted">
-          Start with the core concepts, then see how they show up in each position. Short daily reviews will help them
-          stick.
-        </p>
-        <div className="stats">
-          <div>
-            <span className="stat">{stats.dueCount}</span>
-            <span className="muted">due now</span>
+        <div className="hero-text">
+          <p className="eyebrow">Your training</p>
+          <h1>Learn the fundamentals, one idea at a time</h1>
+          <p className="muted">
+            Start with the core concepts, then see how they show up in each position. Short daily reviews will help them
+            stick.
+          </p>
+          <div className="row">
+            <Link className="button primary" to={ROUTES.review}>
+              {reviewButtonLabel(stats.dueCount, progress.started)}
+              <Icon name="arrow" />
+            </Link>
+            <Link className="button" to={ROUTES.concepts}>
+              Browse concepts
+            </Link>
           </div>
-          <div>
-            <span className="stat">{stats.streakDays}</span>
-            <span className="muted">day streak</span>
-          </div>
-          <div>
-            <span className="stat">{progress.percentLearned}%</span>
-            <span className="muted">
-              learned ({progress.learned}/{progress.total})
+        </div>
+        <div className="hero-rank">
+          <LearnedRing percent={progress.percentLearned} learned={progress.learned} total={progress.total} />
+          <Belt rank={rank.belt} stripes={rank.stripes} />
+          <p className="rank-label">
+            <strong>{BELT_LABELS[rank.belt]}</strong> of the fundamentals
+            <span className="muted small block">
+              {rank.nextBelt
+                ? `Learn ${rank.percentToNextBelt}% more for your ${BELT_LABELS[rank.nextBelt].toLowerCase()}. A study rank, not a real one.`
+                : 'Everything learned. Keep reviewing to stay sharp.'}
             </span>
-          </div>
+          </p>
         </div>
-        <div
-          className="progress"
-          role="progressbar"
-          aria-valuenow={progress.percentLearned}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label="Learned"
-        >
-          <div style={{ width: `${progress.percentLearned}%` }} />
-        </div>
-        <div className="row">
-          <Link className="button primary" to={ROUTES.review}>
-            {reviewButtonLabel(stats.dueCount, progress.started)}
-          </Link>
-          <Link className="button" to={ROUTES.concepts}>
-            Browse concepts
-          </Link>
+        <div className="stat-tiles">
+          <StatTile icon="review" value={stats.dueCount} label="due now" />
+          <StatTile icon="flame" value={stats.streakDays} label="day streak" />
         </div>
       </section>
 
       <section className="card">
         <h2>Suggested path</h2>
-        <ol className="path">
-          <li>
-            <strong>Core concepts.</strong> Posture, base, frames, and the shrimp show up everywhere.
-            {nextConcept && (
-              <>
-                {' '}
-                Next up: <Link to={itemPath('concept', nextConcept.id)}>{nextConcept.name}</Link>.
-              </>
-            )}
-          </li>
-          <li>
-            <strong>The main positions.</strong> Know what each person wants in each one.
-            {nextPosition && (
-              <>
-                {' '}
-                Next up: <Link to={itemPath('position', nextPosition.id)}>{nextPosition.name}</Link>.
-              </>
-            )}
-          </li>
-          <li>
-            <strong>How positions connect.</strong> Sweeps, passes, and escapes move you between them. See the{' '}
-            <Link to={ROUTES.positions}>position map</Link>.
-          </li>
-          <li>
-            <strong>Save the best explanations.</strong> Bookmark the exact moment in a YouTube video on any item.
-          </li>
-        </ol>
+        <PathSteps steps={steps} />
       </section>
 
       <section className="card">
         <h2>Concepts</h2>
-        <ul className="chip-list">
+        {lib.concepts.length === 0 && <p className="muted">No concepts yet.</p>}
+        <ul className="chip-list stagger">
           {lib.concepts.map((c) => (
             <li key={c.id}>
               <Link to={itemPath('concept', c.id)} className="chip">

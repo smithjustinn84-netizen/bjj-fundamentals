@@ -16,6 +16,7 @@ The day-to-day rules are in [AGENTS.md](../AGENTS.md). This page explains why th
       ▼         ▼
    src/core   ┌──────────────────────────────────────────────────────────┐
               │ models · srs · study · library · backup · youtube · seed │  plain TypeScript
+              │ rank · mapLayout  ← numbers behind the graphics          │
               │ storage.ts   ← the AppStorage interface                  │  no DOM, no browser,
               │ services/    ← all app logic, written against AppStorage │  no React, no Dexie
               │ core.ts      ← createCore({ storage, newId, now })       │
@@ -60,6 +61,9 @@ The interface is deliberately small. Filtering, sorting, cascading deletes and b
 | Biome for lint and format, not ESLint + Prettier | `typescript-eslint` did not support TypeScript 7 when this was set up. | Type-aware lint rules become necessary. |
 | Backups are validated field by field, by hand | A backup is a user-supplied file. The checks are tied to the models, so a new field cannot be forgotten. | Validation rules get complicated. |
 | Hash routing (`/#/positions`) | Works from any static host, subfolder or `file://`-style webview with no rewrite rules. | The app gets a server. |
+| Graphics are inline SVG and motion is CSS; no three.js, icon set or animation library | The app is small and must work offline with no network calls. SVG stays sharp, follows the theme tokens and is reachable by keyboard and screen readers. three.js alone would have roughly doubled the download. | A graphic genuinely needs 3D or thousands of moving parts. |
+| Map geometry and belt rank are computed in core (`mapLayout.ts`, `rank.ts`) | They are rules with edge cases (parallel arrows, arrows steering around boxes, rank thresholds), so they are tested without a browser; the component only draws. | Layout needs measured text sizes, which only the browser knows. |
+| The map's arrows are single curves chosen from a fixed set of bows | Simple and deterministic; good for tens of positions. | Libraries grow to where arrows cannot avoid each other; then route properly or let the user arrange positions. |
 | YouTube bookmarks are links, not embedded players | An embed would load third-party code and make network calls. | The user asks for inline playback and accepts that trade. |
 
 ## Known limits

@@ -1,5 +1,5 @@
 import type { BackupTable } from './backup';
-import type { ItemKind, PositionCategory, TransitionType } from './models';
+import type { BeltRank, ItemKind, PositionCategory, TransitionType } from './models';
 
 export const CATEGORY_LABELS: Record<PositionCategory, string> = {
   standing: 'Standing',
@@ -40,4 +40,12 @@ export const TABLE_LABELS: Record<BackupTable, string> = {
   videos: 'Video bookmarks',
   reviews: 'Cards studied',
   reviewLog: 'Review history',
+};
+
+export const BELT_LABELS: Record<BeltRank, string> = {
+  white: 'White belt',
+  blue: 'Blue belt',
+  purple: 'Purple belt',
+  brown: 'Brown belt',
+  black: 'Black belt',
 };

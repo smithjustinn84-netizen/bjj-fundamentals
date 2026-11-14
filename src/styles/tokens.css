@@ -1,0 +1,116 @@
+/*
+ * Design tokens. Every colour, radius, duration and easing used elsewhere comes from here,
+ * so the light and dark themes and the reduced-motion override stay in one place.
+ */
+:root {
+  /* Paper and ink */
+  --bg: #f4f0e6;
+  --weave: rgb(120 100 60 / 0.06);
+  --surface: #fffdf8;
+  --text: #1c1a17;
+  --muted: #6b655c;
+  --border: #e0d9ca;
+  --accent: #1f4e8c;
+  --accent-soft: #e4ebf5;
+  --on-accent: #ffffff;
+  --danger: #b3261e;
+  --ok: #2e7d32;
+  --warn: #a35f00;
+  --belt: #b8322a;
+  --on-belt: #ffffff;
+
+  /* Belt ranks, used as the progress language */
+  --belt-white: #f7f4ea;
+  --belt-blue: #1f5fbf;
+  --belt-purple: #6b3fa0;
+  --belt-brown: #7a4a25;
+  --belt-black: #1c1a17;
+  --belt-outline: #1c1a17;
+
+  /* Technique types */
+  --type-sweep: #a35f00;
+  --type-pass: #1f4e8c;
+  --type-escape: #2e7d32;
+  --type-submission: #b8322a;
+  --type-takedown: #6b3fa0;
+  --type-transition: #5c6670;
+
+  /* How well a card is known */
+  --state-learning: var(--warn);
+  --state-learned: var(--ok);
+
+  /* Review grades */
+  --grade-again: var(--danger);
+  --grade-hard: var(--warn);
+  --grade-good: var(--ok);
+  --grade-easy: var(--accent);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.85rem;
+  --text-md: 1rem;
+  --text-lg: 1.15rem;
+  --text-xl: 1.75rem;
+  --text-display: 2.1rem;
+
+  --dur-fast: 120ms;
+  --dur-base: 220ms;
+  --dur-slow: 480ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --shadow: 0 1px 2px rgb(60 45 20 / 0.06), 0 2px 8px rgb(60 45 20 / 0.05);
+  --shadow-lift: 0 2px 4px rgb(60 45 20 / 0.08), 0 8px 20px rgb(60 45 20 / 0.1);
+
+  color-scheme: light dark;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #131417;
+    --weave: rgb(255 255 255 / 0.025);
+    --surface: #1c1d21;
+    --text: #ececef;
+    --muted: #a0a0aa;
+    --border: #2e3036;
+    --accent: #8ab4f8;
+    --accent-soft: #1f2a3d;
+    --on-accent: #10141c;
+    --danger: #f28b82;
+    --ok: #81c995;
+    --warn: #f0b94a;
+    --belt: #e5645b;
+    --on-belt: #1c1010;
+
+    --belt-white: #ececef;
+    --belt-blue: #4a8be8;
+    --belt-purple: #9a6fd0;
+    --belt-brown: #a36a3c;
+    --belt-black: #0b0b0d;
+    --belt-outline: #8a8a94;
+
+    --type-sweep: #f0b94a;
+    --type-pass: #8ab4f8;
+    --type-escape: #81c995;
+    --type-submission: #f28b82;
+    --type-takedown: #c5a3f0;
+    --type-transition: #a8b3bd;
+
+    --shadow: none;
+    --shadow-lift: 0 0 0 1px var(--border);
+  }
+}

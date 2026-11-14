@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useLibrary } from '../../bindings';
-import type { Grade } from '../../core/models';
+import { useLibrary, useStudyStats } from '../../bindings';
+import { GRADES, type Grade } from '../../core/models';
 import { cardId, describeInterval, newReviewState } from '../../core/srs';
 import { buildQueue, type Deck } from '../../core/study';
 import { Loading } from '../components/common';
 import { CardAnswer, cardPrompt } from '../components/StudyCard';
+import { EmptyState } from '../graphics/EmptyState';
+import { Icon } from '../graphics/icons';
+import { prefersReducedMotion } from '../graphics/motion';
+import { ProgressBar } from '../graphics/ProgressBar';
 import { itemPath, ROUTES } from '../routes';
-import { useReviewSession } from './useReviewSession';
+import { type GradeTally, useReviewSession } from './useReviewSession';
 
 const DECKS: { value: Deck; label: string }[] = [
   { value: 'all', label: 'Everything' },
@@ -15,25 +19,97 @@ const DECKS: { value: Deck; label: string }[] = [
   { value: 'position', label: 'Positions' },
   { value: 'transition', label: 'Techniques' },
 ];
-const GRADE_BUTTONS: { grade: Grade; label: string; key: string }[] = [
-  { grade: 'again', label: 'Again', key: '1' },
-  { grade: 'hard', label: 'Hard', key: '2' },
-  { grade: 'good', label: 'Good', key: '3' },
-  { grade: 'easy', label: 'Easy', key: '4' },
-];
+const GRADE_LABELS: Record<Grade, string> = { again: 'Again', hard: 'Hard', good: 'Good', easy: 'Easy' };
+/** Keyboard shortcut for each grade: its place in the row, starting from 1. */
+const GRADE_BUTTONS = GRADES.map((grade, index) => ({ grade, label: GRADE_LABELS[grade], key: String(index + 1) }));
 const DEFAULT_NEW_CARDS = 5;
 const MAX_NEW_CARDS = 20;
+/** How long a graded card takes to slide away. Must match the `card-leave` animation in review.css. */
+const CARD_LEAVE_MS = 220;
 
 const isTyping = (target: EventTarget | null) =>
   target instanceof HTMLInputElement || target instanceof HTMLSelectElement || target instanceof HTMLTextAreaElement;
+
+const plural = (count: number, noun: string) => `${count} ${noun}${count === 1 ? '' : 's'}`;
+
+/** How the session's answers split across the four grades, as one stacked bar with a legend. */
+function GradeBreakdown({ tally }: { tally: GradeTally }) {
+  return (
+    <div className="breakdown">
+      <div className="breakdown-bar" aria-hidden="true">
+        {GRADES.filter((grade) => tally[grade] > 0).map((grade) => (
+          <span key={grade} className={`grade-${grade}`} style={{ flexGrow: tally[grade] }} />
+        ))}
+      </div>
+      <ul className="breakdown-legend">
+        {GRADES.map((grade) => (
+          <li key={grade} className={`grade-${grade}`}>
+            <span className="swatch" aria-hidden="true" />
+            {GRADE_LABELS[grade]} <strong>{tally[grade]}</strong>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function SessionComplete({ doneCount, tally, onAgain }: { doneCount: number; tally: GradeTally; onAgain: () => void }) {
+  const stats = useStudyStats();
+  return (
+    <div className="stack narrow-page">
+      <div className="card center session-complete">
+        <svg className="complete-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="28" />
+          <path d="m20 33 8.5 8.5L45 24" />
+        </svg>
+        <h1>Session complete</h1>
+        <p className="lead">You reviewed {plural(doneCount, 'card')}. Nice work.</p>
+        <GradeBreakdown tally={tally} />
+        {stats && stats.streakDays > 0 && (
+          <p className="streak-line">
+            <Icon name="flame" /> {plural(stats.streakDays, 'day')} in a row
+          </p>
+        )}
+        <div className="row center">
+          <button type="button" className="primary" onClick={onAgain}>
+            Back to review
+          </button>
+          <Link className="button" to={ROUTES.positions}>
+            Position map
+          </Link>
+          <Link className="button" to={ROUTES.home}>
+            Home
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Review() {
   const lib = useLibrary();
   const session = useReviewSession(lib);
   const [deck, setDeck] = useState<Deck>('all');
   const [newLimit, setNewLimit] = useState(DEFAULT_NEW_CARDS);
+  /** The grade just given, while its card slides away. */
+  const [leaving, setLeaving] = useState<Grade | null>(null);
 
   const { status, revealed, reveal, grade } = session;
+
+  const gradeWithFeedback = useCallback(
+    async (value: Grade) => {
+      if (leaving) return;
+      setLeaving(value);
+      try {
+        if (!prefersReducedMotion()) await new Promise((resolve) => setTimeout(resolve, CARD_LEAVE_MS));
+        await grade(value);
+      } finally {
+        setLeaving(null);
+      }
+    },
+    [leaving, grade],
+  );
+
   useEffect(() => {
     if (status !== 'active') return;
     function onKey(e: KeyboardEvent) {
@@ -44,11 +120,11 @@ export default function Review() {
         return;
       }
       const match = revealed ? GRADE_BUTTONS.find((b) => b.key === e.key) : undefined;
-      if (match) void grade(match.grade);
+      if (match) void gradeWithFeedback(match.grade);
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [status, revealed, reveal, grade]);
+  }, [status, revealed, reveal, gradeWithFeedback]);
 
   if (!lib) return <Loading />;
 
@@ -64,6 +140,7 @@ export default function Review() {
           </p>
           <label>
             What to study
+            {/* The cast is safe: every option's value comes from DECKS. */}
             <select value={deck} onChange={(e) => setDeck(e.target.value as Deck)}>
               {DECKS.map((d) => (
                 <option key={d.value} value={d.value}>
@@ -84,42 +161,33 @@ export default function Review() {
               onChange={(e) => setNewLimit(Number(e.target.value))}
             />
           </label>
-          <p>
-            <strong>{preview.due.length}</strong> due · <strong>{Math.min(newLimit, preview.fresh.length)}</strong> new
-            {preview.fresh.length > newLimit && <span className="muted"> ({preview.fresh.length} not started)</span>}
-          </p>
-          <button
-            type="button"
-            className="primary"
-            disabled={preview.queue.length === 0}
-            onClick={() => session.start(preview.queue)}
-          >
-            {preview.queue.length === 0 ? 'Nothing to review right now' : `Start (${preview.queue.length} cards)`}
-          </button>
+          {preview.queue.length === 0 ? (
+            <EmptyState icon="check" title="Nothing to review right now">
+              {preview.fresh.length > 0
+                ? 'No cards are due. Raise the new-cards slider to learn something new.'
+                : 'No cards are due in this deck. Come back later, or pick another deck.'}
+            </EmptyState>
+          ) : (
+            <>
+              <p>
+                <strong>{preview.due.length}</strong> due · <strong>{Math.min(newLimit, preview.fresh.length)}</strong>{' '}
+                new
+                {preview.fresh.length > newLimit && (
+                  <span className="muted"> ({preview.fresh.length} not started)</span>
+                )}
+              </p>
+              <button type="button" className="primary" onClick={() => session.start(preview.queue)}>
+                Start ({plural(preview.queue.length, 'card')})
+              </button>
+            </>
+          )}
         </div>
       </div>
     );
   }
 
   if (status === 'finished') {
-    return (
-      <div className="stack narrow-page">
-        <div className="card center">
-          <h1>Session complete</h1>
-          <p className="lead">
-            You reviewed {session.doneCount} card{session.doneCount === 1 ? '' : 's'}. Nice work.
-          </p>
-          <div className="row center">
-            <button type="button" className="primary" onClick={session.end}>
-              Back to review
-            </button>
-            <Link className="button" to={ROUTES.home}>
-              Home
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <SessionComplete doneCount={session.doneCount} tally={session.tally} onAgain={session.end} />;
   }
 
   const { current } = session;
@@ -138,24 +206,40 @@ export default function Review() {
           {session.remaining} left · {session.doneCount} done
         </span>
       </div>
-      <div className="card flashcard">
-        <p className="eyebrow">{prompt.eyebrow}</p>
-        <h2 className="question">{prompt.question}</h2>
-        {revealed ? (
-          <div className="answer">
-            <CardAnswer item={current} lib={lib} />
-            <p className="small">
-              <Link to={itemPath(current.kind, current.id)} target="_blank">
-                Open full page ↗
-              </Link>
-            </p>
+      <ProgressBar value={session.doneCount} max={session.doneCount + session.remaining} label="Session progress" />
+      <div className="card-stage">
+        {/* Keyed per card and per answer given, so each new card (or a repeated one) slides in afresh. */}
+        <div
+          key={`${current.kind}:${current.id}:${session.doneCount}`}
+          className={`card-slot${leaving ? ` card-leaving grade-${leaving}` : ''}`}
+        >
+          {/* Keyed on the side showing, so revealing the answer replays the flip. */}
+          <div
+            key={revealed ? 'answer' : 'question'}
+            className={`card flashcard${revealed ? ' flashcard-flipped' : ''}`}
+          >
+            <p className="eyebrow">{prompt.eyebrow}</p>
+            <h2 className="question">{prompt.question}</h2>
+            {revealed ? (
+              <div className="answer">
+                <CardAnswer item={current} lib={lib} />
+                <p className="small">
+                  <Link to={itemPath(current.kind, current.id)} target="_blank">
+                    Open full page ↗
+                  </Link>
+                </p>
+              </div>
+            ) : (
+              <button type="button" className="primary reveal" onClick={reveal}>
+                Show answer <kbd>Space</kbd>
+              </button>
+            )}
           </div>
-        ) : (
-          <button type="button" className="primary reveal" onClick={reveal}>
-            Show answer <kbd>Space</kbd>
-          </button>
-        )}
+        </div>
       </div>
+      <p className="visually-hidden" role="status">
+        {revealed ? 'Answer shown. Rate how well you knew it.' : ''}
+      </p>
       {revealed && (
         <fieldset className="grades" aria-label="How well did you know it?">
           {GRADE_BUTTONS.map((b) => (
@@ -163,8 +247,8 @@ export default function Review() {
               key={b.grade}
               type="button"
               className={`grade grade-${b.grade}`}
-              disabled={session.saving}
-              onClick={() => void grade(b.grade)}
+              disabled={session.saving || leaving !== null}
+              onClick={() => void gradeWithFeedback(b.grade)}
             >
               <span>{b.label}</span>
               <span className="small">{describeInterval(state, b.grade, now)}</span>
