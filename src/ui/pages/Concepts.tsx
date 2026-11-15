@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { items, useLibrary, useMissingStarterConcepts } from '../../bindings';
 import { reviewOf } from '../../core/library';
 import { Loading, ProgressDot, ProgressLegend } from '../components/common';
+import { LibrarySearch } from '../components/LibrarySearch';
 import { StarterOffer } from '../components/StarterOffer';
 import { ConceptArtwork } from '../graphics/ConceptSvg';
 import { itemPath, newItemPath, reviewPath } from '../routes';
@@ -27,6 +28,9 @@ export default function Concepts() {
             + New concept
           </Link>
         </div>
+      </div>
+      <div className="card">
+        <LibrarySearch lib={lib} />
       </div>
       <StarterOffer
         noun="concept"

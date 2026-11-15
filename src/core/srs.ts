@@ -121,9 +121,12 @@ export function localDayKey(ts: number): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-/** Consecutive days (ending today, or yesterday if nothing yet today) with at least one review. */
-export function streakDays(reviewTimestamps: number[], now: number): number {
-  const days = new Set(reviewTimestamps.map(localDayKey));
+/**
+ * Consecutive days (ending today, or yesterday if nothing yet today) on which the student studied or trained:
+ * a day with at least one review, or one of `classDays`, the day keys of the classes they logged.
+ */
+export function streakDays(reviewTimestamps: number[], now: number, classDays: readonly string[] = []): number {
+  const days = new Set([...reviewTimestamps.map(localDayKey), ...classDays]);
   const cursor = new Date(now);
   if (!days.has(localDayKey(cursor.getTime()))) cursor.setDate(cursor.getDate() - 1);
   let streak = 0;

@@ -14,7 +14,7 @@ Small, independent fixes. Each can ship alone. The first five were done on 2026-
 - [x] **"Keep going" does not keep going.** It returns to the options screen instead of starting another round (`Review.tsx`).
 - [x] **The safety concept is linked to no position.** "Tap early, tap often" is the only concept no position lists. Link it where submissions happen (closed guard, mount, back control, side control).
 - [ ] **Tighten the tripod sweep step.** The step is loose about which foot goes on the hip; confirm against how it is taught and fix the wording in `core/seed.ts`.
-- [ ] **Skim the 13 new starter videos.** Their ids were checked as real and embeddable, but matched by title only. Swap any that teach a different variation from the written steps.
+- [ ] **Skim the new starter videos.** 19 were added on 2026-11-14 and 15 (17 techniques, 2 concepts). Their ids were checked as real and embeddable, but matched by title only. Swap any that teach a different variation from the written steps.
 
 ## 2. "What do I do here?" cards (M)
 
@@ -38,7 +38,7 @@ Open question: should mat time feed the belt and streak display, or stay separat
 
 ## 4. Smaller content ideas (S each)
 
-- [ ] **More curriculum.** Still missing: knee-on-belly and north-south (new starter positions do not reach existing libraries, so decide how to offer them first), a single-leg takedown, a straight ankle lock with leg-lock safety, kimura and americana defences, attacks from turtle top other than taking the back.
+- [x] **More curriculum.** Done 2026-11-15 for what fits the eight starter positions: single-leg takedown, kimura defence, americana defence and a turtle breakdown (47 starter techniques). Not planned: knee-on-belly and north-south, which need a way to offer starter positions to existing libraries, and the straight ankle lock.
 - [x] **Drills on techniques.** Done 2026-11-15: `Transition.drill`, read through `techniqueDrill`, with a drill written for all 43 starter techniques (backup schema 6). Only concepts have a drill. A solo or partner drill per technique would give a white belt something to do between classes.
 - [x] **Training etiquette and safety.** Done 2026-11-15 as two starter concepts, "Be a good training partner" and "Roll to learn, not to win", each with a video and a drawing. One or two concepts on rolling intensity, hygiene, and what to tell a partner about an injury.
 - [x] **Search.** Done 2026-11-15: one box on Home finds concepts, positions and techniques by name or text (`core/search.ts`). Only the Videos page has a search box; there is none for concepts, positions or techniques.
@@ -48,9 +48,9 @@ Open question: should mat time feed the belt and streak display, or stay separat
 - [x] **Drill for today.** Done 2026-11-15: Home picks one drill (`pickDrill` in `core/todaysDrill.ts`): a way out of where you last got stuck, else a technique that keeps slipping, else one practised in class, else the next one not learned.
 - [x] **Progress per position.** Done 2026-11-15: the position page and the positions list say how many of the techniques that start there are learned (`positionProgress`).
 - [x] **Situation names read naturally.** Done 2026-11-15: "Mount, underneath" and "Closed Guard, passing" in place of "Mount, Bottom side".
-- [ ] **Sticking points are sensitive.** One "Again" on a brand-new card lists it until it is learned. Consider needing two misses.
-- [ ] **The deck picker wraps on phones.** Six choices in a two-column grid; a select might serve better below 600px.
-- [ ] **The log has no phone tab.** It is reached from Home's training log card, below the hero.
-- [ ] **Search is on Home only.**
-- [ ] **Mat time and study progress are separate.** Decide whether classes logged should count toward the streak or the study belt.
+- [x] **Sticking points are sensitive.** Done 2026-11-15: a card is listed once it has been forgotten twice.
+- [x] **The deck picker wraps on phones.** Done 2026-11-15: a menu replaces the buttons below 600px.
+- [x] **The log has no phone tab.** Done 2026-11-15: Home's hero has a "Log a class" button. The tab bar still holds six.
+- [x] **Search is on Home only.** Done 2026-11-15: also on the Concepts and Positions pages.
+- [x] **Mat time and study progress are separate.** Decided 2026-11-15: a day with a logged class counts toward the streak; the study belt stays cards-only.
 

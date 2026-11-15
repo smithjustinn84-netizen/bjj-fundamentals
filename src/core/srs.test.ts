@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { DAY_MS, describeInterval, isLearned, newReviewState, RELEARN_MS, schedule, streakDays } from './srs';
+import {
+  DAY_MS,
+  describeInterval,
+  isLearned,
+  localDayKey,
+  newReviewState,
+  RELEARN_MS,
+  schedule,
+  streakDays,
+} from './srs';
 
 const NOW = new Date(2026, 10, 14, 12).getTime();
 
@@ -74,6 +83,12 @@ describe('isLearned', () => {
 });
 
 describe('streakDays', () => {
+  it('counts a day with a logged class like a day with a review', () => {
+    // Reviewed today, trained yesterday, reviewed the day before: three days in a row.
+    expect(streakDays([NOW, NOW - 2 * DAY_MS], NOW, [localDayKey(NOW - DAY_MS)])).toBe(3);
+    expect(streakDays([], NOW, [localDayKey(NOW)])).toBe(1);
+  });
+
   it('counts consecutive days ending today', () => {
     const ts = [0, 1, 2].map((d) => NOW - d * DAY_MS);
     expect(streakDays(ts, NOW)).toBe(3);

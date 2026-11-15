@@ -188,6 +188,10 @@ export default function Home() {
             <Link className="button" to={ROUTES.concepts}>
               Browse concepts
             </Link>
+            {/* The phone tab bar has no room for the log, so the hero carries the way in. */}
+            <Link className="button" to={ROUTES.log}>
+              Log a class
+            </Link>
           </div>
         </div>
         <div className="hero-rank">
@@ -273,7 +277,8 @@ export default function Home() {
         <section className="card">
           <h2>Sticking points</h2>
           <p className="muted">
-            These have slipped in review. Reread the page or watch the video, then try one in your next class.
+            These have slipped more than once in review. Reread the page or watch the video, then try one in your next
+            class.
           </p>
           <ul className="chip-list">
             {sticking.map((item) => (

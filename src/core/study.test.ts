@@ -85,13 +85,14 @@ describe('progressSummary', () => {
 });
 
 describe('stickingPoints', () => {
-  it('lists forgotten cards that are not learned, most forgotten first, then lowest ease', () => {
+  it('lists cards forgotten more than once and not learned, most forgotten first, then lowest ease', () => {
     const lib = buildLibrary(concepts, positions, transitions, [
-      card('concept', 'c1', { lapses: 1, ease: 2.5, intervalDays: 1 }),
+      card('concept', 'c1', { lapses: 2, ease: 2.5, intervalDays: 1 }),
       card('concept', 'c2', { lapses: 3, ease: 2.5, intervalDays: 0 }),
       card('concept', 'c3', { lapses: 4, intervalDays: 8 }), // forgotten before, but learned again
       card('position', 'p1', { lapses: 0, intervalDays: 1 }), // never forgotten
-      card('transition', 't1', { lapses: 1, ease: 1.3, intervalDays: 1 }),
+      card('transition', 't1', { lapses: 2, ease: 1.3, intervalDays: 1 }),
+      card('situation', 'p1:bottom', { lapses: 1, intervalDays: 0 }), // one miss is not a pattern yet
     ]);
     expect(stickingPoints(lib, 5).map((i) => i.id)).toEqual(['c2', 't1', 'c1']);
     expect(stickingPoints(lib, 1).map((i) => i.id)).toEqual(['c2']);

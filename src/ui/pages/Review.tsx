@@ -14,6 +14,7 @@ import { Icon } from '../graphics/icons';
 import { prefersReducedMotion } from '../graphics/motion';
 import { ProgressBar } from '../graphics/ProgressBar';
 import { DECK_PARAM, ROUTES, studyItemPath } from '../routes';
+import { useMediaQuery } from '../useMediaQuery';
 import { type GradeTally, useReviewSession } from './useReviewSession';
 
 const DECK_LABELS: Record<Deck, string> = {
@@ -25,6 +26,8 @@ const DECK_LABELS: Record<Deck, string> = {
 /** Keyboard shortcut for each grade: its place in the row, starting from 1. */
 const GRADE_BUTTONS = GRADES.map((grade, index) => ({ grade, label: GRADE_LABELS[grade], key: String(index + 1) }));
 const DECK_LABEL_ID = 'review-deck-label';
+/** The phone breakpoint in shell.css. Six deck buttons wrap badly at that width, so a menu replaces them. */
+const PHONE_SCREEN = '(max-width: 600px)';
 const DEFAULT_NEW_CARDS = 5;
 const MAX_NEW_CARDS = 20;
 /** How long a graded card takes to slide away: `--dur-base`, which the `card-leave` animation in review.css uses. */
@@ -114,6 +117,7 @@ function SessionComplete(props: {
 export default function Review() {
   const lib = useLibrary();
   const log = useTrainingLog();
+  const onPhone = useMediaQuery(PHONE_SCREEN);
   const session = useReviewSession(lib);
   const [params] = useSearchParams();
   // A list page can open the review on its own deck; anything unrecognised falls back to everything.
@@ -181,8 +185,9 @@ export default function Review() {
                 </p>
                 {preview.fromClass > 0 && (
                   <p className="muted small">
-                    {preview.fromClass} of the new {preview.fromClass === 1 ? 'card is' : 'cards are'} from your recent
-                    classes, so {preview.fromClass === 1 ? 'it comes' : 'they come'} first.
+                    {preview.fromClass === 1
+                      ? '1 new card is from your recent classes, so it comes first.'
+                      : `${preview.fromClass} of the new cards are from your recent classes, so they come first.`}
                   </p>
                 )}
               </div>
@@ -195,13 +200,27 @@ export default function Review() {
           <div className="session-options stack">
             <div className="option">
               <span id={DECK_LABEL_ID}>What to study</span>
-              <fieldset className="segmented" aria-labelledby={DECK_LABEL_ID}>
-                {DECKS.map((d) => (
-                  <button key={d} type="button" aria-pressed={deck === d} onClick={() => setDeck(d)}>
-                    {DECK_LABELS[d]}
-                  </button>
-                ))}
-              </fieldset>
+              {onPhone ? (
+                <select
+                  aria-labelledby={DECK_LABEL_ID}
+                  value={deck}
+                  onChange={(e) => setDeck(DECKS.find((d) => d === e.target.value) ?? 'all')}
+                >
+                  {DECKS.map((d) => (
+                    <option key={d} value={d}>
+                      {DECK_LABELS[d]}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <fieldset className="segmented" aria-labelledby={DECK_LABEL_ID}>
+                  {DECKS.map((d) => (
+                    <button key={d} type="button" aria-pressed={deck === d} onClick={() => setDeck(d)}>
+                      {DECK_LABELS[d]}
+                    </button>
+                  ))}
+                </fieldset>
+              )}
             </div>
             <label>
               <span>

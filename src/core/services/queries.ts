@@ -12,6 +12,7 @@ const STREAK_WINDOW_DAYS = 400;
 
 export interface StudyStats {
   dueCount: number;
+  /** Days in a row with a review or a logged class. */
   streakDays: number;
 }
 
@@ -42,15 +43,17 @@ export function createQueries({ storage, now }: CoreEnv) {
 
     async studyStats(): Promise<StudyStats> {
       const timestamp = now();
-      const [due, recent] = await Promise.all([
+      const [due, recent, classes] = await Promise.all([
         dueCount(),
         storage.reviewLog.since(timestamp - STREAK_WINDOW_DAYS * DAY_MS),
+        storage.trainingLog.all(),
       ]);
       return {
         dueCount: due,
         streakDays: streakDays(
           recent.map((entry) => entry.reviewedAt),
           timestamp,
+          classes.map((entry) => entry.day),
         ),
       };
     },

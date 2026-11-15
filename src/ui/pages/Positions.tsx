@@ -6,6 +6,7 @@ import { connections, type Library, reviewOf } from '../../core/library';
 import { POSITION_CATEGORIES } from '../../core/models';
 import { positionProgress } from '../../core/todaysDrill';
 import { Loading, ProgressDot } from '../components/common';
+import { LibrarySearch } from '../components/LibrarySearch';
 import { PositionMap } from '../components/PositionMap';
 import { NO_TECHNIQUES_FROM_HERE, TransitionList } from '../components/TransitionLink';
 import { EmptyState } from '../graphics/EmptyState';
@@ -100,6 +101,9 @@ export default function Positions() {
             + Technique
           </Link>
         </div>
+      </div>
+      <div className="card">
+        <LibrarySearch lib={lib} />
       </div>
       {lib.positions.length === 0 ? (
         <div className="card">

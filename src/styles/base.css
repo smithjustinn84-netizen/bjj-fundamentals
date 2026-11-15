@@ -555,3 +555,13 @@ legend {
 input[type="range"] {
   width: 100%;
 }
+
+/* The library search box, on Home, Concepts and Positions. */
+.library-search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.library-search p {
+  margin: 0;
+}

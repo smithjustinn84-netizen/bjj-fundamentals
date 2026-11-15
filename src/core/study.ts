@@ -127,15 +127,19 @@ export function progressSummary(lib: Library): ProgressSummary {
 /** How many sticking points to show at once: enough to work on before the next class, few enough to read at a glance. */
 export const STICKING_POINT_LIMIT = 5;
 
+/** One miss is normal on a new card; a card is a sticking point once it has been forgotten this many times. */
+const STICKING_POINT_MIN_LAPSES = 2;
+
 /**
- * Cards that keep slipping: forgotten at least once and not learned at the moment. Most often forgotten
+ * Cards that keep slipping: forgotten more than once and not learned at the moment. Most often forgotten
  * first, then the ones the scheduler finds hardest (lowest ease), then learning order.
  */
 export function stickingPoints(lib: Library, limit: number): StudyItem[] {
   const slipping: { item: StudyItem; lapses: number; ease: number }[] = [];
   for (const item of allStudyItems(lib)) {
     const state = reviewOf(lib, item.kind, item.id);
-    if (state && state.lapses > 0 && !isLearned(state)) slipping.push({ item, lapses: state.lapses, ease: state.ease });
+    if (state && state.lapses >= STICKING_POINT_MIN_LAPSES && !isLearned(state))
+      slipping.push({ item, lapses: state.lapses, ease: state.ease });
   }
   slipping.sort((a, b) => b.lapses - a.lapses || a.ease - b.ease);
   return slipping.slice(0, Math.max(0, limit)).map((s) => s.item);

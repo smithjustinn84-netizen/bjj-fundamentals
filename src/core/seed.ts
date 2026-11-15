@@ -648,6 +648,29 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     drill:
       'Solo: 3 rounds of 10 sprawls, hips to the mat and straight back up to your stance. Then your partner shoots slowly and you sprawl and circle behind.',
   },
+  {
+    id: 'single-leg',
+    name: 'Single-leg takedown',
+    type: 'takedown',
+    fromId: 'standing',
+    toId: 'side-control',
+    role: 'top',
+    endRole: 'top',
+    steps: [
+      'Lower your level and step your lead foot between their feet',
+      'Wrap both arms around one leg above the knee and pinch it between your knees',
+      'Stand up tall with the leg trapped, your head pressed into their chest on the inside',
+      'Step your outside leg back in a circle and drive your shoulder down into their thigh, so they sit down',
+      'Follow them down and move past their legs to side control',
+    ],
+    commonMistakes: [
+      'Leaving your head on the outside, where it gets guillotined',
+      'Staying bent over with the leg instead of standing up tall',
+      'Reaching for the leg from too far away',
+    ],
+    drill:
+      'Solo: 10 level changes and penetration steps on each side. Then 10 entries on a partner, picking the leg up and setting them down gently without finishing.',
+  },
   // Closed guard
   {
     id: 'break-closed-guard',
@@ -881,6 +904,29 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     ],
     drill:
       'Your partner holds a loose guillotine from guard. 5 reps on each side: wrist control, arm over the shoulder, shoulder pressure, pass to the far side.',
+  },
+  {
+    id: 'kimura-defence',
+    name: 'Kimura defence from inside the guard',
+    type: 'escape',
+    fromId: 'closed-guard',
+    toId: 'closed-guard',
+    role: 'top',
+    endRole: 'top',
+    steps: [
+      'When they sit up and reach over your shoulder, pull that elbow tight to your ribs and grip your own belt, thigh or other hand',
+      'Drive your weight forward and flatten them back down onto the mat',
+      'Keep your trapped hand low and your elbow pinned to your side so they cannot lift it behind your back',
+      'Posture up and pull the arm free, elbow first, as their grip loosens',
+      'If your hand is already behind your back and your shoulder is tight, tap',
+    ],
+    commonMistakes: [
+      'Leaving a hand on the mat beside their hip',
+      'Sitting back and letting them sit up into you',
+      'Trying to straighten the arm out of the grip instead of hiding the elbow',
+    ],
+    drill:
+      'Your partner sits up for a slow kimura grip and stops before turning the arm. Hide the elbow, flatten them and free the arm. 5 reps on each side.',
   },
   // Open guard
   {
@@ -1175,6 +1221,29 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     ],
     drill: '10 reps on each side: frame, bridge, swim the underhook and turn to your knees. Do not stop in turtle.',
   },
+  {
+    id: 'americana-defence',
+    name: 'Americana defence under side control',
+    type: 'escape',
+    fromId: 'side-control',
+    toId: 'side-control',
+    role: 'bottom',
+    endRole: 'bottom',
+    steps: [
+      'Under side control, keep your elbows in and your hands near your face: never leave an arm flat on the mat above your shoulder',
+      'If they pin your wrist to the mat, grab that wrist or hand with your free hand straight away',
+      'Turn onto your side toward the trapped arm and bring that elbow down to your ribs',
+      'With the elbow back at your side, rebuild your frames and start your side control escape',
+      'If your elbow is being lifted and your shoulder is tight, tap',
+    ],
+    commonMistakes: [
+      'Pushing on their head or chest with a bent arm, which hands them the wrist',
+      'Bridging wildly with the arm still pinned',
+      'Waiting until the figure-four grip is locked before defending',
+    ],
+    drill:
+      'Your partner pins your wrist from side control and stops before lifting the elbow. Grab your own hand, turn in and bring the elbow to your ribs. 5 reps on each side.',
+  },
   // Mount
   {
     id: 'upa-escape',
@@ -1347,6 +1416,29 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     commonMistakes: ['Putting hooks in before you have upper body control', 'Sitting too far back so they roll out'],
     drill:
       'Your partner sits in turtle. 10 reps on each side: seatbelt grip, first hook in, roll them back and put in the second hook.',
+  },
+  {
+    id: 'turtle-breakdown',
+    name: 'Break down the turtle to side control',
+    type: 'transition',
+    fromId: 'turtle',
+    toId: 'side-control',
+    role: 'top',
+    endRole: 'top',
+    steps: [
+      'Stay on your toes beside them with your chest on their back',
+      'Reach across under their chest and cup their far elbow',
+      'With your other hand, hook their far knee or ankle',
+      'Pull the far arm and leg toward you while you drive your chest into them, so they tip onto their far side',
+      'Follow them over chest to chest and settle in side control',
+    ],
+    commonMistakes: [
+      'Resting your weight on your own knees instead of on them',
+      'Reaching deep underneath with your head low, where they can roll you',
+      'Letting go of the arm before you are chest to chest',
+    ],
+    drill:
+      'Your partner holds turtle at about a third of their strength. 10 breakdowns on each side, settling in side control each time.',
   },
   {
     id: 'turtle-recover-guard',
@@ -2015,6 +2107,38 @@ const videos: Omit<VideoBookmark, 'createdAt' | 'startSeconds'>[] = [
     linkedKind: 'transition',
     linkedId: 'rear-naked-choke-defence',
     note: 'Dealing with the arm across your neck first; the hooks and the escape come after.',
+  },
+  {
+    id: 'video-single-leg',
+    title: 'Basic single leg takedown (Jansen Gomes)',
+    youtubeId: 'EM4xc2XSBrE',
+    linkedKind: 'transition',
+    linkedId: 'single-leg',
+    note: 'Head position and posture once you have the leg, before any finish.',
+  },
+  {
+    id: 'video-kimura-defence',
+    title: 'How to defend the kimura from closed guard (DVG Jiu Jitsu)',
+    youtubeId: 'pvrNYulc-V8',
+    linkedKind: 'transition',
+    linkedId: 'kimura-defence',
+    note: 'Defending early, before the hand is taken behind your back.',
+  },
+  {
+    id: 'video-americana-defence',
+    title: 'Americana escape from bottom side control (BJJ Cache)',
+    youtubeId: 'lCy6zZcwVME',
+    linkedKind: 'transition',
+    linkedId: 'americana-defence',
+    note: 'Getting the elbow back to your side once the wrist has been pinned.',
+  },
+  {
+    id: 'video-turtle-breakdown',
+    title: 'Attacking the turtle: side breakdown (Brian Glick)',
+    youtubeId: 'jtUBFTbHMOk',
+    linkedKind: 'transition',
+    linkedId: 'turtle-breakdown',
+    note: 'Taking away the posts on one side so the turtle tips over.',
   },
 ];
 

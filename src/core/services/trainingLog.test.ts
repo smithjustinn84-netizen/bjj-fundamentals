@@ -82,3 +82,12 @@ describe('deleting what a class mentions', () => {
     expect((await storage.trainingLog.get(id))?.stuckIds).toEqual(['half-guard:bottom']);
   });
 });
+
+describe('the streak', () => {
+  it('counts a day with a logged class even when nothing was reviewed', async () => {
+    const { core } = testCore();
+    expect((await core.queries.studyStats()).streakDays).toBe(0);
+    await core.trainingLog.save(null, input);
+    expect((await core.queries.studyStats()).streakDays).toBe(1);
+  });
+});
