@@ -72,8 +72,8 @@ export interface Concept {
 export const ITEM_KINDS = ['concept', 'position', 'transition'] as const;
 export type ItemKind = (typeof ITEM_KINDS)[number];
 
-/** What a review session can draw from: every kind, or just one. */
-export const DECKS = ['all', ...ITEM_KINDS] as const;
+/** What a review session can draw from: everything, one kind, or the techniques on the blue belt test. */
+export const DECKS = ['all', ...ITEM_KINDS, 'blueBelt'] as const;
 export type Deck = (typeof DECKS)[number];
 
 export function isItemKind(value: unknown): value is ItemKind {

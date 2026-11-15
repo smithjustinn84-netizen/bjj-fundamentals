@@ -63,7 +63,7 @@ export default function BlueBelt() {
               </p>
               <ProgressBar value={list.learned} max={list.total} label="Blue belt techniques learned" />
             </div>
-            <Link className="button primary" to={reviewPath('transition')}>
+            <Link className="button primary" to={reviewPath('blueBelt')}>
               Study techniques
             </Link>
           </div>

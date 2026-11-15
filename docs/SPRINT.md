@@ -6,13 +6,13 @@ Sizes: **S** is an hour or two, **M** is a day, **L** is several days.
 
 ## 1. Fix study rough edges (S)
 
-Small, independent fixes. Each can ship alone.
+Small, independent fixes. Each can ship alone. The first five were done on 2026-11-15: a "Blue belt test" deck, a "Sticking points" section and next technique on Home, and the safety concept linked to closed guard, side control, mount and back control (new libraries only; an existing library keeps its own links).
 
-- [ ] **Blue belt "Study techniques" studies the wrong deck.** The button goes to `reviewPath('transition')`, which is every technique, not the test list (`ui/pages/BlueBelt.tsx`). Needs a deck, or a filter, for `isOnBlueBeltTest` in `buildQueue` (`core/study.ts`), with a test.
-- [ ] **Home never points at weak cards.** "Next up" is the first item never reviewed (`ui/pages/Home.tsx:87-89`). Nothing surfaces cards with lapses or low ease, and step 3 links to the map instead of the next technique. Add a pure "what to study next" function in `core/` with a test.
-- [ ] **"Session complete" counts the wrong deck.** The "more waiting" count always uses the `all` deck, whatever deck was studied (`ui/pages/Review.tsx:55`).
-- [ ] **"Keep going" does not keep going.** It returns to the options screen instead of starting another round (`Review.tsx`).
-- [ ] **The safety concept is linked to no position.** "Tap early, tap often" is the only concept no position lists. Link it where submissions happen (closed guard, mount, back control, side control).
+- [x] **Blue belt "Study techniques" studies the wrong deck.** The button goes to `reviewPath('transition')`, which is every technique, not the test list (`ui/pages/BlueBelt.tsx`). Needs a deck, or a filter, for `isOnBlueBeltTest` in `buildQueue` (`core/study.ts`), with a test.
+- [x] **Home never points at weak cards.** "Next up" is the first item never reviewed (`ui/pages/Home.tsx:87-89`). Nothing surfaces cards with lapses or low ease, and step 3 links to the map instead of the next technique. Add a pure "what to study next" function in `core/` with a test.
+- [x] **"Session complete" counts the wrong deck.** The "more waiting" count always uses the `all` deck, whatever deck was studied (`ui/pages/Review.tsx:55`).
+- [x] **"Keep going" does not keep going.** It returns to the options screen instead of starting another round (`Review.tsx`).
+- [x] **The safety concept is linked to no position.** "Tap early, tap often" is the only concept no position lists. Link it where submissions happen (closed guard, mount, back control, side control).
 - [ ] **Tighten the tripod sweep step.** The step is loose about which foot goes on the hip; confirm against how it is taught and fix the wording in `core/seed.ts`.
 - [ ] **Skim the 13 new starter videos.** Their ids were checked as real and embeddable, but matched by title only. Swap any that teach a different variation from the written steps.
 

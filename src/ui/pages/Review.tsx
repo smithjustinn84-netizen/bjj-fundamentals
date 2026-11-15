@@ -2,10 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useLibrary, useStudyStats } from '../../bindings';
 import { GRADE_LABELS, KIND_GROUP_LABELS, plural } from '../../core/labels';
-import { type Library, reviewOf } from '../../core/library';
+import { reviewOf } from '../../core/library';
 import { DECKS, type Deck, GRADES, type Grade } from '../../core/models';
 import { describeInterval, newReviewState } from '../../core/srs';
-import { buildQueue } from '../../core/study';
+import { buildQueue, type StudyItem } from '../../core/study';
 import { Loading } from '../components/common';
 import { CardAnswer, cardPrompt } from '../components/StudyCard';
 import { EmptyState } from '../graphics/EmptyState';
@@ -15,7 +15,7 @@ import { ProgressBar } from '../graphics/ProgressBar';
 import { DECK_PARAM, itemPath, ROUTES } from '../routes';
 import { type GradeTally, useReviewSession } from './useReviewSession';
 
-const DECK_LABELS: Record<Deck, string> = { all: 'Everything', ...KIND_GROUP_LABELS };
+const DECK_LABELS: Record<Deck, string> = { all: 'Everything', ...KIND_GROUP_LABELS, blueBelt: 'Blue belt test' };
 /** Keyboard shortcut for each grade: its place in the row, starting from 1. */
 const GRADE_BUTTONS = GRADES.map((grade, index) => ({ grade, label: GRADE_LABELS[grade], key: String(index + 1) }));
 const DECK_LABEL_ID = 'review-deck-label';
@@ -48,11 +48,17 @@ function GradeBreakdown({ tally }: { tally: GradeTally }) {
   );
 }
 
-function SessionComplete(props: { lib: Library; doneCount: number; tally: GradeTally; onAgain: () => void }) {
-  const { lib, doneCount, tally, onAgain } = props;
+function SessionComplete(props: {
+  doneCount: number;
+  tally: GradeTally;
+  /** The next round with the same deck and new-card setting; empty when nothing is left. */
+  nextRound: StudyItem[];
+  onAgain: () => void;
+}) {
+  const { doneCount, tally, nextRound, onAgain } = props;
   const stats = useStudyStats();
   // Offer another round only when one exists; otherwise the next step is to leave.
-  const moreWaiting = buildQueue(lib, 'all', DEFAULT_NEW_CARDS, Date.now()).queue.length;
+  const moreWaiting = nextRound.length;
   return (
     <div className="stack narrow-page">
       <div className="card center session-complete">
@@ -205,7 +211,15 @@ export default function Review() {
   }
 
   if (status === 'finished') {
-    return <SessionComplete lib={lib} doneCount={session.doneCount} tally={session.tally} onAgain={session.end} />;
+    const nextRound = buildQueue(lib, deck, newLimit, Date.now()).queue;
+    return (
+      <SessionComplete
+        doneCount={session.doneCount}
+        tally={session.tally}
+        nextRound={nextRound}
+        onAgain={() => session.start(nextRound)}
+      />
+    );
   }
 
   const { current } = session;

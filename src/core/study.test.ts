@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildLibrary } from './library';
 import type { ReviewState } from './models';
 import { DAY_MS } from './srs';
-import { buildQueue, progressSummary } from './study';
+import { buildQueue, progressSummary, stickingPoints } from './study';
 import { concept, position, review, transition } from './testing/testFixtures';
 
 const NOW = 1_000_000_000_000;
@@ -33,6 +33,15 @@ describe('buildQueue', () => {
     expect(buildQueue(lib, 'transition', 10, NOW).queue).toEqual([{ kind: 'transition', id: 't1' }]);
   });
 
+  it('keeps the blue belt deck to techniques on the test list', () => {
+    const techniques = [
+      transition({ id: 'listed', blueBeltTest: true }),
+      transition({ id: 'unlisted', blueBeltTest: false }),
+    ];
+    const lib = buildLibrary(concepts, positions, techniques, []);
+    expect(buildQueue(lib, 'blueBelt', 10, NOW).queue).toEqual([{ kind: 'transition', id: 'listed' }]);
+  });
+
   it('adds no new cards when the limit is zero', () => {
     const lib = buildLibrary(concepts, positions, transitions, []);
     expect(buildQueue(lib, 'all', 0, NOW).queue).toEqual([]);
@@ -50,5 +59,23 @@ describe('progressSummary', () => {
 
   it('is zero for an empty library', () => {
     expect(progressSummary(buildLibrary([], [], [], [])).percentLearned).toBe(0);
+  });
+});
+
+describe('stickingPoints', () => {
+  it('lists forgotten cards that are not learned, most forgotten first, then lowest ease', () => {
+    const lib = buildLibrary(concepts, positions, transitions, [
+      card('concept', 'c1', { lapses: 1, ease: 2.5, intervalDays: 1 }),
+      card('concept', 'c2', { lapses: 3, ease: 2.5, intervalDays: 0 }),
+      card('concept', 'c3', { lapses: 4, intervalDays: 8 }), // forgotten before, but learned again
+      card('position', 'p1', { lapses: 0, intervalDays: 1 }), // never forgotten
+      card('transition', 't1', { lapses: 1, ease: 1.3, intervalDays: 1 }),
+    ]);
+    expect(stickingPoints(lib, 5).map((i) => i.id)).toEqual(['c2', 't1', 'c1']);
+    expect(stickingPoints(lib, 1).map((i) => i.id)).toEqual(['c2']);
+  });
+
+  it('is empty before anything has been forgotten', () => {
+    expect(stickingPoints(buildLibrary(concepts, positions, transitions, []), 5)).toEqual([]);
   });
 });

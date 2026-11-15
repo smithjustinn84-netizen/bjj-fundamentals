@@ -341,7 +341,7 @@ const positions: StarterRow<Position>[] = [
     summary: "The bottom person has their legs wrapped around the top person's waist with ankles crossed.",
     topGoals: ['Keep good posture', 'Control their hips', 'Open the guard and pass'],
     bottomGoals: ['Break their posture by pulling them down', 'Sweep them', 'Attack with submissions'],
-    conceptIds: ['posture', 'grips', 'elbows-in', 'off-balancing', 'angles', 'two-on-one', 'action-reaction'],
+    conceptIds: ['safety', 'posture', 'grips', 'elbows-in', 'off-balancing', 'angles', 'two-on-one', 'action-reaction'],
     order: 2,
   },
   {
@@ -384,6 +384,7 @@ const positions: StarterRow<Position>[] = [
     topGoals: ['Stay heavy and chest to chest', 'Block their hips from turning in', 'Move to mount or attack'],
     bottomGoals: ['Build frames before they settle', 'Shrimp to make space', 'Recover guard'],
     conceptIds: [
+      'safety',
       'pressure',
       'frames',
       'hip-escape',
@@ -402,6 +403,7 @@ const positions: StarterRow<Position>[] = [
     topGoals: ['Stay balanced with a wide base', 'Keep your knees tight to their hips', 'Attack the arms and neck'],
     bottomGoals: ['Protect your neck and keep elbows in', 'Bridge to off-balance them', 'Escape to guard'],
     conceptIds: [
+      'safety',
       'base',
       'bridge',
       'elbows-in',
@@ -421,6 +423,7 @@ const positions: StarterRow<Position>[] = [
     topGoals: ['Keep the seatbelt grip', 'Keep your hooks in', 'Finish with a choke'],
     bottomGoals: ['Protect your neck with both hands', 'Get your back to the mat', 'Turn to face them'],
     conceptIds: [
+      'safety',
       'grips',
       'elbows-in',
       'position-before-submission',

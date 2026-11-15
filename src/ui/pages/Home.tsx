@@ -2,10 +2,10 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useLibrary, useStudyStats, useVideos } from '../../bindings';
 import { BELT_LABELS } from '../../core/labels';
-import { reviewOf } from '../../core/library';
+import { itemName, reviewOf } from '../../core/library';
 import { beltRank } from '../../core/rank';
 import { cardId } from '../../core/srs';
-import { progressSummary } from '../../core/study';
+import { progressSummary, STICKING_POINT_LIMIT, stickingPoints } from '../../core/study';
 import { Loading, ProgressDot } from '../components/common';
 import { ArtworkFrame, HERO_DOJO_ARTWORK } from '../graphics/Artwork';
 import { Belt } from '../graphics/Belt';
@@ -88,6 +88,8 @@ export default function Home() {
   const nextPosition = lib.positions.find((p) => !lib.reviews.has(cardId('position', p.id)));
   const nextTechnique = lib.transitions.find((t) => !lib.reviews.has(cardId('transition', t.id)));
 
+  const sticking = stickingPoints(lib, STICKING_POINT_LIMIT);
+
   const steps: PathStep[] = [
     {
       title: 'Core concepts',
@@ -125,6 +127,12 @@ export default function Home() {
       body: (
         <>
           Sweeps, passes, and escapes move you between them. See the <Link to={ROUTES.positions}>position map</Link>.
+          {nextTechnique && (
+            <>
+              {' '}
+              Next up: <Link to={itemPath('transition', nextTechnique.id)}>{nextTechnique.name}</Link>.
+            </>
+          )}
         </>
       ),
     },
@@ -191,6 +199,24 @@ export default function Home() {
         <h2>Suggested path</h2>
         <PathSteps steps={steps} />
       </section>
+
+      {sticking.length > 0 && (
+        <section className="card">
+          <h2>Sticking points</h2>
+          <p className="muted">
+            These have slipped in review. Reread the page or watch the video, then try one in your next class.
+          </p>
+          <ul className="chip-list">
+            {sticking.map((item) => (
+              <li key={`${item.kind}:${item.id}`}>
+                <Link to={itemPath(item.kind, item.id)} className="chip">
+                  <ProgressDot state={reviewOf(lib, item.kind, item.id)} /> {itemName(lib, item.kind, item.id)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="card">
         <h2>Concepts</h2>

@@ -1,3 +1,5 @@
+import { assertNever } from './assertNever';
+import { isOnBlueBeltTest } from './beltTest';
 import { type Library, reviewOf } from './library';
 import type { Deck, ItemKind } from './models';
 import { cardId, isLearned } from './srs';
@@ -26,8 +28,25 @@ export interface StudyQueue {
   queue: StudyItem[];
 }
 
+function isInDeck(lib: Library, deck: Deck, item: StudyItem): boolean {
+  switch (deck) {
+    case 'all':
+      return true;
+    case 'concept':
+    case 'position':
+    case 'transition':
+      return item.kind === deck;
+    case 'blueBelt': {
+      const technique = item.kind === 'transition' ? lib.transitionById.get(item.id) : undefined;
+      return !!technique && isOnBlueBeltTest(technique);
+    }
+    default:
+      return assertNever(deck);
+  }
+}
+
 export function buildQueue(lib: Library, deck: Deck, newLimit: number, now: number): StudyQueue {
-  const items = allStudyItems(lib).filter((i) => deck === 'all' || i.kind === deck);
+  const items = allStudyItems(lib).filter((item) => isInDeck(lib, deck, item));
   const due: { item: StudyItem; dueAt: number }[] = [];
   const fresh: StudyItem[] = [];
   for (const item of items) {
@@ -58,4 +77,21 @@ export function progressSummary(lib: Library): ProgressSummary {
     learned,
     percentLearned: ids.length ? Math.round((learned / ids.length) * 100) : 0,
   };
+}
+
+/** How many sticking points to show at once: enough to work on before the next class, few enough to read at a glance. */
+export const STICKING_POINT_LIMIT = 5;
+
+/**
+ * Cards that keep slipping: forgotten at least once and not learned at the moment. Most often forgotten
+ * first, then the ones the scheduler finds hardest (lowest ease), then learning order.
+ */
+export function stickingPoints(lib: Library, limit: number): StudyItem[] {
+  const slipping: { item: StudyItem; lapses: number; ease: number }[] = [];
+  for (const item of allStudyItems(lib)) {
+    const state = reviewOf(lib, item.kind, item.id);
+    if (state && state.lapses > 0 && !isLearned(state)) slipping.push({ item, lapses: state.lapses, ease: state.ease });
+  }
+  slipping.sort((a, b) => b.lapses - a.lapses || a.ease - b.ease);
+  return slipping.slice(0, Math.max(0, limit)).map((s) => s.item);
 }
