@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useLibrary, useStudyStats, useTrainingLog, useVideos } from '../../bindings';
+import { lessonOrder, lessonTechniques } from '../../core/curriculum';
 import { BELT_LABELS, plural } from '../../core/labels';
 import { reviewOf } from '../../core/library';
+import { isEscape } from '../../core/models';
 import { beltRank } from '../../core/rank';
 import { findSituation, situationName } from '../../core/situations';
 import { cardId } from '../../core/srs';
@@ -53,7 +55,7 @@ function todayLabel(): string {
 function reviewLine(preview: StudyQueue, started: number): string {
   if (preview.queue.length === 0) return 'Nothing is due. Come back tomorrow, or browse something new.';
   const newCount = preview.queue.length - preview.due.length;
-  if (started === 0) return 'Start with the first few concepts.';
+  if (started === 0) return 'Start with how to survive underneath: escapes come first.';
   const split = `${preview.due.length} due · ${newCount} new`;
   return preview.fromClass > 0 ? `${split}, ${preview.fromClass} from your recent classes` : split;
 }
@@ -123,8 +125,13 @@ export default function Home() {
   const progress = progressSummary(lib);
   const rank = beltRank(progress.percentLearned);
   const nextConcept = lib.concepts.find((c) => !lib.reviews.has(cardId('concept', c.id)));
-  const nextPosition = lib.positions.find((p) => !lib.reviews.has(cardId('position', p.id)));
-  const nextTechnique = lib.transitions.find((t) => !lib.reviews.has(cardId('transition', t.id)));
+  const nextPosition = lessonOrder(lib)
+    .filter((item) => item.kind === 'position' && !lib.reviews.has(cardId(item.kind, item.id)))
+    .map((item) => lib.positionById.get(item.id))
+    .find((p) => p !== undefined);
+  const notStarted = lessonTechniques(lib).filter((t) => !lib.reviews.has(cardId('transition', t.id)));
+  const nextEscape = notStarted.find((t) => isEscape(t.type));
+  const nextAttack = notStarted.find((t) => !isEscape(t.type));
 
   const sticking = stickingPoints(lib, STICKING_POINT_LIMIT);
   const training = trainingSummary(log);
@@ -138,11 +145,26 @@ export default function Home() {
 
   const steps: PathStep[] = [
     {
+      title: 'Survive first',
+      done: lib.transitions.some((t) => isEscape(t.type)) && !nextEscape,
+      body: (
+        <>
+          Learn the way out of side control, mount and the back before anything else. New cards come in that order.
+          {nextEscape && (
+            <>
+              {' '}
+              Next up: <Link to={itemPath('transition', nextEscape.id)}>{nextEscape.name}</Link>.
+            </>
+          )}
+        </>
+      ),
+    },
+    {
       title: 'Core concepts',
       done: lib.concepts.length > 0 && !nextConcept,
       body: (
         <>
-          Posture, base, frames, and the shrimp show up everywhere.
+          Posture, base, frames, and the shrimp show up everywhere. Each arrives with the escape that uses it.
           {nextConcept && (
             <>
               {' '}
@@ -168,15 +190,16 @@ export default function Home() {
       ),
     },
     {
-      title: 'How positions connect',
-      done: lib.transitions.length > 0 && !nextTechnique,
+      title: 'Then attack',
+      done: lib.transitions.some((t) => !isEscape(t.type)) && !nextAttack,
       body: (
         <>
-          Sweeps, passes, and escapes move you between them. See the <Link to={ROUTES.positions}>position map</Link>.
-          {nextTechnique && (
+          Sweeps and passes improve your position; submissions come last. See the{' '}
+          <Link to={ROUTES.positions}>position map</Link>.
+          {nextAttack && (
             <>
               {' '}
-              Next up: <Link to={itemPath('transition', nextTechnique.id)}>{nextTechnique.name}</Link>.
+              Next up: <Link to={itemPath('transition', nextAttack.id)}>{nextAttack.name}</Link>.
             </>
           )}
         </>

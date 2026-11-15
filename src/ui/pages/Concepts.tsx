@@ -18,7 +18,9 @@ export default function Concepts() {
       <div className="page-head">
         <div>
           <h1>Concepts</h1>
-          <p className="muted">The big ideas that make every technique work. Learn these first.</p>
+          <p className="muted">
+            The big ideas that make every technique work. Review brings each one in beside the escapes that use it.
+          </p>
         </div>
         <div className="row">
           {lib.concepts.length > 0 && (

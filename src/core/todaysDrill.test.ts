@@ -31,6 +31,14 @@ describe('pickDrill', () => {
     expect(pickDrill(library(), [])).toMatchObject({ reason: 'next', drill: 'Bridge ten times' });
   });
 
+  it('picks the next unlearned technique in lesson order: an escape from a pin before an attack', () => {
+    const guardFirst = [position({ id: 'guard', order: 1 }), position({ id: 'mount', category: 'top', order: 2 })];
+    expect(pickDrill(buildLibrary([], guardFirst, techniques, []), [])).toMatchObject({
+      reason: 'next',
+      drill: 'Bridge ten times',
+    });
+  });
+
   it('finds a slipping technique behind any number of other slipping cards', () => {
     const concepts = ['a', 'b', 'c', 'd', 'e', 'f'].map((id) => review('concept', id, { lapses: 5, intervalDays: 0 }));
     const lib = buildLibrary(

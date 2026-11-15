@@ -21,6 +21,7 @@ The day-to-day rules are in [AGENTS.md](../AGENTS.md). This page explains why th
               │ starter   ← starter techniques a library does not hold   │
               │ roles     ← who does a technique; options per position   │
               │ situations ← one side of a position, studied as a card   │
+              │ curriculum ← the order new cards are taught: survive first│
               │ todaysDrill ← today's drill; progress per position       │
               │ trainingLog ← class write-ups: ordering, totals, focus   │
               │ search    ← finding any item by its name or text         │

@@ -1,28 +1,31 @@
 import { assertNever } from './assertNever';
 import { isOnBlueBeltTest } from './beltTest';
+import { lessonOrder, type StudyItem } from './curriculum';
 import { itemName, type Library, reviewOf } from './library';
-import type { CardKind, Concept, Deck } from './models';
-import { allSituations, findSituation, situationId, situationName } from './situations';
+import type { Concept, Deck } from './models';
+import { findSituation, situationName } from './situations';
 import { cardId, isLearned } from './srs';
 
-/** One thing that can be studied as a flashcard. */
-export interface StudyItem {
-  kind: CardKind;
-  /** The item's id, or for a situation its `situationId`. */
-  id: string;
-}
+export type { StudyItem };
 
 /**
- * Every card, in learning order: concepts, then positions, then the techniques that connect them, then the
- * situations that ask which of those techniques you have from each side of each position.
+ * The cards of a deck, in the order new ones are taught. The concept and position decks follow their own
+ * numbered lists, as their pages do; every other deck follows the lessons (see `lessonOrder`).
  */
-function allStudyItems(lib: Library): StudyItem[] {
-  return [
-    ...lib.concepts.map((c) => ({ kind: 'concept' as const, id: c.id })),
-    ...lib.positions.map((p) => ({ kind: 'position' as const, id: p.id })),
-    ...lib.transitions.map((t) => ({ kind: 'transition' as const, id: t.id })),
-    ...allSituations(lib).map((s) => ({ kind: 'situation' as const, id: situationId(s.position.id, s.role) })),
-  ];
+function deckItems(lib: Library, deck: Deck): StudyItem[] {
+  switch (deck) {
+    case 'concept':
+      return lib.concepts.map((c) => ({ kind: 'concept', id: c.id }));
+    case 'position':
+      return lib.positions.map((p) => ({ kind: 'position', id: p.id }));
+    case 'all':
+    case 'transition':
+    case 'situation':
+    case 'blueBelt':
+      return lessonOrder(lib).filter((item) => isInDeck(lib, deck, item));
+    default:
+      return assertNever(deck);
+  }
 }
 
 /** What a card is called in a list, or null if what it was about no longer exists. */
@@ -44,7 +47,7 @@ export function cardName(lib: Library, item: StudyItem): string | null {
 export interface StudyQueue {
   /** Cards already studied whose due time has passed, most overdue first. */
   due: StudyItem[];
-  /** Cards never studied: the ones the training log puts first, then the rest in learning order. */
+  /** Cards never studied: the ones the training log puts first, then the rest in lesson order. */
   fresh: StudyItem[];
   /** What a session will show: all due cards, then up to `newLimit` fresh ones. */
   queue: StudyItem[];
@@ -81,7 +84,7 @@ export function buildQueue(
   now: number,
   firstCardIds: readonly string[] = [],
 ): StudyQueue {
-  const items = allStudyItems(lib).filter((item) => isInDeck(lib, deck, item));
+  const items = deckItems(lib, deck);
   const due: { item: StudyItem; dueAt: number }[] = [];
   const fresh: StudyItem[] = [];
   for (const item of items) {
@@ -113,7 +116,7 @@ export interface ProgressSummary {
 }
 
 export function progressSummary(lib: Library): ProgressSummary {
-  const ids = allStudyItems(lib).map((i) => cardId(i.kind, i.id));
+  const ids = lessonOrder(lib).map((i) => cardId(i.kind, i.id));
   const learned = ids.filter((id) => isLearned(lib.reviews.get(id))).length;
   const started = ids.filter((id) => lib.reviews.has(id)).length;
   return {
@@ -124,10 +127,10 @@ export function progressSummary(lib: Library): ProgressSummary {
   };
 }
 
-/** How many sticking points to show at once: enough to work on before the next class, few enough to read at a glance. */
 /** How many new cards a session brings in unless the student moves the slider. */
 export const DEFAULT_NEW_CARDS = 5;
 
+/** How many sticking points to show at once: enough to work on before the next class, few enough to read at a glance. */
 export const STICKING_POINT_LIMIT = 5;
 
 /** One miss is normal on a new card; a card is a sticking point once it has been forgotten this many times. */
@@ -135,11 +138,11 @@ const STICKING_POINT_MIN_LAPSES = 2;
 
 /**
  * Cards that keep slipping: forgotten more than once and not learned at the moment. Most often forgotten
- * first, then the ones the scheduler finds hardest (lowest ease), then learning order.
+ * first, then the ones the scheduler finds hardest (lowest ease), then lesson order.
  */
 export function stickingPoints(lib: Library, limit: number): StudyItem[] {
   const slipping: { item: StudyItem; lapses: number; ease: number }[] = [];
-  for (const item of allStudyItems(lib)) {
+  for (const item of lessonOrder(lib)) {
     const state = reviewOf(lib, item.kind, item.id);
     if (state && state.lapses >= STICKING_POINT_MIN_LAPSES && !isLearned(state))
       slipping.push({ item, lapses: state.lapses, ease: state.ease });

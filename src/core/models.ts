@@ -9,6 +9,11 @@ export type PositionCategory = (typeof POSITION_CATEGORIES)[number];
 /** What a new position starts as: most of what beginners add is a guard. */
 export const DEFAULT_POSITION_CATEGORY: PositionCategory = 'guard';
 
+/** A pin is a position where the person underneath is held down and has to get out before anything else. */
+export function isPin(category: PositionCategory): boolean {
+  return category === 'top' || category === 'back';
+}
+
 export interface Position {
   id: string;
   name: string;
@@ -42,6 +47,11 @@ export const DEFAULT_TRANSITION_TYPE: TransitionType = 'sweep';
 /** A submission ends the roll: it has no destination position, so its `toId` is empty. */
 export function endsTheRoll(type: TransitionType): boolean {
   return type === 'submission';
+}
+
+/** An escape gets its performer out of trouble. It is the first thing to learn from any position. */
+export function isEscape(type: TransitionType): boolean {
+  return type === 'escape';
 }
 
 export interface Transition {

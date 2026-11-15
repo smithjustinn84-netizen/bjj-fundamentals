@@ -1,3 +1,4 @@
+import { lessonTechniques } from './curriculum';
 import { type Library, reviewOf } from './library';
 import type { TrainingEntry, Transition } from './models';
 import { findSituation } from './situations';
@@ -19,7 +20,7 @@ export interface DrillPick {
 /**
  * One drill worth doing today, or null if no technique that needs work has one. It answers the most pressing
  * need first: a way out of where the student last got stuck, then a technique that keeps slipping in review,
- * then one practised in a recent class, then the next technique not yet learned. Learned techniques and
+ * then one practised in a recent class, then the next technique not yet learned, in lesson order. Learned techniques and
  * techniques without a drill are passed over.
  */
 export function pickDrill(lib: Library, entries: TrainingEntry[]): DrillPick | null {
@@ -37,7 +38,7 @@ export function pickDrill(lib: Library, entries: TrainingEntry[]): DrillPick | n
         .map((item) => byId(item.id)),
     ],
     ['practised', recentlyPractised(entries, RECENT_CLASS_COUNT).map(byId)],
-    ['next', lib.transitions],
+    ['next', lessonTechniques(lib)],
   ];
   for (const [reason, techniques] of candidates) {
     const technique = techniques.find(needsWork);

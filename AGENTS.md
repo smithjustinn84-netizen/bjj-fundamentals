@@ -39,6 +39,7 @@ Where does new code go?
 
 - Union types come from a `const` list (`ITEM_KINDS`, `GRADES`, ...) in `core/models.ts`. Add a value there, not as a string literal elsewhere. Rules about a value are predicates there too: ask `endsTheRoll(type)`, not `type === 'submission'`.
 - Anything listed per kind (menus, groups, decks) is built from `ITEM_KINDS`, so a new kind shows up everywhere or fails to compile. Study cards use `CARD_KINDS`, which adds `situation`: one side of one position (`core/situations.ts`), a card with no item, page or form behind it.
+- The order new cards are taught in is one function, `lessonOrder` in `core/curriculum.ts`: survive first (the pins, their escapes and the concepts those use), then attacks, submissions last. It is computed from stored order, category and type, not stored. The review queue, today's drill and Today's path all read it; only the Concepts and Positions decks keep their own numbered order. Do not sort cards anywhere else.
 - Every `switch` over a union ends with `default: return assertNever(x)` so a new member fails to compile until handled.
 - Build paths with `src/ui/routes.ts`, and route patterns with `ROUTE_PATTERNS` there. No hand-written `'/positions/' + id`.
 - Deleting an item from the UI goes through `confirmDelete` (`ui/components/confirmDelete.ts`), so every delete button warns about the same cascade.
