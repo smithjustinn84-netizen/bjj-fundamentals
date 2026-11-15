@@ -20,10 +20,10 @@ Small, independent fixes. Each can ship alone. The first five were done on 2026-
 
 Today every card asks you to recite one thing. Rolling asks a different question: *I am stuck here, what are my options?*
 
-- [ ] **Add who performs a technique.** A technique has only `fromId` and `toId`; nothing says whether the person doing it is top or bottom. Add a role field to `Transition` (follow the "Add a field to an item" recipe in `AGENTS.md`: model, `SCHEMAS`, default for old rows through one function, bump `BACKUP_SCHEMA_VERSION`).
+- [x] **Add who performs a technique.** Done 2026-11-15 as `Transition.role`, read through `performerRole` (`core/roles.ts`); backup schema is now 4. A technique has only `fromId` and `toId`; nothing says whether the person doing it is top or bottom. Add a role field to `Transition` (follow the "Add a field to an item" recipe in `AGENTS.md`: model, `SCHEMAS`, default for old rows through one function, bump `BACKUP_SCHEMA_VERSION`).
 - [ ] **Fix the ambiguous destinations this exposes.** `back-escape`, `ground-headlock-escape`, `standing-headlock-escape`, `tripod-sweep` and the submission defences end in a position where only the step text says which side you are on.
-- [ ] **Situation cards.** One card per position and role: "You are under mount. What are your options?" The answer lists your techniques from there, grouped by type. Queue building goes in `core/study.ts`; the card in `ui/components/StudyCard.tsx`.
-- [ ] **Coverage on the position page.** Per role, show what you have and flag what is missing ("no escape from here yet"). The calculation is a pure function in `core/` with a test.
+- [ ] **Situation cards.** Partly done 2026-11-15: the existing position card now asks what each person can do and lists their options. Still open is one card per position and role, which needs card kinds separate from `ITEM_KINDS` (review state, backup check and delete cascade all key on item kind). The original idea: one card per position and role: "You are under mount. What are your options?" The answer lists your techniques from there, grouped by type. Queue building goes in `core/study.ts`; the card in `ui/components/StudyCard.tsx`.
+- [x] **Coverage on the position page.** Done 2026-11-15: "From here" is split by side (`positionOptions`) and an empty side says so. It flags a side with nothing at all, not a missing escape specifically. Per role, show what you have and flag what is missing ("no escape from here yet"). The calculation is a pure function in `core/` with a test.
 
 ## 3. Training log (L)
 

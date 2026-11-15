@@ -1,14 +1,19 @@
 import { useSearchParams } from 'react-router-dom';
 import { items } from '../../../bindings';
 import { isOnBlueBeltTest } from '../../../core/beltTest';
-import { BLUE_BELT_TEST_LABEL, TRANSITION_LABELS } from '../../../core/labels';
+import { BLUE_BELT_TEST_LABEL, roleLabel, TRANSITION_LABELS } from '../../../core/labels';
+import type { Library } from '../../../core/library';
 import {
   DEFAULT_TRANSITION_TYPE,
   endsTheRoll,
+  POSITION_ROLES,
+  type PositionCategory,
+  type PositionRole,
   TRANSITION_TYPES,
   type Transition,
   type TransitionType,
 } from '../../../core/models';
+import { defaultRole, performerRole } from '../../../core/roles';
 import type { TransitionInput } from '../../../core/services/items';
 import { FROM_POSITION_PARAM } from '../../routes';
 import {
@@ -28,18 +33,21 @@ interface Draft {
   type: TransitionType;
   fromId: string;
   toId: string;
+  /** Null until the user picks: the form then shows, and saves, the usual role for the chosen type. */
+  role: PositionRole | null;
   steps: string;
   commonMistakes: string;
   blueBeltTest: boolean;
   notes: string;
 }
 
-function toDraft(transition: Transition | undefined, defaultFromId: string): Draft {
+function toDraft(library: Library, transition: Transition | undefined, defaultFromId: string): Draft {
   return {
     name: transition?.name ?? '',
     type: transition?.type ?? DEFAULT_TRANSITION_TYPE,
     fromId: transition?.fromId ?? defaultFromId,
     toId: transition?.toId ?? '',
+    role: transition ? performerRole(library, transition) : null,
     steps: fromLines(transition?.steps ?? []),
     commonMistakes: fromLines(transition?.commonMistakes ?? []),
     blueBeltTest: transition ? isOnBlueBeltTest(transition) : false,
@@ -47,12 +55,21 @@ function toDraft(transition: Transition | undefined, defaultFromId: string): Dra
   };
 }
 
-function fromDraft(draft: Draft): TransitionInput {
+/** Role names before a starting position is chosen; after that they come from its kind of position. */
+const PLAIN_ROLE_LABELS: Record<PositionRole, string> = { top: 'Top', bottom: 'Bottom' };
+
+function roleLabels(category: PositionCategory | undefined): Record<PositionRole, string> {
+  if (!category) return PLAIN_ROLE_LABELS;
+  return { top: roleLabel(category, 'top'), bottom: roleLabel(category, 'bottom') };
+}
+
+function fromDraft(draft: Draft, role: PositionRole): TransitionInput {
   return {
     name: draft.name.trim(),
     type: draft.type,
     fromId: draft.fromId,
     toId: draft.toId,
+    role,
     steps: toLines(draft.steps),
     commonMistakes: toLines(draft.commonMistakes),
     blueBeltTest: draft.blueBeltTest,
@@ -65,8 +82,11 @@ export function TransitionForm({ itemId, library, cancelTo, onSaved, onDelete }:
   const [draft, set] = useDraft(() => {
     const requestedFrom = search.get(FROM_POSITION_PARAM) ?? '';
     const defaultFrom = library.positionById.has(requestedFrom) ? requestedFrom : '';
-    return toDraft(itemId ? library.transitionById.get(itemId) : undefined, defaultFrom);
+    return toDraft(library, itemId ? library.transitionById.get(itemId) : undefined, defaultFrom);
   });
+
+  const fromCategory = library.positionById.get(draft.fromId)?.category;
+  const role = draft.role ?? defaultRole(draft.type, fromCategory);
 
   const positionOptions = library.positions.map((p) => (
     <option key={p.id} value={p.id}>
@@ -78,7 +98,7 @@ export function TransitionForm({ itemId, library, cancelTo, onSaved, onDelete }:
     <FormShell
       cancelTo={cancelTo}
       onDelete={onDelete}
-      onSubmit={async () => onSaved(await items.saveTransition(itemId, fromDraft(draft)))}
+      onSubmit={async () => onSaved(await items.saveTransition(itemId, fromDraft(draft, role)))}
     >
       <NameField value={draft.name} onChange={(v) => set('name', v)} />
       <ChoiceField
@@ -108,6 +128,13 @@ export function TransitionForm({ itemId, library, cancelTo, onSaved, onDelete }:
           </Field>
         )}
       </div>
+      <ChoiceField
+        label="Who does it"
+        options={POSITION_ROLES}
+        labels={roleLabels(fromCategory)}
+        value={role}
+        onChange={(v) => set('role', v)}
+      />
       <Field label="Steps" hint="One step per line, in order.">
         <textarea rows={6} value={draft.steps} onChange={(e) => set('steps', e.target.value)} />
       </Field>

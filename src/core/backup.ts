@@ -3,6 +3,7 @@ import {
   GRADES,
   ITEM_KINDS,
   POSITION_CATEGORIES,
+  POSITION_ROLES,
   type Position,
   type ReviewLogEntry,
   type ReviewState,
@@ -21,7 +22,7 @@ import { isYouTubeId } from './youtube';
 
 export const BACKUP_APP = 'bjj-fundamentals';
 /** Bump when the shape of any table changes, and teach `validateBackup` to accept the older shape. */
-export const BACKUP_SCHEMA_VERSION = 3;
+export const BACKUP_SCHEMA_VERSION = 4;
 
 export interface BackupData {
   positions: Position[];
@@ -92,6 +93,8 @@ const SCHEMAS: { [T in BackupTable]: Schema<BackupData[T][number]> } = {
     type: oneOf(TRANSITION_TYPES),
     fromId: text,
     toId: text,
+    // Absent before schema 4; `performerRole` fills the gap on read.
+    role: optional(oneOf(POSITION_ROLES)),
     steps: textList,
     commonMistakes: textList,
     // Absent in schema 1 backups, which predate the blue belt list.

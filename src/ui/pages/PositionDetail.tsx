@@ -1,7 +1,9 @@
 import { Link, useParams } from 'react-router-dom';
 import { useLibrary } from '../../bindings';
-import { CATEGORY_LABELS, ROLE_LABELS } from '../../core/labels';
+import { CATEGORY_LABELS, ROLE_LABELS, roleLabel } from '../../core/labels';
 import { connections, reviewOf } from '../../core/library';
+import { POSITION_ROLES } from '../../core/models';
+import { positionOptions } from '../../core/roles';
 import { Bullets, Loading, Missing, NotesBlock, Pager, Section, StudyStatusPill } from '../components/common';
 import { NO_TECHNIQUES_FROM_HERE, TransitionList } from '../components/TransitionLink';
 import { LinkedVideos } from '../components/VideoList';
@@ -17,6 +19,7 @@ export default function PositionDetail() {
 
   const [top, bottom] = ROLE_LABELS[position.category];
   const { outgoing, incoming } = connections(lib, position.id);
+  const options = positionOptions(lib, position.id);
   const concepts = position.conceptIds.map((c) => lib.conceptById.get(c)).filter((c) => c !== undefined);
   const index = lib.positions.findIndex((p) => p.id === position.id);
   const previous = lib.positions[index - 1];
@@ -71,7 +74,16 @@ export default function PositionDetail() {
           }
         >
           {outgoing.length > 0 ? (
-            <TransitionList transitions={outgoing} positionById={lib.positionById} direction="out" />
+            POSITION_ROLES.map((role) => (
+              <div key={role}>
+                <h3>{roleLabel(position.category, role)}</h3>
+                {options[role].length > 0 ? (
+                  <TransitionList transitions={options[role]} positionById={lib.positionById} direction="out" />
+                ) : (
+                  <p className="muted">Nothing for this side yet. Add a technique so you have an answer here.</p>
+                )}
+              </div>
+            ))
           ) : (
             <p className="muted">{NO_TECHNIQUES_FROM_HERE}</p>
           )}

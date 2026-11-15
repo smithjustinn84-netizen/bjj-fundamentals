@@ -28,6 +28,13 @@ export interface Position {
   updatedAt: number;
 }
 
+/**
+ * Which of the two people in a position someone is. "Top" is the person with the advantage and "bottom"
+ * the one defending, as in `topGoals` and `bottomGoals`; `ROLE_LABELS` names them per kind of position.
+ */
+export const POSITION_ROLES = ['top', 'bottom'] as const;
+export type PositionRole = (typeof POSITION_ROLES)[number];
+
 export const TRANSITION_TYPES = ['sweep', 'pass', 'escape', 'submission', 'takedown', 'transition'] as const;
 export type TransitionType = (typeof TRANSITION_TYPES)[number];
 export const DEFAULT_TRANSITION_TYPE: TransitionType = 'sweep';
@@ -44,6 +51,11 @@ export interface Transition {
   fromId: string;
   /** Destination position id. Empty for a type that `endsTheRoll`. */
   toId: string;
+  /**
+   * Who does the technique, as their role in the starting position. Read it through `performerRole`:
+   * techniques stored before the field existed have none.
+   */
+  role?: PositionRole;
   steps: string[];
   commonMistakes: string[];
   /**

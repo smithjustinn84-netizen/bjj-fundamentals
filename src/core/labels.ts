@@ -1,5 +1,6 @@
+import { assertNever } from './assertNever';
 import type { BackupTable } from './backup';
-import type { BeltRank, Grade, ItemKind, PositionCategory, TransitionType } from './models';
+import type { BeltRank, Grade, ItemKind, PositionCategory, PositionRole, TransitionType } from './models';
 
 export const CATEGORY_LABELS: Record<PositionCategory, string> = {
   standing: 'Standing',
@@ -17,6 +18,19 @@ export const ROLE_LABELS: Record<PositionCategory, [string, string]> = {
   back: ['Taking the back', 'Defending'],
   scramble: ['Attacking', 'Defending'],
 };
+
+/** What a role is called in one kind of position. */
+export function roleLabel(category: PositionCategory, role: PositionRole): string {
+  const [top, bottom] = ROLE_LABELS[category];
+  switch (role) {
+    case 'top':
+      return top;
+    case 'bottom':
+      return bottom;
+    default:
+      return assertNever(role);
+  }
+}
 
 export const TRANSITION_LABELS: Record<TransitionType, string> = {
   sweep: 'Sweep',

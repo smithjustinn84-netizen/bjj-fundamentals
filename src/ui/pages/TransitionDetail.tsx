@@ -1,9 +1,10 @@
 import { Link, useParams } from 'react-router-dom';
 import { useLibrary } from '../../bindings';
 import { isOnBlueBeltTest } from '../../core/beltTest';
-import { TRANSITION_LABELS } from '../../core/labels';
+import { roleLabel, TRANSITION_LABELS } from '../../core/labels';
 import { connections, reviewOf } from '../../core/library';
 import { endsTheRoll } from '../../core/models';
+import { performerRole } from '../../core/roles';
 import { Bullets, Loading, Missing, NotesBlock, Pager, Section, StudyStatusPill } from '../components/common';
 import { ItemPicture } from '../components/ItemPicture';
 import { LinkedVideos } from '../components/VideoList';
@@ -56,6 +57,11 @@ export default function TransitionDetail() {
               <span className="muted">?</span>
             )}
           </p>
+          {from && (
+            <p className="muted small">
+              Who does it: <strong>{roleLabel(from.category, performerRole(lib, transition))}</strong>
+            </p>
+          )}
         </div>
         <Link className="button small" to={editPath('transition', transition.id)}>
           Edit

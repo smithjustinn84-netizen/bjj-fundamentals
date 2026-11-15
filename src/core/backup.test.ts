@@ -18,6 +18,15 @@ const validVideo = {
 };
 
 describe('validateBackup', () => {
+  it('accepts a technique with or without a role, and rejects a role that is not one', () => {
+    const backupOf = (row: object) => file({ transitions: [row] });
+    expect(validateBackup(backupOf(transition({ role: 'bottom' }))).data.transitions[0]?.role).toBe('bottom');
+    expect(validateBackup(backupOf(transition())).data.transitions[0]?.role).toBeUndefined();
+    expect(() => validateBackup(backupOf({ ...transition(), role: 'sideways' }))).toThrow(
+      /"role" is missing or invalid/,
+    );
+  });
+
   it('accepts a complete backup and returns its rows', () => {
     const backup = validateBackup(
       file({

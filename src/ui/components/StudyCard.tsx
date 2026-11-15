@@ -1,6 +1,8 @@
 import { assertNever } from '../../core/assertNever';
 import { ROLE_LABELS, TRANSITION_LABELS } from '../../core/labels';
 import type { Library } from '../../core/library';
+import type { Transition } from '../../core/models';
+import { positionOptions } from '../../core/roles';
 import type { StudyItem } from '../../core/study';
 import { TransitionArtwork } from '../graphics/Artwork';
 import { ConceptArtwork } from '../graphics/ConceptSvg';
@@ -21,7 +23,10 @@ export function cardPrompt(item: StudyItem, lib: Library): { eyebrow: string; qu
     case 'position': {
       const position = lib.positionById.get(item.id);
       if (!position) return null;
-      return { eyebrow: 'Position', question: `${position.name}: what are the goals for each person?` };
+      return {
+        eyebrow: 'Position',
+        question: `${position.name}: what does each person want, and what can they do from here?`,
+      };
     }
     case 'transition': {
       const transition = lib.transitionById.get(item.id);
@@ -35,6 +40,16 @@ export function cardPrompt(item: StudyItem, lib: Library): { eyebrow: string; qu
     default:
       return assertNever(item.kind);
   }
+}
+
+/** What one person can do from a position, as a line of technique names under their goals. */
+function OptionNames({ techniques }: { techniques: Transition[] }) {
+  if (techniques.length === 0) return null;
+  return (
+    <p className="small">
+      <strong>Options:</strong> {techniques.map((t) => t.name).join(', ')}
+    </p>
+  );
 }
 
 /** The answer side of a review card: the item's picture, then what the student should have recalled. */
@@ -62,6 +77,7 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
       const position = lib.positionById.get(item.id);
       if (!position) return null;
       const [top, bottom] = ROLE_LABELS[position.category];
+      const options = positionOptions(lib, position.id);
       return (
         <>
           <PositionArtwork id={position.id} name={position.name} className={ARTWORK_CLASS} />
@@ -70,10 +86,12 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
             <div>
               <h3>{top}</h3>
               <Bullets items={position.topGoals} />
+              <OptionNames techniques={options.top} />
             </div>
             <div>
               <h3>{bottom}</h3>
               <Bullets items={position.bottomGoals} />
+              <OptionNames techniques={options.bottom} />
             </div>
           </div>
         </>

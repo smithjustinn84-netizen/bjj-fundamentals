@@ -19,6 +19,7 @@ The day-to-day rules are in [AGENTS.md](../AGENTS.md). This page explains why th
               │ rank · mapLayout · figure · svgNumber  ← graphics maths  │
               │ beltTest  ← which techniques are on the blue belt test   │
               │ starter   ← starter techniques a library does not hold   │
+              │ roles     ← who does a technique; options per position   │
               │ storage.ts   ← the AppStorage interface                  │  no DOM, no browser,
               │ services/    ← all app logic, written against AppStorage │  no React, no Dexie
               │ core.ts      ← createCore({ storage, newId, now })       │

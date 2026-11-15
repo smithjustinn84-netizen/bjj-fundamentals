@@ -1,5 +1,5 @@
 import type { BackupData } from './backup';
-import type { Concept, Position, Transition, VideoBookmark } from './models';
+import type { Concept, Position, PositionRole, Transition, VideoBookmark } from './models';
 
 /**
  * Starter content: a small, beginner-level set of ideas. Kept deliberately short —
@@ -445,7 +445,8 @@ const positions: StarterRow<Position>[] = [
   },
 ];
 
-const transitions: StarterRow<Transition>[] = [
+/** Every starter technique says who does it, so the default for stored rows without a role never has to guess. */
+const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
   // Standing
   {
     id: 'pull-guard',
@@ -453,6 +454,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'transition',
     fromId: 'standing',
     toId: 'closed-guard',
+    role: 'top',
     steps: [
       'Get a collar and sleeve grip',
       'Step in close',
@@ -467,6 +469,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'takedown',
     fromId: 'standing',
     toId: 'side-control',
+    role: 'top',
     steps: [
       'Lower your level by bending your knees',
       'Step deep between their feet',
@@ -485,6 +488,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'takedown',
     fromId: 'standing',
     toId: 'side-control',
+    role: 'top',
     steps: [
       'Grip their sleeve and reach your other arm around their waist',
       'Step across in front of them and pivot so your back is to their chest, knees bent',
@@ -504,6 +508,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'standing',
     toId: 'standing',
+    role: 'bottom',
     steps: [
       'Drop into base with your knees bent',
       'Turn the thin edge of your wrist toward the gap between their thumb and fingers',
@@ -522,6 +527,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'standing',
     toId: 'standing',
+    role: 'bottom',
     steps: [
       'Tuck your chin and step one foot back into base',
       'Reach one arm straight up beside your ear',
@@ -537,6 +543,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'standing',
     toId: 'standing',
+    role: 'bottom',
     steps: [
       'Drop your weight into base straight away: knees bent, hips back',
       'Push your elbows out and forward to make a little space',
@@ -552,6 +559,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'standing',
     toId: 'side-control',
+    role: 'bottom',
     steps: [
       'Bend your knees into base and turn your chin toward their ribs so you can breathe',
       'Reach your far hand over their shoulder and push on their face, under the nose',
@@ -570,6 +578,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'standing',
     toId: 'turtle',
+    role: 'bottom',
     steps: [
       'As they shoot in for your legs, block their head or shoulders with your hands',
       'Kick both legs straight back and drop your hips to the mat',
@@ -590,6 +599,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'transition',
     fromId: 'closed-guard',
     toId: 'open-guard',
+    role: 'top',
     steps: [
       'Build posture: sit back, head up',
       'Pin their hips with both hands',
@@ -604,6 +614,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'sweep',
     fromId: 'closed-guard',
     toId: 'mount',
+    role: 'bottom',
     steps: [
       'Grip their collar and same-side sleeve',
       'Open your guard and shrimp to one side',
@@ -620,6 +631,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'sweep',
     fromId: 'closed-guard',
     toId: 'mount',
+    role: 'bottom',
     steps: [
       'When they posture up, sit up onto one hand',
       'Reach over their shoulder and trap their arm on that side',
@@ -634,6 +646,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'submission',
     fromId: 'closed-guard',
     toId: '',
+    role: 'bottom',
     steps: [
       'Control one of their arms at the wrist and elbow',
       'Put your foot on their hip on the same side and turn your body to an angle',
@@ -652,6 +665,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'submission',
     fromId: 'closed-guard',
     toId: '',
+    role: 'bottom',
     steps: [
       'Control both of their wrists',
       'Push one arm back to their belly and shoot that leg over their shoulder: one arm in, one arm out',
@@ -672,6 +686,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'submission',
     fromId: 'closed-guard',
     toId: '',
+    role: 'bottom',
     steps: [
       'When their hand is on the mat, grip that wrist',
       'Open your guard and sit up toward that arm',
@@ -692,6 +707,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'submission',
     fromId: 'closed-guard',
     toId: '',
+    role: 'bottom',
     steps: [
       'When their head comes down, sit up and wrap one arm around their neck, forearm under the chin',
       'Grab that wrist with your other hand',
@@ -711,6 +727,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'sweep',
     fromId: 'closed-guard',
     toId: 'mount',
+    role: 'bottom',
     steps: [
       'Grip one of their sleeves and hold that arm tight so they cannot post on it',
       'Scoop your other hand under their opposite leg, behind the knee',
@@ -731,6 +748,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'closed-guard',
     toId: 'closed-guard',
+    role: 'top',
     steps: [
       'As soon as they control your arm and turn, clasp your hands together and bend the trapped elbow',
       'Drive your weight forward, toward them, and stack their knees toward their face',
@@ -750,6 +768,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'closed-guard',
     toId: 'closed-guard',
+    role: 'top',
     steps: [
       'Never leave one arm inside their legs and one outside: both in or both out',
       'If a leg comes over your shoulder, posture up at once: head up, back straight, eyes on the ceiling',
@@ -770,6 +789,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'closed-guard',
     toId: 'side-control',
+    role: 'top',
     steps: [
       'Tuck your chin and pull down on their choking wrist with one hand to make room to breathe',
       'Reach your other arm over their shoulder, on the side away from your head, and hug their back',
@@ -790,6 +810,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'pass',
     fromId: 'open-guard',
     toId: 'side-control',
+    role: 'top',
     steps: [
       'Stand up and grip their pants at both knees',
       'Push their legs to one side and pin them to the mat',
@@ -804,6 +825,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'pass',
     fromId: 'open-guard',
     toId: 'side-control',
+    role: 'top',
     steps: [
       'From your knees, scoop both arms under their legs and pull their hips up onto your thighs',
       'Keep your elbows tight to their hips and your head up',
@@ -824,6 +846,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'sweep',
     fromId: 'open-guard',
     toId: 'mount',
+    role: 'bottom',
     steps: [
       'Sit up close to them with both feet hooked inside their thighs',
       'Get an underhook on one side and grip their other arm at the elbow or sleeve',
@@ -844,6 +867,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'sweep',
     fromId: 'open-guard',
     toId: 'open-guard',
+    role: 'bottom',
     steps: [
       'With them standing over your open guard, grip one of their ankles behind the heel',
       'Put one foot on their hip and hook your other foot behind the knee of their free leg',
@@ -862,6 +886,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'open-guard',
     toId: 'open-guard',
+    role: 'bottom',
     steps: [
       'As they get past your feet, turn onto your side to face them: never stay flat',
       'Frame on their shoulder and hip so they cannot drop their chest onto yours',
@@ -881,6 +906,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'transition',
     fromId: 'open-guard',
     toId: 'standing',
+    role: 'bottom',
     steps: [
       'Sit up and post one hand on the mat behind you',
       'Plant the opposite foot flat on the mat and keep your free hand up between you and them',
@@ -901,6 +927,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'pass',
     fromId: 'half-guard',
     toId: 'side-control',
+    role: 'top',
     steps: [
       'Get a crossface or underhook so they are flat',
       'Slide your trapped knee across their thigh toward the mat',
@@ -915,6 +942,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'transition',
     fromId: 'half-guard',
     toId: 'closed-guard',
+    role: 'bottom',
     steps: [
       'Frame against their hip or shoulder',
       'Shrimp your hips away',
@@ -929,6 +957,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'sweep',
     fromId: 'half-guard',
     toId: 'side-control',
+    role: 'bottom',
     steps: [
       'Get on your side facing them, with a frame so they cannot flatten you',
       'Dig your top arm under their armpit for a deep underhook and reach around their back',
@@ -950,6 +979,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'side-control',
     toId: 'open-guard',
+    role: 'bottom',
     steps: [
       'Frame: forearm on their neck, other hand on their hip',
       'Bridge slightly to make them react',
@@ -964,6 +994,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'transition',
     fromId: 'side-control',
     toId: 'mount',
+    role: 'top',
     steps: [
       'Keep chest pressure and control their far side',
       'Block their near hip with your hand',
@@ -978,6 +1009,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'submission',
     fromId: 'side-control',
     toId: '',
+    role: 'top',
     steps: [
       'Pin their far wrist to the mat, elbow bent at 90°',
       'Thread your other arm under their arm and grab your own wrist',
@@ -992,6 +1024,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'side-control',
     toId: 'side-control',
+    role: 'bottom',
     steps: [
       'Turn onto your side to face them and tuck your bottom elbow in so they cannot flatten you',
       'Frame your forearm across their jaw, holding that wrist with your other hand',
@@ -1011,6 +1044,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'side-control',
     toId: 'turtle',
+    role: 'bottom',
     steps: [
       'Frame on their neck and hip and bridge into them to make space',
       'Swim your far arm under their armpit for an underhook',
@@ -1031,6 +1065,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'mount',
     toId: 'closed-guard',
+    role: 'bottom',
     steps: [
       'Trap one of their arms against your chest',
       'Trap the foot on the same side with your foot',
@@ -1045,6 +1080,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'mount',
     toId: 'half-guard',
+    role: 'bottom',
     steps: [
       'Frame with your elbows on their hips',
       'Turn on your side and shrimp away',
@@ -1062,6 +1098,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'submission',
     fromId: 'mount',
     toId: '',
+    role: 'top',
     steps: [
       'Feed one hand deep into their collar, fingers inside',
       'Put your second hand in the other side of the collar, palm up or palm down',
@@ -1076,6 +1113,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'submission',
     fromId: 'mount',
     toId: '',
+    role: 'top',
     steps: [
       'When they push on your chest, put both hands on their chest, trapping one of their arms between yours',
       'Lean your weight onto your hands and slide your knee up beside their head',
@@ -1095,6 +1133,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'transition',
     fromId: 'mount',
     toId: 'back-control',
+    role: 'top',
     steps: [
       'When they turn to their side to escape, follow them',
       'Get a seatbelt grip: one arm over the shoulder, one under the arm',
@@ -1110,6 +1149,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'submission',
     fromId: 'back-control',
     toId: '',
+    role: 'top',
     steps: [
       'From the seatbelt, slide your choking arm under their chin',
       'Put that hand on your other bicep',
@@ -1124,6 +1164,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'back-control',
     toId: 'closed-guard',
+    role: 'bottom',
     steps: [
       'Protect your neck with both hands',
       'Slide down so your back is on the mat, on the side of their bottom arm',
@@ -1138,6 +1179,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'back-control',
     toId: 'back-control',
+    role: 'bottom',
     steps: [
       'Tuck your chin and bring both hands to your neck before anything else',
       'Find the choking arm, the one coming across your neck, and grab its wrist with both hands: two on one',
@@ -1158,6 +1200,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'transition',
     fromId: 'turtle',
     toId: 'back-control',
+    role: 'top',
     steps: [
       'Stay chest-on-back with weight on them',
       'Get a seatbelt grip',
@@ -1172,6 +1215,7 @@ const transitions: StarterRow<Transition>[] = [
     type: 'escape',
     fromId: 'turtle',
     toId: 'open-guard',
+    role: 'bottom',
     steps: [
       'Keep elbows tight to knees',
       'Post on one hand and sit through, or roll to your shoulder',
@@ -1196,6 +1240,9 @@ function seedPositions(now: number): Position[] {
  * before the blue belt list existed get the same default as new ones (see `isOnBlueBeltTest`).
  */
 export const STARTER_BLUE_BELT_TEST_IDS: ReadonlySet<string> = new Set(transitions.map((t) => t.id));
+
+/** Who performs each starter technique, for copies stored before techniques had a role (see `performerRole`). */
+export const STARTER_ROLES: ReadonlyMap<string, PositionRole> = new Map(transitions.map((t) => [t.id, t.role]));
 
 function seedTransitions(now: number): Transition[] {
   return transitions.map((t) => ({
