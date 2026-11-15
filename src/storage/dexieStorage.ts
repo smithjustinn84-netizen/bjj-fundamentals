@@ -1,4 +1,4 @@
-import Dexie from 'dexie';
+import Dexie, { type Transaction } from 'dexie';
 import { BACKUP_TABLES } from '../core/backup';
 import type { ReviewLogEntry } from '../core/models';
 import type { AppStorage, Repository, ReviewLogRepository, StorageOptions } from '../core/storage';
@@ -31,6 +31,14 @@ function openDatabase(name: string, initialData: StorageOptions['initialData']):
     reviews: 'id, kind, itemId, due',
     reviewLog: '++id, cardId, reviewedAt',
   });
+  const seedMissingStarterVideos = async (tx: Transaction) => {
+    const videos = tx.table<{ id: string }, string>('videos');
+    const existingIds = new Set((await videos.toArray()).map((v) => v.id));
+    const missing = initialData.videos.filter((v) => !existingIds.has(v.id));
+    if (missing.length > 0) await videos.bulkAdd(missing);
+  };
+  db.version(2).stores({}).upgrade(seedMissingStarterVideos);
+  db.version(3).stores({}).upgrade(seedMissingStarterVideos);
   // Fires only when the database is first created, which is exactly the "insert once" rule of StorageOptions.
   db.on('populate', (tx) => {
     for (const table of BACKUP_TABLES) tx.table(table).bulkAdd(initialData[table]);

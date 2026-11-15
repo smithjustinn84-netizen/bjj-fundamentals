@@ -14,7 +14,8 @@ describe('queries', () => {
   });
 
   it('videos are newest first overall and oldest first per item', async () => {
-    const { core, clock } = testCore();
+    const { core, storage, clock } = testCore();
+    await storage.videos.clear();
     const link = { linkedKind: 'position', linkedId: 'mount' } as const;
     const first = await core.videos.add({ ...video, ...link });
     clock.now += 1000;

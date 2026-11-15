@@ -14,6 +14,20 @@ describe('starter content', () => {
     }
   });
 
+  it('has a video bookmark for every starter concept, position, and transition', async () => {
+    const { storage } = testCore();
+    const videos = await storage.videos.all();
+    for (const c of await storage.concepts.all()) {
+      expect(videos.some((v) => v.linkedKind === 'concept' && v.linkedId === c.id)).toBe(true);
+    }
+    for (const p of await storage.positions.all()) {
+      expect(videos.some((v) => v.linkedKind === 'position' && v.linkedId === p.id)).toBe(true);
+    }
+    for (const t of await storage.transitions.all()) {
+      expect(videos.some((v) => v.linkedKind === 'transition' && v.linkedId === t.id)).toBe(true);
+    }
+  });
+
   it('passes backup validation, so a fresh export can always be re-imported', async () => {
     const exported = await testCore().core.backups.exportBackup();
     expect(() => validateBackup(JSON.parse(JSON.stringify(exported)))).not.toThrow();
