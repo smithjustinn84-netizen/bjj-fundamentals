@@ -1,3 +1,5 @@
+import { roundSvg } from './svgNumber';
+
 /**
  * Geometry for the jointed figures in the diagrams. A pose is a handful of joint positions;
  * this turns it into the paths and circles a component can draw without doing any maths itself.
@@ -66,12 +68,8 @@ export interface FigureParts {
   limbs: Record<LimbName, LimbParts>;
 }
 
-const DECIMALS = 10;
-function round(n: number): number {
-  return Math.round(n * DECIMALS) / DECIMALS;
-}
 function fmt([x, y]: Point): string {
-  return `${round(x)} ${round(y)}`;
+  return `${roundSvg(x)} ${roundSvg(y)}`;
 }
 
 /** The control point that makes a straight spine: halfway between neck and hip. */

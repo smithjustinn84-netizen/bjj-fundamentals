@@ -37,6 +37,7 @@ export function createMemoryStorage({ initialData }: StorageOptions): AppStorage
 
   function repository<K extends Exclude<keyof BackupData, 'reviewLog'>>(table: K): Repository<BackupData[K][number]> {
     type Row = BackupData[K][number];
+    // Safe: `table` indexes BackupData, so its rows are exactly `Row`; TypeScript cannot follow the generic index.
     const rows = () => state.data[table] as Row[];
     const upsert = (row: Row) => {
       const list = rows();

@@ -3,7 +3,7 @@ import { buildLibrary, type Library } from '../library';
 import type { ItemKind, Transition, VideoBookmark } from '../models';
 import { starterContent } from '../seed';
 import { DAY_MS, streakDays } from '../srs';
-import { missingStarterTechniques } from '../starter';
+import { findMissingStarterTechniques } from '../starter';
 
 /** How far back to look when computing the streak. Streaks longer than this are capped. */
 const STREAK_WINDOW_DAYS = 400;
@@ -51,7 +51,7 @@ export function createQueries({ storage, now }: CoreEnv) {
     /** Starter techniques this library could hold but does not, e.g. ones added to the app after it was set up. */
     async missingStarterTechniques(): Promise<Transition[]> {
       const [transitions, positions] = await Promise.all([storage.transitions.all(), storage.positions.all()]);
-      return missingStarterTechniques(starterContent(now()).transitions, transitions, positions);
+      return findMissingStarterTechniques(starterContent(now()).transitions, transitions, positions);
     },
 
     /** Newest first. */

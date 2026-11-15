@@ -1,24 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { blueBeltTestList, isOnBlueBeltTest } from './beltTest';
 import { buildLibrary } from './library';
-import type { ReviewState } from './models';
 import { starterContent } from './seed';
-import { cardId } from './srs';
-import { position, transition } from './testing/testFixtures';
-
-function review(itemId: string, intervalDays: number): ReviewState {
-  return {
-    id: cardId('transition', itemId),
-    kind: 'transition',
-    itemId,
-    ease: 2.5,
-    intervalDays,
-    repetitions: 1,
-    lapses: 0,
-    due: 0,
-    lastReviewed: 0,
-  };
-}
+import { position, review, transition } from './testing/testFixtures';
 
 describe('isOnBlueBeltTest', () => {
   it('uses the stored flag when there is one', () => {
@@ -50,7 +34,11 @@ describe('blueBeltTestList', () => {
       transition({ id: 'sweep', type: 'sweep', fromId: 'guard', blueBeltTest: true }),
       transition({ id: 'not-tested', type: 'pass', fromId: 'guard', blueBeltTest: false }),
     ],
-    [review('armbar', 5), review('sweep', 1), review('not-tested', 5)],
+    [
+      review('transition', 'armbar', { intervalDays: 5, repetitions: 1 }),
+      review('transition', 'sweep', { intervalDays: 1, repetitions: 1 }),
+      review('transition', 'not-tested', { intervalDays: 5, repetitions: 1 }),
+    ],
   );
 
   it('groups listed techniques by type in type order, leaving out empty types', () => {

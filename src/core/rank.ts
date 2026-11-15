@@ -20,8 +20,8 @@ export interface BeltProgress {
 }
 
 /**
- * Turns "percent of cards learned" into a study rank: a belt every 25 points, a stripe every 5,
- * and black only at 100%. Out-of-range input is clamped.
+ * Turns "percent of cards learned" into a study rank: the belts below black split the range evenly,
+ * each belt splits again into stripes, and black comes only at 100%. Out-of-range input is clamped.
  */
 export function beltRank(percentLearned: number): BeltProgress {
   const percent = Math.min(BLACK_BELT_PERCENT, Math.max(0, percentLearned));

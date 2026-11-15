@@ -77,6 +77,7 @@ export const DECKS = ['all', ...ITEM_KINDS] as const;
 export type Deck = (typeof DECKS)[number];
 
 export function isItemKind(value: unknown): value is ItemKind {
+  // Widening to string[] is safe: `includes` only reads, and lets any string be tested for membership.
   return typeof value === 'string' && (ITEM_KINDS as readonly string[]).includes(value);
 }
 

@@ -6,9 +6,10 @@ import type { Concept, Position, Transition, VideoBookmark } from './models';
  * the goal is to give a new student a map, not an encyclopedia.
  */
 
-type Stamped<T> = Omit<T, 'createdAt' | 'updatedAt' | 'notes' | 'blueBeltTest'>;
+/** A starter row as written below: the fields every row gets the same value for are filled in when seeding. */
+type StarterRow<T> = Omit<T, 'createdAt' | 'updatedAt' | 'notes' | 'blueBeltTest'>;
 
-const concepts: Stamped<Concept>[] = [
+const concepts: StarterRow<Concept>[] = [
   {
     id: 'safety',
     name: 'Tap early, tap often',
@@ -137,7 +138,7 @@ const concepts: Stamped<Concept>[] = [
   },
 ];
 
-const positions: Stamped<Position>[] = [
+const positions: StarterRow<Position>[] = [
   {
     id: 'standing',
     name: 'Standing',
@@ -225,7 +226,7 @@ const positions: Stamped<Position>[] = [
   },
 ];
 
-const transitions: Stamped<Transition>[] = [
+const transitions: StarterRow<Transition>[] = [
   // Standing
   {
     id: 'pull-guard',
@@ -720,8 +721,9 @@ function seedPositions(now: number): Position[] {
 }
 
 /**
- * Every starter technique is a fundamental that blue belt tests commonly ask for. Kept as a list of ids
- * so installations seeded before the blue belt list existed get the same default as new ones.
+ * Deliberately every starter technique: each is a fundamental that blue belt tests commonly ask for, so a
+ * technique added to the starter content lands on the list too. Kept as a set of ids so techniques stored
+ * before the blue belt list existed get the same default as new ones (see `isOnBlueBeltTest`).
  */
 export const STARTER_BLUE_BELT_TEST_IDS: ReadonlySet<string> = new Set(transitions.map((t) => t.id));
 

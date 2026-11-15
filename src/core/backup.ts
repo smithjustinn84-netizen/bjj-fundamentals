@@ -10,6 +10,7 @@ import {
   type Transition,
   type VideoBookmark,
 } from './models';
+import { localDayKey } from './srs';
 import { isYouTubeId } from './youtube';
 
 /**
@@ -55,7 +56,8 @@ type Schema<T> = { [K in keyof T]-?: Check };
 
 const text: Check = (v) => typeof v === 'string';
 const id: Check = (v) => typeof v === 'string' && v !== '';
-const num: Check = (v) => typeof v === 'number' && Number.isFinite(v);
+/** A type guard as well as a `Check`, so callers that go on to use the number need no cast. */
+const num = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 const bool: Check = (v) => typeof v === 'boolean';
 const textList: Check = (v) => Array.isArray(v) && v.every(text);
 const oneOf =
@@ -110,7 +112,7 @@ const SCHEMAS: { [T in BackupTable]: Schema<BackupData[T][number]> } = {
     id,
     title: text,
     youtubeId: (v) => typeof v === 'string' && isYouTubeId(v),
-    startSeconds: (v) => num(v) && (v as number) >= 0,
+    startSeconds: (v) => num(v) && v >= 0,
     linkedKind: oneOf(['', ...ITEM_KINDS]),
     linkedId: text,
     note: text,
@@ -169,13 +171,12 @@ export function validateBackup(value: unknown): BackupFile {
   return {
     app: BACKUP_APP,
     schemaVersion: value.schemaVersion,
-    exportedAt: num(value.exportedAt) ? (value.exportedAt as number) : 0,
+    exportedAt: num(value.exportedAt) ? value.exportedAt : 0,
     // Safe: every row of every table was just checked field by field against SCHEMAS.
     data: validated as unknown as BackupData,
   };
 }
 
 export function backupFilename(now: Date): string {
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `bjj-fundamentals-backup-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}.json`;
+  return `bjj-fundamentals-backup-${localDayKey(now.getTime())}.json`;
 }

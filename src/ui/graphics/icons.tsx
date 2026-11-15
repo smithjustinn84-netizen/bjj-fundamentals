@@ -2,12 +2,6 @@ import type { ReactNode } from 'react';
 
 /** Line icons drawn on a 24x24 grid. Stroke and size come from the `.icon` class and the surrounding text. */
 const ICONS = {
-  home: (
-    <>
-      <path d="M3 11.5 12 4l9 7.5" />
-      <path d="M5.5 10v9.5h13V10" />
-    </>
-  ),
   concepts: (
     <>
       <path d="M4 5.5c2.5-1 5.5-1 8 .5 2.5-1.5 5.5-1.5 8-.5v13c-2.5-1-5.5-1-8 .5-2.5-1.5-5.5-1.5-8-.5z" />
@@ -59,10 +53,10 @@ const ICONS = {
 
 export type IconName = keyof typeof ICONS;
 
-/** Decorative by default: put the meaning in nearby text, or pass `label` when the icon stands alone. */
-export function Icon({ name, label }: { name: IconName; label?: string }) {
+/** Always decorative: put the meaning in nearby text. */
+export function Icon({ name }: { name: IconName }) {
   return (
-    <svg className="icon" viewBox="0 0 24 24" role={label ? 'img' : undefined} aria-label={label} aria-hidden={!label}>
+    <svg className="icon" viewBox="0 0 24 24" aria-hidden="true">
       {ICONS[name]}
     </svg>
   );

@@ -4,7 +4,7 @@ import { itemName, type Library } from '../../core/library';
 import { GRADES, type Grade } from '../../core/models';
 import type { StudyItem } from '../../core/study';
 
-export type SessionStatus = 'idle' | 'active' | 'finished';
+type SessionStatus = 'idle' | 'active' | 'finished';
 
 export type GradeTally = Record<Grade, number>;
 
@@ -13,7 +13,8 @@ const emptyTally = () => Object.fromEntries(GRADES.map((grade) => [grade, 0])) a
 
 /**
  * State for one review session: the queue of cards, which side is showing, and grading.
- * Holds no rendering and no scheduling rules; those live in the page and in `core/srs`.
+ * Holds no rendering and no interval maths; those live in the page and in `core/srs`. The one rule it
+ * keeps is that a card graded "again" goes back on the end of this session's queue.
  */
 export function useReviewSession(lib: Library | undefined) {
   const [queue, setQueue] = useState<StudyItem[] | null>(null);

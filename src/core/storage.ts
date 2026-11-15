@@ -9,7 +9,7 @@ import type { Concept, Position, ReviewLogEntry, ReviewState, Transition, VideoB
  * The contract is deliberately small: plain reads and writes by id, plus one indexed read. Filtering,
  * sorting and cascades are done in core, so an engine needs no knowledge of the app's rules.
  *
- * Every implementation must pass the shared suite in `core/storageContract.ts`.
+ * Every implementation must pass the shared suite in `core/testing/storageContract.ts`.
  */
 
 /** One collection of rows keyed by a string `id`. */

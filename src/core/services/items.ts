@@ -3,7 +3,7 @@ import type { CoreEnv } from '../core';
 import { type Concept, endsTheRoll, type ItemKind, type Position, type Transition } from '../models';
 import { starterContent } from '../seed';
 import { cardId } from '../srs';
-import { missingStarterTechniques } from '../starter';
+import { findMissingStarterTechniques } from '../starter';
 import type { Repository } from '../storage';
 
 /** Fields the service fills in, so callers cannot get ids or timestamps wrong. */
@@ -62,13 +62,14 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
       save(storage.transitions, id, endsTheRoll(input.type) ? { ...input, toId: '' } : input),
 
     /**
-     * Add the starter techniques the library is missing, each with its starter video bookmark, leaving
-     * everything already stored untouched. Resolves to how many techniques were added.
+     * Add the starter techniques the library is missing, leaving everything already stored untouched.
+     * A technique the library never had also gets its starter video bookmark; one the user deleted does
+     * not, because deleting kept that bookmark, unlinked. Resolves to how many techniques were added.
      */
     addMissingStarterTechniques(): Promise<number> {
       const starter = starterContent(now());
       return storage.transaction(async () => {
-        const missing = missingStarterTechniques(
+        const missing = findMissingStarterTechniques(
           starter.transitions,
           await storage.transitions.all(),
           await storage.positions.all(),

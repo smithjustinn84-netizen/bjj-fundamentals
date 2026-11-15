@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { missingStarterTechniques } from './starter';
+import { findMissingStarterTechniques } from './starter';
 import { position, transition } from './testing/testFixtures';
 
-describe('missingStarterTechniques', () => {
+describe('findMissingStarterTechniques', () => {
   const positions = [position({ id: 'guard' }), position({ id: 'mount' })];
   const starter = [
     transition({ id: 'sweep', fromId: 'guard', toId: 'mount' }),
@@ -13,14 +13,14 @@ describe('missingStarterTechniques', () => {
 
   it('returns starter techniques that are not stored, including submissions with no destination', () => {
     const stored = [transition({ id: 'sweep', name: 'Renamed by the user' }), transition({ id: 'my-own' })];
-    expect(missingStarterTechniques(starter, stored, positions).map((t) => t.id)).toEqual(['choke']);
+    expect(findMissingStarterTechniques(starter, stored, positions).map((t) => t.id)).toEqual(['choke']);
   });
 
   it('leaves out techniques whose start or end position the library no longer has', () => {
-    expect(missingStarterTechniques(starter, [], positions).map((t) => t.id)).toEqual(['sweep', 'choke']);
+    expect(findMissingStarterTechniques(starter, [], positions).map((t) => t.id)).toEqual(['sweep', 'choke']);
   });
 
   it('is empty when everything is already stored', () => {
-    expect(missingStarterTechniques(starter, starter, positions)).toEqual([]);
+    expect(findMissingStarterTechniques(starter, starter, positions)).toEqual([]);
   });
 });

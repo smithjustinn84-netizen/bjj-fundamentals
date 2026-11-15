@@ -29,5 +29,3 @@ export function createCore(env: CoreEnv) {
     subscribe: (listener: () => void) => env.storage.subscribe(listener),
   };
 }
-
-export type Core = ReturnType<typeof createCore>;

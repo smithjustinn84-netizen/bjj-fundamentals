@@ -5,7 +5,7 @@ import { endsTheRoll, type Position, type Transition } from './models';
  * the positions they connect still exist. Starter content is only inserted when storage is first created,
  * so this is how techniques added to the app later reach a library that already exists.
  */
-export function missingStarterTechniques(
+export function findMissingStarterTechniques(
   starter: Transition[],
   stored: Transition[],
   positions: Position[],

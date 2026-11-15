@@ -391,18 +391,21 @@ interface Scene {
   draw: () => ReactNode;
 }
 
+/** Tapping is both the safety concept's picture and the end of every submission. */
+const TAP_SCENE: Scene = {
+  draw: () => (
+    <>
+      <Figure pose={TAPPING} gi="light" />
+      {/* The tap: rings spreading across the mat from the hand. */}
+      <ellipse className="dgm-ring" cx="122" cy="196" rx="20" ry="5" />
+      <ellipse className="dgm-ring" cx="122" cy="196" rx="36" ry="9" />
+      <Arrow from={[104, 140]} to={[116, 174]} bend={8} />
+    </>
+  ),
+};
+
 const CONCEPT_SCENES: Record<string, Scene> = {
-  safety: {
-    draw: () => (
-      <>
-        <Figure pose={TAPPING} gi="light" />
-        {/* The tap: rings spreading across the mat from the hand. */}
-        <ellipse className="dgm-ring" cx="122" cy="196" rx="20" ry="5" />
-        <ellipse className="dgm-ring" cx="122" cy="196" rx="36" ry="9" />
-        <Arrow from={[104, 140]} to={[116, 174]} bend={8} />
-      </>
-    ),
-  },
+  safety: TAP_SCENE,
   posture: {
     draw: () => (
       <>
@@ -511,7 +514,7 @@ const CONCEPT_SCENES: Record<string, Scene> = {
 export function TapArtwork({ className = '' }: { className?: string }) {
   return (
     <Diagram label="Diagram of a tap on the mat" shape="tall" className={`position-artwork ${className}`.trim()}>
-      {CONCEPT_SCENES.safety?.draw()}
+      {TAP_SCENE.draw()}
     </Diagram>
   );
 }

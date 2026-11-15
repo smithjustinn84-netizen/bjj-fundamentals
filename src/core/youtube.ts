@@ -1,5 +1,8 @@
 /** Parse YouTube links and timestamps without calling any YouTube API. */
 
+const SECONDS_PER_MINUTE = 60;
+const SECONDS_PER_HOUR = 60 * SECONDS_PER_MINUTE;
+
 const ID_RE = /^[A-Za-z0-9_-]{11}$/;
 
 export function isYouTubeId(value: string): boolean {
@@ -57,11 +60,15 @@ export function parseTime(input: string | null | undefined): number | null {
   if (raw === '') return null;
   if (/^\d+$/.test(raw)) return parseInt(raw, 10);
   if (/^\d+(:\d{1,2}){1,2}$/.test(raw)) {
-    return raw.split(':').reduce((acc, part) => acc * 60 + parseInt(part, 10), 0);
+    return raw.split(':').reduce((acc, part) => acc * SECONDS_PER_MINUTE + parseInt(part, 10), 0);
   }
   const m = raw.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/);
   if (m && (m[1] || m[2] || m[3])) {
-    return parseInt(m[1] ?? '0', 10) * 3600 + parseInt(m[2] ?? '0', 10) * 60 + parseInt(m[3] ?? '0', 10);
+    return (
+      parseInt(m[1] ?? '0', 10) * SECONDS_PER_HOUR +
+      parseInt(m[2] ?? '0', 10) * SECONDS_PER_MINUTE +
+      parseInt(m[3] ?? '0', 10)
+    );
   }
   return null;
 }
@@ -78,9 +85,9 @@ export function parseYouTubeStart(input: string): number | null {
 
 export function formatTime(totalSeconds: number): string {
   const s = Math.max(0, Math.floor(totalSeconds));
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
+  const h = Math.floor(s / SECONDS_PER_HOUR);
+  const m = Math.floor((s % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
+  const sec = s % SECONDS_PER_MINUTE;
   const mm = h > 0 ? String(m).padStart(2, '0') : String(m);
   return `${h > 0 ? `${h}:` : ''}${mm}:${String(sec).padStart(2, '0')}`;
 }

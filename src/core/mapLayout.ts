@@ -6,6 +6,7 @@ import {
   type Transition,
   type TransitionType,
 } from './models';
+import { roundSvg } from './svgNumber';
 
 /**
  * Geometry for the position map: where each position sits and how each technique's arrow curves.
@@ -117,8 +118,6 @@ interface Point {
   y: number;
 }
 
-const round = (value: number) => Math.round(value * 10) / 10;
-
 function centreOf(node: MapNode): Point {
   return { x: node.x + node.width / 2, y: node.y + node.height / 2 };
 }
@@ -183,7 +182,7 @@ function collisions(curve: Curve, obstacles: MapNode[], width: number, height: n
 }
 
 function toPath({ start, control, end }: Curve): string {
-  return `M${round(start.x)} ${round(start.y)}Q${round(control.x)} ${round(control.y)} ${round(end.x)} ${round(end.y)}`;
+  return `M${roundSvg(start.x)} ${roundSvg(start.y)}Q${roundSvg(control.x)} ${roundSvg(control.y)} ${roundSvg(end.x)} ${roundSvg(end.y)}`;
 }
 
 /**
@@ -222,6 +221,7 @@ export function layoutPositionMap(
   const nodes: MapNode[] = [];
   laneMembers.forEach((members, laneIndex) => {
     const category = members[0]?.category;
+    // Never taken: lanes are only made for categories that have a position. Narrows the type.
     if (!category) return;
     const laneStart = g.padding + laneIndex * (mainHeading + mainSize + g.laneGap);
     const main = laneStart + mainHeading;
@@ -230,16 +230,16 @@ export function layoutPositionMap(
     const crossStart = g.padding + crossHeading + (crossExtent - crossHeading - laneCross) / 2;
     lanes.push({
       category,
-      labelX: round(horizontal ? main + mainSize / 2 : g.padding),
-      labelY: round(horizontal ? g.padding : laneStart),
+      labelX: roundSvg(horizontal ? main + mainSize / 2 : g.padding),
+      labelY: roundSvg(horizontal ? g.padding : laneStart),
     });
     members.forEach((position, index) => {
       const cross = crossStart + index * (crossSize + g.nodeGap);
       nodes.push({
         id: position.id,
         category,
-        x: round(horizontal ? main : cross),
-        y: round(horizontal ? cross : main),
+        x: roundSvg(horizontal ? main : cross),
+        y: roundSvg(horizontal ? cross : main),
         width: g.nodeWidth,
         height: g.nodeHeight,
         submissions: submissionsFrom.get(position.id) ?? 0,
@@ -247,8 +247,8 @@ export function layoutPositionMap(
     });
   });
 
-  const width = round((horizontal ? mainExtent : crossExtent) + g.padding * 2);
-  const height = round((horizontal ? crossExtent : mainExtent) + g.padding * 2);
+  const width = roundSvg((horizontal ? mainExtent : crossExtent) + g.padding * 2);
+  const height = roundSvg((horizontal ? crossExtent : mainExtent) + g.padding * 2);
 
   const nodeById = new Map(nodes.map((node) => [node.id, node]));
   // Bows already used between each pair of positions, measured in one shared direction so that

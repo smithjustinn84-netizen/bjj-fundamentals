@@ -14,7 +14,7 @@ import type { AppStorage, Repository, ReviewLogRepository, StorageOptions } from
  *  3. Update the model in `core/models.ts` and its checks in `core/backup.ts`.
  */
 
-export const DEFAULT_DATABASE_NAME = 'bjj-fundamentals';
+const DEFAULT_DATABASE_NAME = 'bjj-fundamentals';
 
 export interface DexieStorageOptions extends StorageOptions {
   /** IndexedDB database name. Tests pass a unique one. */
