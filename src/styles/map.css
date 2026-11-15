@@ -1,11 +1,11 @@
 /* Position map */
-/* Across the page on wide screens with the details underneath; down the page otherwise, with the details alongside. */
+/* Across the page where the column is wide enough (Positions.tsx decides), with the details underneath; down the page otherwise, with the details alongside. */
 .map {
   display: grid;
   gap: var(--space-4);
   align-items: start;
 }
-/* One column on a phone; from 700px the details sit beside the map. */
+/* One column on a phone. The details sit beside the map from 700px, the narrowest that leaves them a readable column. */
 .map-vertical {
   grid-template-columns: 1fr;
 }
@@ -86,9 +86,13 @@
     border-color var(--dur-fast) var(--ease-out),
     background-color var(--dur-fast) var(--ease-out);
 }
-.map-node:hover,
 .map-node:focus-visible {
   border-color: var(--accent);
+}
+@media (hover: hover) {
+  .map-node:hover {
+    border-color: var(--accent);
+  }
 }
 .map-node[aria-pressed="true"] {
   border-color: var(--accent);
@@ -167,7 +171,13 @@
   }
   .map-vertical .map-panel {
     position: sticky;
-    top: 4.5rem;
+    top: calc(var(--topbar-height) + var(--space-4));
+  }
+}
+/* Beside the rail there is no bar above to clear. */
+@media (min-width: 1100px) {
+  .map-vertical .map-panel {
+    top: var(--space-4);
   }
 }
 

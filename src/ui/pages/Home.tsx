@@ -230,114 +230,118 @@ export default function Home() {
         <p className="muted small">A study rank, not a real one.</p>
       </section>
 
-      {drill && (
-        <Link className="card today-drill" to={itemPath('transition', drill.technique.id)}>
-          <PositionArtwork
-            id={drill.technique.fromId}
-            name={lib.positionById.get(drill.technique.fromId)?.name ?? ''}
-            className="thumb-artwork"
-          />
-          <span className="grow">
-            <span className="eyebrow">Drill for today</span>
-            <strong>{drill.technique.name}</strong>
-            <span className="muted small block">{DRILL_REASON_TEXT[drill.reason]}</span>
-            <span className="small block">{drill.drill}</span>
-          </span>
-          <Icon name="chevron" />
-        </Link>
-      )}
-
-      <section className="card">
-        {training.classes === 0 ? (
-          <>
-            <p className="eyebrow">Training log</p>
-            <p className="muted">
-              Write up each class while it is fresh: what was taught, what worked in rolling, and one thing to work on
-              next time.
-            </p>
-            <Link className="button" to={ROUTES.log}>
-              Log a class
-            </Link>
-          </>
-        ) : (
-          <>
-            <p className="eyebrow">{training.focus ? 'Focus for your next class' : 'Training log'}</p>
-            {training.focus && <p className="today-focus">{training.focus}</p>}
-            <p className="muted small">
-              {formatClassCount(training.classes)} logged · {formatMatTime(training.minutes)} on the mat
-            </p>
-            {stuck.length > 0 && (
-              <>
-                <p className="muted small">
-                  Where you got stuck. Cards from here that you have not studied yet come first in review.
-                </p>
-                <ul className="chip-list">
-                  {stuck.map((situation) => (
-                    <li key={`${situation.position.id}:${situation.role}`}>
-                      <Link className="chip" to={positionSidePath(situation.position.id, situation.role)}>
-                        {situationName(situation)}
-                        <Icon name="chevron" />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-          </>
-        )}
-      </section>
-
-      <section className="card">
-        <LibrarySearch lib={lib} />
-      </section>
-
-      <section className="card">
-        <h2>Suggested path</h2>
-        <PathSteps steps={steps} />
-      </section>
-
-      {sticking.length > 0 && (
-        <section className="card">
-          <h2>Sticking points</h2>
-          <p className="muted">
-            These have slipped more than once in review. Reread the page or watch the video, then try one in your next
-            class.
-          </p>
-          <ul className="chip-list">
-            {sticking.map((item) => (
-              <li key={`${item.kind}:${item.id}`}>
-                <Link to={studyItemPath(item)} className="chip">
-                  <ProgressDot state={reviewOf(lib, item.kind, item.id)} /> {cardName(lib, item)}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      <section className="card">
-        <div className="section-head">
-          <h2>Concepts to learn next</h2>
-          <Link className="button small" to={ROUTES.concepts}>
-            All {lib.concepts.length} concepts
+      <div className="stack today-cards">
+        {drill && (
+          <Link className="card today-drill" to={itemPath('transition', drill.technique.id)}>
+            <PositionArtwork
+              id={drill.technique.fromId}
+              name={lib.positionById.get(drill.technique.fromId)?.name ?? ''}
+              className="thumb-artwork"
+            />
+            <span className="grow">
+              <span className="eyebrow">Drill for today</span>
+              <strong>{drill.technique.name}</strong>
+              <span className="muted small block">{DRILL_REASON_TEXT[drill.reason]}</span>
+              <span className="small block">{drill.drill}</span>
+            </span>
+            <Icon name="chevron" />
           </Link>
-        </div>
-        {nextConcepts.length === 0 ? (
-          <p className="muted">
-            {lib.concepts.length === 0 ? 'No concepts yet.' : 'Every concept is learned. Keep reviewing to stay sharp.'}
-          </p>
-        ) : (
-          <ul className="chip-list stagger">
-            {nextConcepts.map((c) => (
-              <li key={c.id}>
-                <Link to={itemPath('concept', c.id)} className="chip">
-                  <ProgressDot state={reviewOf(lib, 'concept', c.id)} /> {c.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
         )}
-      </section>
+
+        <section className="card">
+          {training.classes === 0 ? (
+            <>
+              <p className="eyebrow">Training log</p>
+              <p className="muted">
+                Write up each class while it is fresh: what was taught, what worked in rolling, and one thing to work on
+                next time.
+              </p>
+              <Link className="button" to={ROUTES.log}>
+                Log a class
+              </Link>
+            </>
+          ) : (
+            <>
+              <p className="eyebrow">{training.focus ? 'Focus for your next class' : 'Training log'}</p>
+              {training.focus && <p className="today-focus">{training.focus}</p>}
+              <p className="muted small">
+                {formatClassCount(training.classes)} logged · {formatMatTime(training.minutes)} on the mat
+              </p>
+              {stuck.length > 0 && (
+                <>
+                  <p className="muted small">
+                    Where you got stuck. Cards from here that you have not studied yet come first in review.
+                  </p>
+                  <ul className="chip-list">
+                    {stuck.map((situation) => (
+                      <li key={`${situation.position.id}:${situation.role}`}>
+                        <Link className="chip" to={positionSidePath(situation.position.id, situation.role)}>
+                          {situationName(situation)}
+                          <Icon name="chevron" />
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </>
+          )}
+        </section>
+
+        <section className="card">
+          <LibrarySearch lib={lib} />
+        </section>
+
+        <section className="card">
+          <h2>Suggested path</h2>
+          <PathSteps steps={steps} />
+        </section>
+
+        {sticking.length > 0 && (
+          <section className="card">
+            <h2>Sticking points</h2>
+            <p className="muted">
+              These have slipped more than once in review. Reread the page or watch the video, then try one in your next
+              class.
+            </p>
+            <ul className="chip-list">
+              {sticking.map((item) => (
+                <li key={`${item.kind}:${item.id}`}>
+                  <Link to={studyItemPath(item)} className="chip">
+                    <ProgressDot state={reviewOf(lib, item.kind, item.id)} /> {cardName(lib, item)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section className="card">
+          <div className="section-head">
+            <h2>Concepts to learn next</h2>
+            <Link className="button small" to={ROUTES.concepts}>
+              All {lib.concepts.length} concepts
+            </Link>
+          </div>
+          {nextConcepts.length === 0 ? (
+            <p className="muted">
+              {lib.concepts.length === 0
+                ? 'No concepts yet.'
+                : 'Every concept is learned. Keep reviewing to stay sharp.'}
+            </p>
+          ) : (
+            <ul className="chip-list stagger">
+              {nextConcepts.map((c) => (
+                <li key={c.id}>
+                  <Link to={itemPath('concept', c.id)} className="chip">
+                    <ProgressDot state={reviewOf(lib, 'concept', c.id)} /> {c.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
     </div>
   );
 }

@@ -375,42 +375,44 @@ export default function TrainingLog() {
   }
 
   return (
-    <div className="stack narrow-page">
+    <div className="stack log-page">
       <div>
         <h1>Training log</h1>
         <p className="muted">
           Write up each class while it is fresh. The one thing you pick to work on next time shows on Today.
         </p>
       </div>
-      <div className="card">
-        <EntryForm
-          key={`${editing?.id ?? 'new'}:${formRound}`}
-          lib={lib}
-          entries={entries}
-          entry={editing}
-          onDone={finishForm}
-        />
-      </div>
-      <div className="card">
-        <div className="section-head">
-          <h2>Classes</h2>
-          {summary.classes > 0 && (
-            <span className="muted small">
-              {formatClassCount(summary.classes)} · {formatMatTime(summary.minutes)}
-            </span>
+      <div className="log-layout">
+        <div className="card">
+          <EntryForm
+            key={`${editing?.id ?? 'new'}:${formRound}`}
+            lib={lib}
+            entries={entries}
+            entry={editing}
+            onDone={finishForm}
+          />
+        </div>
+        <div className="card">
+          <div className="section-head">
+            <h2>Classes</h2>
+            {summary.classes > 0 && (
+              <span className="muted small">
+                {formatClassCount(summary.classes)} · {formatMatTime(summary.minutes)}
+              </span>
+            )}
+          </div>
+          {entries.length === 0 ? (
+            <EmptyState icon="log" title="No classes logged yet">
+              Your first entry will show here. A sentence or two is enough.
+            </EmptyState>
+          ) : (
+            <ul className="log-list">
+              {entries.map((entry) => (
+                <EntryRow key={entry.id} lib={lib} entry={entry} onEdit={() => startEditing(entry.id)} />
+              ))}
+            </ul>
           )}
         </div>
-        {entries.length === 0 ? (
-          <EmptyState icon="log" title="No classes logged yet">
-            Your first entry will show here. A sentence or two is enough.
-          </EmptyState>
-        ) : (
-          <ul className="log-list">
-            {entries.map((entry) => (
-              <EntryRow key={entry.id} lib={lib} entry={entry} onEdit={() => startEditing(entry.id)} />
-            ))}
-          </ul>
-        )}
       </div>
     </div>
   );

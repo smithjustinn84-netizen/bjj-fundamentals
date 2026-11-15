@@ -1,6 +1,9 @@
-/* App frame: navigation (a bottom tab bar on phones, a top bar from 600px), content column, footer. */
+/*
+ * App frame: navigation, content column, footer. The navigation is a bottom tab bar on phones, a top bar
+ * from 600px and a rail down the left side from 1100px; the five destinations are the same in all three.
+ */
 .app {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   /* Tatami weave: fine horizontal rush lines with a wider vertical seam. */
@@ -41,8 +44,10 @@
   color: var(--text);
   text-decoration: none;
 }
-.more-row:hover {
-  background: var(--accent-soft);
+@media (hover: hover) {
+  .more-row:hover {
+    background: var(--accent-soft);
+  }
 }
 .more-row > .icon {
   color: var(--muted);
@@ -67,7 +72,8 @@
 
 /*
  * Phone first: no top bar, and the navigation is a thumb-reachable tab bar pinned to the bottom.
- * From `min-width: 600px` the bar returns to the top with the brand beside the links.
+ * From `min-width: 600px` the bar returns to the top with the brand beside the links, and from
+ * `min-width: 1100px` it stands down the left side as a rail.
  */
 .topbar {
   display: contents;
@@ -87,8 +93,10 @@
   flex: 0 0 auto;
   transition: transform var(--dur-base) var(--ease-spring);
 }
-.brand:hover .brand-mark {
-  transform: rotate(-6deg) scale(1.08);
+@media (hover: hover) {
+  .brand:hover .brand-mark {
+    transform: rotate(-6deg) scale(1.08);
+  }
 }
 .nav {
   position: fixed;
@@ -97,7 +105,9 @@
   display: flex;
   justify-content: space-around;
   height: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
-  padding: var(--space-1) var(--space-1) calc(var(--space-1) + env(safe-area-inset-bottom));
+  /* The side insets keep the tabs clear of a notch when the phone is on its side. */
+  padding: var(--space-1) max(var(--space-1), env(safe-area-inset-right))
+    calc(var(--space-1) + env(safe-area-inset-bottom)) max(var(--space-1), env(safe-area-inset-left));
   background: var(--surface);
   border-top: var(--line) solid var(--outline);
 }
@@ -119,8 +129,10 @@
   width: 1.5rem;
   height: 1.5rem;
 }
-.nav a:hover {
-  color: var(--text);
+@media (hover: hover) {
+  .nav a:hover {
+    color: var(--text);
+  }
 }
 .nav a.active {
   color: var(--text);
@@ -157,10 +169,12 @@
 .content {
   flex: 1;
   width: 100%;
-  max-width: 1000px;
+  max-width: var(--content-max);
   margin: 0 auto;
-  /* Clear of the fixed tab bar. */
-  padding: var(--space-4) var(--page-gutter) calc(var(--space-5) + var(--tabbar-height) + env(safe-area-inset-bottom));
+  /* Clear of the fixed tab bar underneath, and of a notch on any other side. */
+  padding: calc(var(--space-4) + env(safe-area-inset-top)) max(var(--page-gutter), env(safe-area-inset-right))
+    calc(var(--space-5) + var(--tabbar-height) + env(safe-area-inset-bottom))
+    max(var(--page-gutter), env(safe-area-inset-left));
 }
 .app:has(.review-session) .content {
   padding-bottom: 0;
@@ -176,27 +190,37 @@
 }
 
 @media (min-width: 600px) {
+  /* One row of a known height, so anything that sticks below it knows where to stop. */
   .topbar {
     position: sticky;
     top: 0;
     z-index: 10;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-2) var(--space-5);
-    padding: var(--space-3) 1.25rem;
-    background: color-mix(in srgb, var(--surface) 88%, transparent);
-    backdrop-filter: blur(10px);
+    gap: var(--space-4);
+    height: calc(var(--topbar-height) + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) max(var(--gutter-wide), env(safe-area-inset-right)) 0
+      max(var(--gutter-wide), env(safe-area-inset-left));
+    background: var(--surface);
     border-bottom: var(--line) solid var(--outline);
   }
   .brand {
     display: flex;
+    flex: none;
+  }
+  /* Five links and the mark fill a small tablet's width; the name joins them from 900px. */
+  .brand-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   .nav,
   .app:has(.review-session) .nav {
     position: static;
     display: flex;
-    flex-wrap: wrap;
     justify-content: flex-start;
     gap: var(--space-1);
     height: auto;
@@ -208,6 +232,7 @@
     flex: none;
     flex-direction: row;
     gap: 0.4rem;
+    min-height: var(--tap);
     padding: 0.35rem 0.7rem;
     font-size: var(--text-md);
   }
@@ -215,11 +240,8 @@
     width: 1.15em;
     height: 1.15em;
   }
-  .nav a:hover,
   .nav a.active {
     background: var(--accent-soft);
-  }
-  .nav a.active {
     font-weight: 700;
   }
   .nav a.active::before {
@@ -230,9 +252,81 @@
   }
   .content,
   .app:has(.review-session) .content {
-    padding: var(--space-5) 1.25rem 3rem;
+    padding: var(--space-5) max(var(--gutter-wide), env(safe-area-inset-right)) 3rem
+      max(var(--gutter-wide), env(safe-area-inset-left));
   }
   .footer {
     display: block;
+  }
+}
+@media (min-width: 600px) and (hover: hover) {
+  .nav a:hover {
+    background: var(--accent-soft);
+  }
+}
+@media (min-width: 600px) and (hover: hover) and (pointer: fine) {
+  .nav a {
+    min-height: 0;
+  }
+}
+@media (min-width: 900px) {
+  .brand-name {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+}
+
+/* Desktop: the bar stands on its side. The rail stays put while the page scrolls beside it. */
+@media (min-width: 1100px) {
+  .app {
+    display: grid;
+    grid-template-columns: var(--rail-width) minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+  }
+  .topbar {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    align-self: start;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-5);
+    height: 100dvh;
+    padding: var(--space-5) var(--space-3);
+    overflow-y: auto;
+    border-bottom: 0;
+    border-right: var(--line) solid var(--outline);
+  }
+  .brand {
+    padding: 0 var(--space-3);
+  }
+  .nav,
+  .app:has(.review-session) .nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .nav a {
+    justify-content: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+  }
+  /* The strip of red belt again, this time hanging from the rail's left edge. */
+  .nav a.active::before {
+    content: "";
+    top: var(--space-2);
+    bottom: var(--space-2);
+    left: calc(-1 * var(--space-3));
+    width: 5px;
+    height: auto;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+  .badge {
+    margin-left: auto;
+  }
+  .content,
+  .footer {
+    grid-column: 2;
   }
 }

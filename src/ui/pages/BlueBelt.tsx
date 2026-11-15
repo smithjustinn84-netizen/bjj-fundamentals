@@ -71,30 +71,32 @@ export default function BlueBelt() {
             </Link>
           </div>
           <ProgressLegend />
-          {list.groups.map((group) => (
-            <section key={group.type}>
-              <h2 className="group-title">
-                {TRANSITION_GROUP_LABELS[group.type]} <span className="muted small">{group.techniques.length}</span>
-              </h2>
-              <ul className="transition-list card belt-test-list">
-                {group.techniques.map((technique) => {
-                  const from = lib.positionById.get(technique.fromId);
-                  return (
-                    <li key={technique.id}>
-                      <Link className="row-link" to={itemPath('transition', technique.id)}>
-                        <ProgressDot state={reviewOf(lib, 'transition', technique.id)} />
-                        <span className="row-text">
-                          <span className="row-name">{technique.name}</span>
-                          {from && <span className="row-meta">from {from.name}</span>}
-                        </span>
-                        <Icon name="chevron" />
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-          ))}
+          <div className="belt-test-groups">
+            {list.groups.map((group) => (
+              <section key={group.type}>
+                <h2 className="group-title">
+                  {TRANSITION_GROUP_LABELS[group.type]} <span className="muted small">{group.techniques.length}</span>
+                </h2>
+                <ul className="transition-list card belt-test-list">
+                  {group.techniques.map((technique) => {
+                    const from = lib.positionById.get(technique.fromId);
+                    return (
+                      <li key={technique.id}>
+                        <Link className="row-link" to={itemPath('transition', technique.id)}>
+                          <ProgressDot state={reviewOf(lib, 'transition', technique.id)} />
+                          <span className="row-text">
+                            <span className="row-name">{technique.name}</span>
+                            {from && <span className="row-meta">from {from.name}</span>}
+                          </span>
+                          <Icon name="chevron" />
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            ))}
+          </div>
         </>
       )}
     </div>

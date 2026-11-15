@@ -97,14 +97,17 @@ button:not(:disabled, .link):active,
 .tile:active {
   transform: scale(0.97);
 }
-.tile:hover,
-.chip:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow);
-}
-button.primary:not(:disabled):hover,
-.button.primary:hover {
-  box-shadow: var(--shadow-lift);
+/* Only where the pointer can hover: after a tap, a touch screen would leave the last thing touched lifted. */
+@media (hover: hover) {
+  .tile:hover,
+  .chip:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+  }
+  button.primary:not(:disabled):hover,
+  .button.primary:hover {
+    box-shadow: var(--shadow-lift);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

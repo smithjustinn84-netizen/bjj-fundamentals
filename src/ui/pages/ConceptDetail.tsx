@@ -41,33 +41,37 @@ export default function ConceptDetail() {
         title={concept.name}
         lead={concept.summary}
       />
-      <div className="card">
-        <ItemPicture kind="concept" id={concept.id}>
-          <ConceptArtwork id={concept.id} name={concept.name} />
-        </ItemPicture>
-        <Section title="Key points">
-          <Bullets items={concept.keyPoints} />
-        </Section>
-        {concept.drill && (
-          <Section title="Try this drill">
-            <p>{concept.drill}</p>
+      <div className="card detail-layout">
+        <div className="detail-picture">
+          <ItemPicture kind="concept" id={concept.id}>
+            <ConceptArtwork id={concept.id} name={concept.name} />
+          </ItemPicture>
+        </div>
+        <div className="detail-body">
+          <Section title="Key points">
+            <Bullets items={concept.keyPoints} />
           </Section>
-        )}
-        {usedIn.length > 0 && (
-          <Section title="Where it matters">
-            <ul className="chip-list">
-              {usedIn.map((p) => (
-                <li key={p.id}>
-                  <Link className="chip" to={itemPath('position', p.id)}>
-                    {p.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </Section>
-        )}
-        <NotesBlock notes={concept.notes} />
-        <LinkedVideos kind="concept" id={concept.id} />
+          {concept.drill && (
+            <Section title="Try this drill">
+              <p>{concept.drill}</p>
+            </Section>
+          )}
+          {usedIn.length > 0 && (
+            <Section title="Where it matters">
+              <ul className="chip-list">
+                {usedIn.map((p) => (
+                  <li key={p.id}>
+                    <Link className="chip" to={itemPath('position', p.id)}>
+                      {p.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          )}
+          <NotesBlock notes={concept.notes} />
+          <LinkedVideos kind="concept" id={concept.id} />
+        </div>
       </div>
       <Pager
         previous={previous && { to: itemPath('concept', previous.id), label: previous.name }}

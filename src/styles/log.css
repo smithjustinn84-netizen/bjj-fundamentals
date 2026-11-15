@@ -96,3 +96,21 @@
 .log-entry .row {
   margin-top: var(--space-2);
 }
+/* The page: one reading-width column, then the form beside the classes already logged from 900px. */
+.log-page {
+  max-width: var(--reading-max);
+  margin: 0 auto;
+}
+.log-layout {
+  display: grid;
+  gap: var(--space-4);
+}
+@media (min-width: 900px) {
+  .log-page {
+    max-width: none;
+  }
+  .log-layout {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    align-items: start;
+  }
+}

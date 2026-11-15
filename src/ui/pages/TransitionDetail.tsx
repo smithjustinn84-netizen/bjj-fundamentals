@@ -88,28 +88,32 @@ export default function TransitionDetail() {
           </p>
         )}
       </DetailHeader>
-      <div className="card">
-        <ItemPicture kind="transition" id={transition.id}>
-          <TransitionArtwork transition={transition} positionById={lib.positionById} />
-        </ItemPicture>
-        <Section title="Steps">
-          <Bullets items={transition.steps} ordered />
-        </Section>
-        {transition.commonMistakes.length > 0 && (
-          <Section title="Common mistakes">
-            <Bullets items={transition.commonMistakes} />
+      <div className="card detail-layout">
+        <div className="detail-picture">
+          <ItemPicture kind="transition" id={transition.id}>
+            <TransitionArtwork transition={transition} positionById={lib.positionById} />
+          </ItemPicture>
+        </div>
+        <div className="detail-body">
+          <Section title="Steps">
+            <Bullets items={transition.steps} ordered />
           </Section>
-        )}
-        {drill && (
-          <Section title="Try this drill">
-            <p>{drill}</p>
-          </Section>
-        )}
-        {endsTheRoll(transition.type) && (
-          <p className="drill">Apply submissions slowly in training and let go as soon as your partner taps.</p>
-        )}
-        <NotesBlock notes={transition.notes} />
-        <LinkedVideos kind="transition" id={transition.id} />
+          {transition.commonMistakes.length > 0 && (
+            <Section title="Common mistakes">
+              <Bullets items={transition.commonMistakes} />
+            </Section>
+          )}
+          {drill && (
+            <Section title="Try this drill">
+              <p>{drill}</p>
+            </Section>
+          )}
+          {endsTheRoll(transition.type) && (
+            <p className="drill">Apply submissions slowly in training and let go as soon as your partner taps.</p>
+          )}
+          <NotesBlock notes={transition.notes} />
+          <LinkedVideos kind="transition" id={transition.id} />
+        </div>
       </div>
       <Pager
         previous={previous && { to: itemPath('transition', previous.id), label: previous.name }}

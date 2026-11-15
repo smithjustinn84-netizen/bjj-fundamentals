@@ -191,8 +191,10 @@
   font-size: var(--text-md);
   font-weight: 800;
 }
-.grade:not(:disabled):hover {
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .grade:not(:disabled):hover {
+    transform: translateY(-2px);
+  }
 }
 .grade kbd {
   margin: 0;
@@ -271,7 +273,7 @@
   color: var(--belt);
 }
 
-/* No keyboard on a phone, so the shortcut hints only take room. */
+/* The shortcut hints only take room where there is no keyboard; they show with a mouse (below). */
 .grade kbd,
 .reveal kbd {
   display: none;
@@ -298,10 +300,6 @@
   .grade {
     padding: 0.6rem;
   }
-  .grade kbd,
-  .reveal kbd {
-    display: inline;
-  }
   .session-ready .primary {
     width: auto;
   }
@@ -312,5 +310,12 @@
   .complete-actions {
     flex-direction: row;
     justify-content: center;
+  }
+}
+/* A mouse almost always comes with a keyboard, which is the closest a stylesheet gets to asking for one. */
+@media (hover: hover) and (pointer: fine) {
+  .grade kbd,
+  .reveal kbd {
+    display: inline;
   }
 }

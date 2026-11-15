@@ -1,6 +1,13 @@
 /*
  * Design tokens. Every colour, radius, duration and easing used elsewhere comes from here,
  * so the light and dark themes and the reduced-motion override stay in one place.
+ *
+ * Size classes. A media query cannot read a custom property, so these three widths are written out
+ * wherever they are used (and mirrored for scripts in ui/breakpoints.ts):
+ *   600px  tablet: the bottom tab bar becomes a top bar.
+ *   900px  wide: lists run in two columns, and pages with two things to show put them side by side.
+ *   1100px desktop: the top bar becomes a rail down the left side.
+ * How big a control is depends on the pointer, not the width: `(hover: hover) and (pointer: fine)`.
  */
 :root {
   /*
@@ -96,6 +103,16 @@
   --tap: 2.75rem;
   /* The space between the page's content and the sides of a phone. */
   --page-gutter: 0.85rem;
+  /* The same space from 600px, where there is room to breathe. */
+  --gutter-wide: 1.25rem;
+  /* Padding inside a card. Rows that run to a card's edges undo it with the same number. */
+  --card-pad: 1.25rem;
+  /* The widest the page's content gets, and the widest a page of prose or a form gets. */
+  --content-max: 75rem;
+  --reading-max: 42.5rem;
+  /* Height of the top bar (600px to 1099px) and width of the side rail (from 1100px). */
+  --topbar-height: 3.5rem;
+  --rail-width: 13.5rem;
 
   --radius-sm: 4px;
   --radius-md: 8px;

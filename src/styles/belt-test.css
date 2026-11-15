@@ -40,3 +40,17 @@
     flex: none;
   }
 }
+/* Wide: the groups run down two columns, each kept whole. */
+@media (min-width: 900px) {
+  .belt-test-groups {
+    columns: 2;
+    column-gap: var(--space-5);
+  }
+  .belt-test-groups > section {
+    break-inside: avoid;
+  }
+  .belt-test-groups .group-title {
+    margin-top: 0;
+    padding-top: var(--space-4);
+  }
+}

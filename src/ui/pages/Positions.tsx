@@ -5,6 +5,7 @@ import { CATEGORY_LABELS } from '../../core/labels';
 import { type Library, reviewOf } from '../../core/library';
 import { POSITION_CATEGORIES } from '../../core/models';
 import { positionProgress } from '../../core/todaysDrill';
+import { TABLET_UP } from '../breakpoints';
 import { Loading, ProgressDot, ProgressLegend } from '../components/common';
 import { LearnTabs } from '../components/LearnTabs';
 import { LibrarySearch } from '../components/LibrarySearch';
@@ -17,13 +18,10 @@ import { itemPath, newItemPath } from '../routes';
 import { useMediaQuery } from '../useMediaQuery';
 
 /**
- * The across-the-page map needs about the full content column to stay readable, so below the
- * column's `max-width` in shell.css (1000px) it runs down the page instead.
+ * The across-the-page map needs a column about 1000px wide to stay readable. Beside the side rail
+ * (`--rail-width`) the window is that roomy from here; narrower, the map runs down the page instead.
  */
-const NARROW_SCREEN = '(max-width: 999px)';
-
-/** The phone breakpoint in shell.css. The map is hard to read that narrow, so a phone opens on the list. */
-const PHONE_SCREEN = '(max-width: 599px)';
+const MAP_ACROSS = '(min-width: 1280px)';
 
 const VIEWS = ['list', 'map'] as const;
 type View = (typeof VIEWS)[number];
@@ -73,11 +71,11 @@ function PositionList({ lib }: { lib: Library }) {
 
 export default function Positions() {
   const lib = useLibrary();
-  const onPhone = useMediaQuery(PHONE_SCREEN);
-  /** Null until the user picks a view; until then the screen decides. */
+  const roomForMap = useMediaQuery(TABLET_UP);
+  /** Null until the user picks a view; until then the screen decides: the map is hard to read on a phone. */
   const [chosenView, setView] = useState<View | null>(null);
-  const view = chosenView ?? (onPhone ? 'list' : 'map');
-  const narrow = useMediaQuery(NARROW_SCREEN);
+  const view = chosenView ?? (roomForMap ? 'map' : 'list');
+  const across = useMediaQuery(MAP_ACROSS);
   if (!lib) return <Loading />;
   const orphans = lib.transitions.filter((t) => !lib.positionById.has(t.fromId));
 
@@ -124,7 +122,7 @@ export default function Positions() {
           </EmptyState>
         </div>
       ) : view === 'map' ? (
-        <PositionMap lib={lib} orientation={narrow ? 'vertical' : 'horizontal'} />
+        <PositionMap lib={lib} orientation={across ? 'horizontal' : 'vertical'} />
       ) : (
         <>
           <ProgressLegend />

@@ -59,62 +59,66 @@ export default function PositionDetail() {
         title={position.name}
         lead={position.summary}
       />
-      <div className="card">
-        <ItemPicture kind="position" id={position.id}>
-          <PositionArtwork id={position.id} name={position.name} />
-        </ItemPicture>
-        {/* One side at a time: in a roll you are only ever on one of them. */}
-        <fieldset className="segmented side-switch" aria-label="Which side you are on">
-          {POSITION_ROLES.map((role) => (
-            <button key={role} type="button" aria-pressed={side === role} onClick={() => setSide(role)}>
-              {roleLabel(position.category, role)}
-            </button>
-          ))}
-        </fieldset>
-        <Section title="What you want">
-          <Bullets items={roleGoals(position, side)} />
-        </Section>
-        <Section
-          title="What you can do"
-          action={
-            <Link className="button small" to={newItemPath('transition', position.id)}>
-              + Technique
-            </Link>
-          }
-        >
-          {progress.total > 0 && (
-            <p className="muted small">
-              {progress.learned} of {progress.total} learned from this position
-            </p>
-          )}
-          {outgoing.length === 0 ? (
-            <p className="muted">{NO_TECHNIQUES_FROM_HERE}</p>
-          ) : options[side].length > 0 ? (
-            <TransitionList transitions={options[side]} positionById={lib.positionById} direction="out" />
-          ) : (
-            <p className="muted">Nothing for this side yet. Add a technique so you have an answer here.</p>
-          )}
-        </Section>
-        {concepts.length > 0 && (
-          <Section title="Concepts to remember">
-            <ul className="chip-list">
-              {concepts.map((c) => (
-                <li key={c.id}>
-                  <Link className="chip" to={itemPath('concept', c.id)}>
-                    {c.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+      <div className="card detail-layout">
+        <div className="detail-picture">
+          <ItemPicture kind="position" id={position.id}>
+            <PositionArtwork id={position.id} name={position.name} />
+          </ItemPicture>
+        </div>
+        <div className="detail-body">
+          {/* One side at a time: in a roll you are only ever on one of them. */}
+          <fieldset className="segmented side-switch" aria-label="Which side you are on">
+            {POSITION_ROLES.map((role) => (
+              <button key={role} type="button" aria-pressed={side === role} onClick={() => setSide(role)}>
+                {roleLabel(position.category, role)}
+              </button>
+            ))}
+          </fieldset>
+          <Section title="What you want">
+            <Bullets items={roleGoals(position, side)} />
           </Section>
-        )}
-        {incoming.length > 0 && (
-          <Section title="Ways to get here">
-            <TransitionList transitions={incoming} positionById={lib.positionById} direction="in" />
+          <Section
+            title="What you can do"
+            action={
+              <Link className="button small" to={newItemPath('transition', position.id)}>
+                + Technique
+              </Link>
+            }
+          >
+            {progress.total > 0 && (
+              <p className="muted small">
+                {progress.learned} of {progress.total} learned from this position
+              </p>
+            )}
+            {outgoing.length === 0 ? (
+              <p className="muted">{NO_TECHNIQUES_FROM_HERE}</p>
+            ) : options[side].length > 0 ? (
+              <TransitionList transitions={options[side]} positionById={lib.positionById} direction="out" />
+            ) : (
+              <p className="muted">Nothing for this side yet. Add a technique so you have an answer here.</p>
+            )}
           </Section>
-        )}
-        <NotesBlock notes={position.notes} />
-        <LinkedVideos kind="position" id={position.id} />
+          {concepts.length > 0 && (
+            <Section title="Concepts to remember">
+              <ul className="chip-list">
+                {concepts.map((c) => (
+                  <li key={c.id}>
+                    <Link className="chip" to={itemPath('concept', c.id)}>
+                      {c.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          )}
+          {incoming.length > 0 && (
+            <Section title="Ways to get here">
+              <TransitionList transitions={incoming} positionById={lib.positionById} direction="in" />
+            </Section>
+          )}
+          <NotesBlock notes={position.notes} />
+          <LinkedVideos kind="position" id={position.id} />
+        </div>
       </div>
       <Pager
         previous={previous && { to: itemPath('position', previous.id), label: previous.name }}

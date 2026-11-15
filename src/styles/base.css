@@ -46,14 +46,14 @@ kbd {
   margin-top: 1rem;
 }
 .narrow-page {
-  max-width: 680px;
+  max-width: var(--reading-max);
   margin: 0 auto;
 }
 .card {
   background: var(--surface);
   border: var(--line) solid var(--outline);
   border-radius: var(--radius-lg);
-  padding: 1.25rem;
+  padding: var(--card-pad);
   box-shadow: var(--shadow);
 }
 .center {
@@ -219,12 +219,14 @@ button,
   color: var(--text);
   box-shadow: var(--shadow);
   text-decoration: none;
-  /* A thumb needs this much; from 600px, where a pointer is likely, buttons shrink to their text. */
+  /* A thumb needs this much; with a mouse (see the end of this file) buttons shrink to their text. */
   min-height: var(--tap);
 }
-button:hover,
-.button:hover {
-  border-color: var(--accent);
+@media (hover: hover) {
+  button:hover,
+  .button:hover {
+    border-color: var(--accent);
+  }
 }
 button:disabled {
   opacity: 0.5;
@@ -249,8 +251,10 @@ button.cta,
 button.danger {
   color: var(--danger);
 }
-button.danger:hover {
-  border-color: var(--danger);
+@media (hover: hover) {
+  button.danger:hover {
+    border-color: var(--danger);
+  }
 }
 button.small,
 .button.small {
@@ -302,6 +306,7 @@ button.link.danger {
   color: var(--muted);
   font-weight: 500;
   text-decoration: none;
+  white-space: nowrap;
 }
 .segmented button[aria-pressed="true"],
 .segmented a.active {
@@ -369,7 +374,7 @@ legend {
 }
 /*
  * A form's Save row inside a card. On a phone it is pinned just above the tab bar, so saving never
- * needs a scroll; the negative margins run it to the card's edges (the card's padding is 1.25rem).
+ * needs a scroll; the negative margins run it to the card's edges.
  */
 .action-bar {
   position: sticky;
@@ -377,7 +382,7 @@ legend {
   z-index: 5;
   display: flex;
   gap: var(--space-2);
-  margin: var(--space-4) -1.25rem -1.25rem;
+  margin: var(--space-4) calc(-1 * var(--card-pad)) calc(-1 * var(--card-pad));
   padding: var(--space-2) var(--space-3);
   background: var(--surface);
   border-top: 1px solid var(--border);
@@ -441,8 +446,10 @@ legend {
   font-size: 0.9rem;
   min-height: var(--tap);
 }
-.chip:hover {
-  border-color: var(--accent);
+@media (hover: hover) {
+  .chip:hover {
+    border-color: var(--accent);
+  }
 }
 .tile-list {
   list-style: none;
@@ -465,8 +472,10 @@ legend {
   text-decoration: none;
   color: var(--text);
 }
-.tile:hover {
-  border-color: var(--accent);
+@media (hover: hover) {
+  .tile:hover {
+    border-color: var(--accent);
+  }
 }
 /* The number is the first thing to go on a phone: the picture and the name need the room. */
 .tile-num {
@@ -485,7 +494,7 @@ legend {
   padding: 0;
   margin: 0;
 }
-/* A row that is one link: the name, a quieter line saying what it is, and a chevron on a phone. */
+/* A row that is one link: the name, a quieter line saying what it is, and a chevron where it is tapped. */
 .row-link {
   display: flex;
   align-items: center;
@@ -505,9 +514,11 @@ legend {
 .row-name {
   font-weight: 600;
 }
-.row-link:hover .row-name {
-  color: var(--accent);
-  text-decoration: underline;
+@media (hover: hover) {
+  .row-link:hover .row-name {
+    color: var(--accent);
+    text-decoration: underline;
+  }
 }
 .row-meta {
   display: flex;
@@ -624,8 +635,10 @@ legend {
   color: var(--text);
   text-decoration: none;
 }
-.pager-link:hover {
-  border-color: var(--accent);
+@media (hover: hover) {
+  .pager-link:hover {
+    border-color: var(--accent);
+  }
 }
 .pager-next {
   text-align: right;
@@ -670,7 +683,7 @@ legend {
 /* YouTube's player, in place of a concept's or technique's drawing. */
 .video-player {
   max-width: 36rem;
-  margin: 0 0 var(--space-4);
+  margin: 0 auto var(--space-4);
 }
 .video-player.review-artwork {
   max-width: 26rem;
@@ -693,8 +706,10 @@ legend {
   border-color: var(--accent);
   color: var(--accent);
 }
-.video-link:hover strong {
-  text-decoration: underline;
+@media (hover: hover) {
+  .video-link:hover strong {
+    text-decoration: underline;
+  }
 }
 .play {
   color: var(--belt);
@@ -722,38 +737,15 @@ input[type="range"] {
   margin: 0;
 }
 
+/* The top of a page about one item: its picture, then everything written about it. */
+.detail-picture:empty {
+  display: none;
+}
+
+/* Tablet and wider: rows of controls stop stretching. */
 @media (min-width: 600px) {
-  button,
-  .button,
-  .chip {
-    min-height: 0;
-  }
-  /* With a pointer the rows tighten into single lines and the chevron is not needed. */
-  .row-link {
-    min-height: 0;
-    padding: 0.3rem 0;
-  }
-  .row-text {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.1rem 0.6rem;
-  }
-  .row-link > .icon {
-    display: none;
-  }
-  .transition-list li + li {
-    border-top: 0;
-  }
   .segmented {
     display: inline-flex;
-  }
-  .segmented button,
-  .segmented a {
-    min-height: 2.25rem;
-  }
-  .tile-num {
-    display: grid;
   }
   .page-head > div:first-child {
     flex: 1 1 20rem;
@@ -778,8 +770,77 @@ input[type="range"] {
   .action-bar > * {
     flex: none;
   }
+  .tile-num {
+    display: grid;
+  }
   .tile {
     gap: 1rem;
     padding: 0.9rem 1.1rem;
+  }
+}
+
+/*
+ * Wide: lists run in two columns (a third would squeeze a tile's text into a ribbon), and on a page
+ * about one item the picture stays in view on the left while the text scrolls beside it.
+ */
+@media (min-width: 900px) {
+  .tile-list,
+  .stack > .card > .video-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tile {
+    height: 100%;
+  }
+  .detail-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-5);
+    align-items: start;
+  }
+  .detail-picture {
+    position: sticky;
+    top: calc(var(--topbar-height) + var(--space-4));
+  }
+  /* Nothing to put beside the text, so the text takes the card. */
+  .detail-picture:empty + .detail-body {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 1100px) {
+  .detail-picture {
+    top: var(--space-4);
+  }
+}
+
+/*
+ * A mouse: controls shrink to their text, rows tighten into single lines and the chevron is not needed.
+ * Asked of the pointer, not the width, so a touch tablet keeps targets a thumb can hit.
+ */
+@media (hover: hover) and (pointer: fine) {
+  button,
+  .button,
+  .chip {
+    min-height: 0;
+  }
+  .row-link {
+    min-height: 0;
+    padding: 0.3rem 0;
+  }
+  .row-text {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.1rem 0.6rem;
+  }
+  .row-link > .icon {
+    display: none;
+  }
+  .transition-list li + li {
+    border-top: 0;
+  }
+  .segmented button,
+  .segmented a {
+    min-height: 2.25rem;
   }
 }

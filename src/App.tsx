@@ -60,7 +60,7 @@ export default function App() {
       <header className="topbar">
         <NavLink to={ROUTES.home} className="brand" end>
           <BrandMark />
-          BJJ Fundamentals
+          <span className="brand-name">BJJ Fundamentals</span>
         </NavLink>
         <nav className="nav" aria-label="Main">
           <NavLink to={ROUTES.home} end>

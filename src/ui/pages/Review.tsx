@@ -24,6 +24,8 @@ const DECK_LABELS: Record<Deck, string> = {
 };
 /** Keyboard shortcut for each grade: its place in the row, starting from 1. */
 const GRADE_BUTTONS = GRADES.map((grade, index) => ({ grade, label: GRADE_LABELS[grade], key: String(index + 1) }));
+/** Leaves a session, like its close button. */
+const END_KEY = 'Escape';
 const DECK_LABEL_ID = 'review-deck-label';
 const GRADES_LABEL_ID = 'review-grades-label';
 const MAX_NEW_CARDS = 20;
@@ -122,7 +124,7 @@ export default function Review() {
   /** The grade just given, while its card slides away. */
   const [leaving, setLeaving] = useState<Grade | null>(null);
 
-  const { status, revealed, reveal, grade } = session;
+  const { status, revealed, reveal, grade, end: endSession } = session;
 
   const gradeWithFeedback = useCallback(
     async (value: Grade) => {
@@ -142,6 +144,10 @@ export default function Review() {
     if (status !== 'active') return;
     function onKey(e: KeyboardEvent) {
       if (isTyping(e.target)) return;
+      if (e.key === END_KEY) {
+        endSession();
+        return;
+      }
       if (!revealed && (e.key === ' ' || e.key === 'Enter')) {
         e.preventDefault();
         reveal();
@@ -152,7 +158,7 @@ export default function Review() {
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [status, revealed, reveal, gradeWithFeedback]);
+  }, [status, revealed, reveal, gradeWithFeedback, endSession]);
 
   if (!lib) return <Loading />;
   // While the log is still loading the queue is built without it; it only changes the order of new cards.
@@ -249,7 +255,13 @@ export default function Review() {
   return (
     <div className="narrow-page review-session">
       <div className="review-head">
-        <button type="button" className="icon-button" aria-label="End session" onClick={session.end}>
+        <button
+          type="button"
+          className="icon-button"
+          aria-label="End session"
+          aria-keyshortcuts={END_KEY}
+          onClick={endSession}
+        >
           <Icon name="close" />
         </button>
         <ProgressBar value={session.doneCount} max={total} label="Session progress" />
@@ -302,6 +314,7 @@ export default function Review() {
                   type="button"
                   className={`grade grade-${b.grade}`}
                   disabled={session.saving || leaving !== null}
+                  aria-keyshortcuts={b.key}
                   onClick={() => void gradeWithFeedback(b.grade)}
                 >
                   <span>{b.label}</span>
@@ -314,7 +327,7 @@ export default function Review() {
         ) : (
           <>
             <p className="muted small">Answer in your head or out loud, then check.</p>
-            <button type="button" className="primary large reveal" onClick={reveal}>
+            <button type="button" className="primary large reveal" aria-keyshortcuts="Space Enter" onClick={reveal}>
               Show answer <kbd>Space</kbd>
             </button>
           </>

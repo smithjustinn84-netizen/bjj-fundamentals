@@ -1,4 +1,4 @@
-/* Today: what to do now first, then what is behind it. One column at every width. */
+/* Today: what to do now first, then what is behind it. One column, then two from 900px. */
 /*
  * The hero: one block of indigo, edge to edge on a phone, holding the day, the streak and the thing to do.
  * From 600px it sits in the column like a card.
@@ -156,8 +156,10 @@
   color: var(--text);
   text-decoration: none;
 }
-.today-drill:hover {
-  border-color: var(--accent);
+@media (hover: hover) {
+  .today-drill:hover {
+    border-color: var(--accent);
+  }
 }
 .today-drill .eyebrow {
   margin: 0;
@@ -228,5 +230,23 @@ ol.path {
     border: var(--line) solid var(--outline);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lift);
+  }
+}
+/*
+ * Wide: the cards under the hero run down two columns, in the same order as on a phone.
+ * Columns, not a grid, because the cards differ in height and some are not always there.
+ */
+@media (min-width: 900px) {
+  .today-cards {
+    columns: 2;
+    column-gap: var(--space-4);
+  }
+  .today-cards > * {
+    break-inside: avoid;
+    margin: 0 0 var(--space-4);
+  }
+  /* A flex container is not kept whole by `break-inside` in every browser; a block that fills the column is. */
+  .today-cards > .today-drill {
+    width: 100%;
   }
 }

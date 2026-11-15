@@ -135,16 +135,16 @@
 .position-artwork {
   aspect-ratio: 4 / 3;
   max-width: 32rem;
-  margin-bottom: var(--space-4);
+  margin: 0 auto var(--space-4);
 }
 .concept-artwork {
   aspect-ratio: 16 / 9;
   max-width: 32rem;
-  margin-bottom: var(--space-4);
+  margin: 0 auto var(--space-4);
 }
 .review-artwork {
   max-width: 22rem;
-  margin-bottom: var(--space-3);
+  margin: 0 auto var(--space-3);
 }
 /* A small picture in a list row. */
 .thumb-artwork {
@@ -166,7 +166,7 @@
   align-items: center;
   gap: var(--space-3);
   max-width: 36rem;
-  margin: 0 0 var(--space-4);
+  margin: 0 auto var(--space-4);
 }
 .transition-artwork.review-artwork {
   max-width: 26rem;
