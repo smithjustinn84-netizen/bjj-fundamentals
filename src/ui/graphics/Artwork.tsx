@@ -1,29 +1,6 @@
-import { useState } from 'react';
 import { endsTheRoll, type Position, type Transition } from '../../core/models';
 import { TapArtwork } from './ConceptSvg';
 import { hasPositionArtwork, PositionArtwork } from './PositionSvg';
-
-export const HERO_DOJO_ARTWORK = './artwork/hero-dojo.webp';
-
-export function ArtworkFrame({
-  src,
-  alt,
-  className = '',
-  eager = false,
-}: {
-  src: string;
-  alt: string;
-  className?: string;
-  eager?: boolean;
-}) {
-  const [failed, setFailed] = useState(false);
-  if (failed) return null;
-  return (
-    <figure className={`artwork-frame ${className}`.trim()}>
-      <img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" onError={() => setFailed(true)} />
-    </figure>
-  );
-}
 
 /**
  * A technique drawn as its two ends: the position it starts from and the one it reaches, or a tap

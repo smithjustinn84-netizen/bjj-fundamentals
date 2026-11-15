@@ -28,7 +28,6 @@ import {
 import { BeltBand } from '../components/BeltBand';
 import { Loading, ProgressDot } from '../components/common';
 import { LibrarySearch } from '../components/LibrarySearch';
-import { ArtworkFrame, HERO_DOJO_ARTWORK } from '../graphics/Artwork';
 import { Icon } from '../graphics/icons';
 import { PositionArtwork } from '../graphics/PositionSvg';
 import { useCountUp } from '../graphics/useCountUp';
@@ -197,12 +196,6 @@ export default function Home() {
 
   return (
     <div className="stack">
-      <ArtworkFrame
-        src={HERO_DOJO_ARTWORK}
-        alt="Sunlit tatami mat room with a folded white gi and black belt"
-        className="today-artwork"
-        eager
-      />
       <header className="today-hero">
         {/* 柔, "ju": the gentle of jiu-jitsu. Decoration only. */}
         <span className="today-hero-mark" aria-hidden="true">

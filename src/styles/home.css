@@ -1,10 +1,4 @@
 /* Today: what to do now first, then what is behind it. One column at every width. */
-/* The painting waits for a wider screen: on a phone the hero block opens the page. */
-.today-artwork {
-  display: none;
-  aspect-ratio: 4 / 1;
-  max-height: 11rem;
-}
 /*
  * The hero: one block of indigo, edge to edge on a phone, holding the day, the streak and the thing to do.
  * From 600px it sits in the column like a card.
@@ -229,11 +223,8 @@ ol.path {
 }
 
 @media (min-width: 600px) {
-  .today-artwork {
-    display: block;
-  }
   .today-hero {
-    margin: var(--space-4) 0 0;
+    margin: 0;
     border: var(--line) solid var(--outline);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lift);

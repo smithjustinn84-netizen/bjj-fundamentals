@@ -124,19 +124,13 @@
   animation: draw var(--dur-draw-slow) var(--ease-out) forwards;
 }
 
-/* Framed illustrations: the hero painting and the diagrams share one sheet of paper. */
+/* Framed illustrations: every diagram is drawn on the same sheet of paper. */
 .artwork-frame {
   margin: 0;
   overflow: hidden;
   border-radius: var(--radius-md);
   border: var(--line) solid var(--outline);
   background: var(--art-paper);
-}
-.artwork-frame img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 .position-artwork {
   aspect-ratio: 4 / 3;
