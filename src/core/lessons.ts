@@ -119,25 +119,24 @@ export const FOUNDATION_LESSONS: readonly Lesson[] = [
       '3 minutes: hold side control, then mount, for 30 seconds each against a partner trying to escape at half strength. 3 minutes each, at walking pace and stopping at the first resistance: 5 kimuras from side control, 5 gift wraps to the back, 5 americanas from mount, 5 Ezekiel chokes from mount.',
   },
   {
-    id: 'back-turtle-and-standing',
-    title: 'Back control, turtle and standing safely',
-    summary: 'Take and escape the back, deal with turtle, and get the fight to the ground without getting hurt.',
-    conceptIds: ['breakfalls', 'training-partner', 'roll-to-learn'],
-    positionIds: ['back-control', 'turtle', 'standing'],
-    transitionIds: [
-      'rear-naked-choke',
-      'back-escape',
-      'rear-naked-choke-defence',
-      'sliding-collar-choke',
-      'turtle-to-back',
-      'turtle-recover-guard',
-      'turtle-sit-out',
-      'pull-guard',
-      'double-leg',
-      'sprawl',
-    ],
+    id: 'back-control',
+    title: 'Back control',
+    summary: 'Protect your neck and escape when your back is taken, then finish from the back yourself.',
+    conceptIds: ['defend-early', 'two-on-one'],
+    positionIds: ['back-control'],
+    transitionIds: ['rear-naked-choke-defence', 'back-escape', 'rear-naked-choke', 'sliding-collar-choke'],
     practice:
-      '2 minutes: breakfalls. 5 minutes: from back control, 5 slow rear naked chokes and 5 sliding collar chokes each, then 5 choke defences and back escapes each. 4 minutes: 5 back takes from turtle, 5 guard recoveries and 5 sit-outs each. 4 minutes: 5 guard pulls, then 5 double legs against 5 sprawls each, at walking pace.',
+      '3 minutes: partner on your back with a seatbelt tries only to get a hand to your neck while you win the hand fight with two hands on one. 4 minutes: 5 choke defences and 5 back escapes each. 4 minutes each, slowly and tapping early: 5 rear naked chokes, then 5 sliding collar chokes.',
+  },
+  {
+    id: 'turtle-and-standing',
+    title: 'Turtle and standing safely',
+    summary: 'Get out of turtle or take the back from it, and get the fight to the ground without getting hurt.',
+    conceptIds: ['breakfalls', 'off-balancing', 'training-partner', 'roll-to-learn'],
+    positionIds: ['turtle', 'standing'],
+    transitionIds: ['turtle-recover-guard', 'turtle-sit-out', 'turtle-to-back', 'pull-guard', 'double-leg', 'sprawl'],
+    practice:
+      '2 minutes: breakfalls. 6 minutes: 5 guard recoveries, 5 sit-outs and 5 back takes from turtle each. 2 minutes: grip up standing and take turns moving your partner off balance without throwing. 5 minutes: 5 guard pulls, then 5 double legs against 5 sprawls each, at walking pace.',
   },
 ];
 
