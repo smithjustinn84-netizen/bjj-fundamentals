@@ -4,6 +4,7 @@ import { CATEGORY_LABELS, ROLE_LABELS, roleLabel } from '../../core/labels';
 import { connections, reviewOf } from '../../core/library';
 import { POSITION_ROLES } from '../../core/models';
 import { positionOptions } from '../../core/roles';
+import { positionProgress } from '../../core/todaysDrill';
 import { Bullets, Loading, Missing, NotesBlock, Pager, Section, StudyStatusPill } from '../components/common';
 import { NO_TECHNIQUES_FROM_HERE, TransitionList } from '../components/TransitionLink';
 import { LinkedVideos } from '../components/VideoList';
@@ -20,6 +21,7 @@ export default function PositionDetail() {
   const [top, bottom] = ROLE_LABELS[position.category];
   const { outgoing, incoming } = connections(lib, position.id);
   const options = positionOptions(lib, position.id);
+  const progress = positionProgress(lib, position.id);
   const concepts = position.conceptIds.map((c) => lib.conceptById.get(c)).filter((c) => c !== undefined);
   const index = lib.positions.findIndex((p) => p.id === position.id);
   const previous = lib.positions[index - 1];
@@ -73,6 +75,11 @@ export default function PositionDetail() {
             </Link>
           }
         >
+          {progress.total > 0 && (
+            <p className="muted small">
+              {progress.learned} of {progress.total} learned
+            </p>
+          )}
           {outgoing.length > 0 ? (
             POSITION_ROLES.map((role) => (
               <div key={role}>

@@ -19,7 +19,7 @@ export const ROLE_LABELS: Record<PositionCategory, [string, string]> = {
   scramble: ['Attacking', 'Defending'],
 };
 
-/** How to say which side someone ends up on, after the destination's name: "Mount, on top". */
+/** How to say which side of a position someone is on, after its name: "Mount, on top". */
 const END_SIDE_LABELS: Record<PositionCategory, [string, string]> = {
   standing: ['attacking', 'defending'],
   guard: ['passing', 'playing guard'],

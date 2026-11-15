@@ -4,6 +4,7 @@ import { useLibrary } from '../../bindings';
 import { CATEGORY_LABELS } from '../../core/labels';
 import { connections, type Library, reviewOf } from '../../core/library';
 import { POSITION_CATEGORIES } from '../../core/models';
+import { positionProgress } from '../../core/todaysDrill';
 import { Loading, ProgressDot } from '../components/common';
 import { PositionMap } from '../components/PositionMap';
 import { NO_TECHNIQUES_FROM_HERE, TransitionList } from '../components/TransitionLink';
@@ -39,6 +40,7 @@ function PositionList({ lib }: { lib: Library }) {
             <div className="grid stagger">
               {inCategory.map((p) => {
                 const { outgoing } = connections(lib, p.id);
+                const progress = positionProgress(lib, p.id);
                 return (
                   <article key={p.id} className="card position-card">
                     <PositionArtwork id={p.id} name={p.name} className="card-artwork" />
@@ -47,6 +49,11 @@ function PositionList({ lib }: { lib: Library }) {
                       <Link to={itemPath('position', p.id)}>{p.name}</Link>
                     </h3>
                     <p className="muted small">{p.summary}</p>
+                    {progress.total > 0 && (
+                      <p className="muted small">
+                        {progress.learned} of {progress.total} techniques learned
+                      </p>
+                    )}
                     {outgoing.length > 0 ? (
                       <TransitionList transitions={outgoing} positionById={lib.positionById} direction="out" />
                     ) : (

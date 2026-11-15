@@ -1,4 +1,4 @@
-import { roleLabel } from './labels';
+import { endSideLabel } from './labels';
 import type { Library } from './library';
 import { POSITION_ROLES, type Position, type PositionRole, type Transition } from './models';
 import { positionOptions } from './roles';
@@ -50,7 +50,7 @@ export function allSituations(lib: Library): Situation[] {
   });
 }
 
-/** "Mount, Bottom side": how a situation is named in lists and questions. */
+/** "Mount, underneath", "Closed Guard, passing": how a situation is named in lists and questions. */
 export function situationName({ position, role }: Situation): string {
-  return `${position.name}, ${roleLabel(position.category, role)} side`;
+  return `${position.name}, ${endSideLabel(position.category, role)}`;
 }

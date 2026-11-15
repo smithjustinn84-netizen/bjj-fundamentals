@@ -7,6 +7,7 @@ import { beltRank } from '../../core/rank';
 import { findSituation, situationName } from '../../core/situations';
 import { cardId } from '../../core/srs';
 import { cardName, progressSummary, STICKING_POINT_LIMIT, stickingPoints } from '../../core/study';
+import { type DrillReason, pickDrill } from '../../core/todaysDrill';
 import { formatClassCount, formatMatTime, trainingSummary } from '../../core/trainingLog';
 import { Loading, ProgressDot } from '../components/common';
 import { LibrarySearch } from '../components/LibrarySearch';
@@ -21,6 +22,14 @@ function reviewButtonLabel(dueCount: number, started: number): string {
   if (dueCount > 0) return `Review ${dueCount} card${dueCount === 1 ? '' : 's'}`;
   return started === 0 ? 'Start studying' : 'Study new cards';
 }
+
+/** Why today's drill was chosen, said to the student. */
+const DRILL_REASON_TEXT: Record<DrillReason, string> = {
+  stuck: 'A way out of where you got stuck last class.',
+  slipping: 'This one keeps slipping in review.',
+  practised: 'You practised this in a recent class.',
+  next: 'The next technique you have not learned yet.',
+};
 
 function StatTile({ icon, value, label }: { icon: IconName; value: number; label: string }) {
   const shown = useCountUp(value);
@@ -94,6 +103,7 @@ export default function Home() {
 
   const sticking = stickingPoints(lib, STICKING_POINT_LIMIT);
   const training = trainingSummary(log);
+  const drill = pickDrill(lib, log);
   const stuck = training.stuckIds.map((id) => findSituation(lib, id)).filter((situation) => situation !== null);
 
   const steps: PathStep[] = [
@@ -204,6 +214,17 @@ export default function Home() {
       <section className="card">
         <LibrarySearch lib={lib} />
       </section>
+
+      {drill && (
+        <section className="card">
+          <h2>Drill for today</h2>
+          <p>
+            <Link to={itemPath('transition', drill.technique.id)}>{drill.technique.name}</Link>
+            <span className="muted"> · {DRILL_REASON_TEXT[drill.reason]}</span>
+          </p>
+          <p className="drill">{drill.drill}</p>
+        </section>
+      )}
 
       <section className="card">
         <div className="section-head">

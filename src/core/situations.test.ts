@@ -29,7 +29,7 @@ describe('situations', () => {
   it('finds a situation by id with its options, and names it', () => {
     const found = findSituation(lib, 'mount:bottom');
     expect(found?.options.map((t) => t.id)).toEqual(['escape']);
-    expect(found && situationName(found)).toBe('Mount, Bottom side');
+    expect(found && situationName(found)).toBe('Mount, underneath');
   });
 
   it('finds nothing for a side with no options, a missing position or a bad id', () => {

@@ -106,7 +106,7 @@ describe('cardName', () => {
   it('names an item by its name and a situation by its position and side, or null once it is gone', () => {
     const lib = buildLibrary(concepts, positions, transitions, []);
     expect(cardName(lib, { kind: 'transition', id: 't1' })).toBe('Transition');
-    expect(cardName(lib, { kind: 'situation', id: 'p1:bottom' })).toBe('Position, Bottom (guard player) side');
+    expect(cardName(lib, { kind: 'situation', id: 'p1:bottom' })).toBe('Position, playing guard');
     expect(cardName(lib, { kind: 'situation', id: 'p1:top' })).toBeNull();
     expect(cardName(lib, { kind: 'concept', id: 'gone' })).toBeNull();
   });

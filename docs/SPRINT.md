@@ -42,3 +42,15 @@ Open question: should mat time feed the belt and streak display, or stay separat
 - [x] **Drills on techniques.** Done 2026-11-15: `Transition.drill`, read through `techniqueDrill`, with a drill written for all 43 starter techniques (backup schema 6). Only concepts have a drill. A solo or partner drill per technique would give a white belt something to do between classes.
 - [x] **Training etiquette and safety.** Done 2026-11-15 as two starter concepts, "Be a good training partner" and "Roll to learn, not to win", each with a video and a drawing. One or two concepts on rolling intensity, hygiene, and what to tell a partner about an injury.
 - [x] **Search.** Done 2026-11-15: one box on Home finds concepts, positions and techniques by name or text (`core/search.ts`). Only the Videos page has a search box; there is none for concepts, positions or techniques.
+
+## 5. Found after the list above was done
+
+- [x] **Drill for today.** Done 2026-11-15: Home picks one drill (`pickDrill` in `core/todaysDrill.ts`): a way out of where you last got stuck, else a technique that keeps slipping, else one practised in class, else the next one not learned.
+- [x] **Progress per position.** Done 2026-11-15: the position page and the positions list say how many of the techniques that start there are learned (`positionProgress`).
+- [x] **Situation names read naturally.** Done 2026-11-15: "Mount, underneath" and "Closed Guard, passing" in place of "Mount, Bottom side".
+- [ ] **Sticking points are sensitive.** One "Again" on a brand-new card lists it until it is learned. Consider needing two misses.
+- [ ] **The deck picker wraps on phones.** Six choices in a two-column grid; a select might serve better below 600px.
+- [ ] **The log has no phone tab.** It is reached from Home's training log card, below the hero.
+- [ ] **Search is on Home only.**
+- [ ] **Mat time and study progress are separate.** Decide whether classes logged should count toward the streak or the study belt.
+
