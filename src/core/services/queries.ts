@@ -1,9 +1,9 @@
 import type { CoreEnv } from '../core';
 import { buildLibrary, type Library } from '../library';
-import type { ItemKind, Transition, VideoBookmark } from '../models';
+import type { Concept, ItemKind, Transition, VideoBookmark } from '../models';
 import { starterContent } from '../seed';
 import { DAY_MS, streakDays } from '../srs';
-import { findMissingStarterTechniques } from '../starter';
+import { findMissingStarterConcepts, findMissingStarterTechniques } from '../starter';
 
 /** How far back to look when computing the streak. Streaks longer than this are capped. */
 const STREAK_WINDOW_DAYS = 400;
@@ -56,6 +56,12 @@ export function createQueries({ storage, now }: CoreEnv) {
         storage.starterDismissals.all(),
       ]);
       return findMissingStarterTechniques(starterContent(now()).transitions, transitions, positions, dismissed);
+    },
+
+    /** Starter concepts to offer this library: ones it does not hold and has not dismissed. */
+    async missingStarterConcepts(): Promise<Concept[]> {
+      const [concepts, dismissed] = await Promise.all([storage.concepts.all(), storage.starterDismissals.all()]);
+      return findMissingStarterConcepts(starterContent(now()).concepts, concepts, dismissed);
     },
 
     /** Newest first. */

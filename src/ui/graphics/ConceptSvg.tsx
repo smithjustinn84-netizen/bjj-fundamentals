@@ -646,6 +646,89 @@ const CONCEPT_SCENES: Record<string, Scene> = {
       </>
     ),
   },
+  breathing: {
+    view: 'above',
+    draw: () => (
+      <>
+        <StillPosition id="side-control" />
+        {/* A long, slow breath out from underneath: calm before any escape. */}
+        <path className="dgm-ring" d="M116 90 q-8 10 0 20" />
+        <path className="dgm-ring" d="M104 82 q-14 18 0 36" />
+        <path className="dgm-ring" d="M92 74 q-20 26 0 52" />
+      </>
+    ),
+  },
+  'face-your-opponent': {
+    draw: () => (
+      <>
+        <StillPosition id="half-guard" />
+        {/* On the side and turned in toward them, never flat and never away. */}
+        <Arrow from={[78, 150]} to={[104, 128]} bend={10} />
+        <path className="dgm-good" d="M262 72 l8 9 l15 -19" />
+      </>
+    ),
+  },
+  'positional-hierarchy': {
+    draw: () => (
+      <>
+        <StillPosition id="back-control" />
+        {/* Each step up the ladder is a better position; back control is the top step. */}
+        <path className="dgm-guide" d="M282 194 h18 v-30 h18 v-30 h18 v-30 h18" />
+        <circle className="dgm-dot" cx="345" cy="104" r="5" />
+      </>
+    ),
+  },
+  'defend-early': {
+    draw: () => (
+      <>
+        <StillPosition id="back-control" />
+        {/* Win the hands before they reach the neck. */}
+        <circle className="dgm-ring" cx="188" cy="136" r="16" />
+        <Arrow from={[222, 128]} to={[220, 160]} />
+      </>
+    ),
+  },
+  angles: {
+    draw: () => (
+      <>
+        {/* Their centre line: attacks straight up it meet their strength. */}
+        <line className="dgm-guide" x1="190" y1="56" x2="190" y2="194" />
+        <StillPosition id="closed-guard" />
+        <Arrow from={[86, 150]} to={[70, 112]} bend={-10} />
+      </>
+    ),
+  },
+  'two-on-one': {
+    draw: () => (
+      <>
+        <StillPosition id="closed-guard" />
+        {/* Both hands on one arm: that fight is always won. */}
+        <circle className="dgm-ring" cx="153" cy="149" r="17" />
+        <circle className="dgm-dot" cx="156" cy="152" r="4" />
+        <circle className="dgm-dot" cx="150" cy="146" r="4" />
+      </>
+    ),
+  },
+  'action-reaction': {
+    draw: () => (
+      <>
+        <StillPosition id="closed-guard" />
+        {/* The pull is the action; posturing up is the reaction the next attack waits for. */}
+        <Arrow from={[150, 72]} to={[136, 104]} bend={-8} />
+        <Arrow from={[198, 96]} to={[214, 62]} bend={-8} />
+      </>
+    ),
+  },
+  'hip-control': {
+    draw: () => (
+      <>
+        <StillPosition id="open-guard" />
+        {/* Pin the hips and the legs have nothing to push from. */}
+        <circle className="dgm-ring" cx="162" cy="180" r="18" />
+        <Arrow from={[150, 128]} to={[158, 156]} />
+      </>
+    ),
+  },
 };
 
 /** A built-in position's still picture, for a concept best shown inside that position. */

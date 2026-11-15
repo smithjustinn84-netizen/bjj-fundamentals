@@ -117,8 +117,8 @@ export interface ReviewLogEntry {
 }
 
 /**
- * A starter technique the user chose not to be offered again (the Blue belt page's "Dismiss").
- * `id` is the starter technique's id.
+ * A starter concept or technique the user chose not to be offered again ("Dismiss" on the Concepts or
+ * Blue belt page). `id` is the starter item's id; starter ids are unique across kinds (see `seed.test.ts`).
  */
 export interface StarterDismissal {
   id: string;

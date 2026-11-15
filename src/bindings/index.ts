@@ -8,7 +8,7 @@ import { useCallback } from 'react';
 import type { BackupTable } from '../core/backup';
 import { createCore } from '../core/core';
 import type { Library } from '../core/library';
-import type { ItemKind, Transition, VideoBookmark } from '../core/models';
+import type { Concept, ItemKind, Transition, VideoBookmark } from '../core/models';
 import { starterContent } from '../core/seed';
 import type { StudyStats } from '../core/services/queries';
 import { createDexieStorage } from '../storage/dexieStorage';
@@ -41,6 +41,10 @@ export function useStudyStats(): StudyStats | undefined {
 
 export function useMissingStarterTechniques(): Transition[] | undefined {
   return useQuery(subscribe, queries.missingStarterTechniques);
+}
+
+export function useMissingStarterConcepts(): Concept[] | undefined {
+  return useQuery(subscribe, queries.missingStarterConcepts);
 }
 
 export function useVideos(): VideoBookmark[] | undefined {

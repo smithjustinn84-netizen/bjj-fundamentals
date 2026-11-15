@@ -206,6 +206,121 @@ const concepts: StarterRow<Concept>[] = [
       'From closed guard, pull your partner forward and to each side until they post a hand. Reset and repeat without finishing a sweep.',
     order: 15,
   },
+  {
+    id: 'breathing',
+    name: 'Breathe and stay calm',
+    summary:
+      'Panic burns your energy and gives away space. Breathe, accept the bad position for a moment, then work your way out.',
+    keyPoints: [
+      'Breathe out slowly when you are under pressure. Holding your breath tires you out within seconds.',
+      'A bad position is a problem to solve, not an emergency. Explosive flailing usually makes it worse.',
+      'Calm first, then frames, then movement. Escapes work when you choose the moment.',
+      'Relax the muscles you are not using; only squeeze what is doing a job.',
+    ],
+    drill:
+      'Your partner holds you in side control with steady pressure for one minute. Do not escape: just breathe slowly through your nose and build your frames.',
+    order: 16,
+  },
+  {
+    id: 'face-your-opponent',
+    name: 'Face your opponent',
+    summary:
+      'Turn toward the person you are fighting, never away. Lying flat or turning your back is how you get mounted or have your back taken.',
+    keyPoints: [
+      'On the bottom, get onto your side facing them. Flat on your back, you can only push.',
+      'Never turn away to escape pressure: it feels like relief, but it gives them your back.',
+      'When they move around you, turn with them so your knees and hands stay pointed at them.',
+      'Coming out of turtle, turn in toward them, not away.',
+    ],
+    drill:
+      'From your back, your partner circles around you slowly on their knees. Keep turning on your side so you always face them, never letting them get behind your hips.',
+    order: 17,
+  },
+  {
+    id: 'positional-hierarchy',
+    name: 'The positional hierarchy',
+    summary:
+      'Some positions are better than others. From best to worst on top: back control, mount, side control, top half guard, inside the guard.',
+    keyPoints: [
+      'On top, always try to climb one step up, and do not give up a step to attack.',
+      'On the bottom, escape one step at a time: from mount to half guard, then to full guard. Do not try to jump straight to standing.',
+      'The higher the position, the more attacks you have and the fewer escapes they have.',
+      'Guard is the best place to be on the bottom. Get your legs back between you and them.',
+    ],
+    drill:
+      'Start in side control. The top partner only tries to reach mount or the back; the bottom partner only tries to reach half or full guard. Restart and swap every minute.',
+    order: 18,
+  },
+  {
+    id: 'defend-early',
+    name: 'Defend the first step',
+    summary:
+      'Stop an attack at its first step (the grip, the hook, the angle), not at the finish. Once a choke or lock is set, it is too late.',
+    keyPoints: [
+      'Watch the grips: a hand on your collar or a hook in your leg is where the attack starts.',
+      'Fight the hands before they reach your neck. Two hands on one of theirs wins.',
+      'If the submission is locked in, tap. Defending early is how you avoid that moment.',
+    ],
+    drill:
+      'From back control, the attacker slowly reaches for a choke. The defender clears every grip before it reaches the neck. Light pace; tap if it gets locked.',
+    order: 19,
+  },
+  {
+    id: 'angles',
+    name: 'Angles',
+    summary:
+      'Straight on, you meet your opponent’s strength. Move your hips off the centre line before you sweep or attack, and most techniques get easier.',
+    keyPoints: [
+      'In guard, swing your hips out to the side before you armbar, triangle, or sweep.',
+      'When passing, step to an angle instead of driving straight into their legs.',
+      'A small turn, 45 degrees, is usually enough. Their arms and legs cannot push sideways well.',
+    ],
+    drill:
+      'From closed guard, hold a sleeve and collar and practise swinging your hips to one side, then the other, until your head lines up with their knee. No finish, just the angle.',
+    order: 20,
+  },
+  {
+    id: 'two-on-one',
+    name: 'Two on one',
+    summary: 'Use two of your limbs to control one of theirs, so you always win that one fight.',
+    keyPoints: [
+      'Two hands on one wrist, or both arms on one arm, beat one arm every time.',
+      'Pick the limb that matters: the arm they would post with, the arm you want to attack.',
+      'When they get two on one on you, free the trapped limb before anything else.',
+    ],
+    drill:
+      'From closed guard, grab one of your partner’s arms with both hands and pull it across your chest while they try to free it. Swap after 30 seconds.',
+    order: 21,
+  },
+  {
+    id: 'action-reaction',
+    name: 'Action and reaction',
+    summary:
+      'Every attack makes your opponent react. Have the next attack ready for that reaction, so their defence sets up your next move.',
+    keyPoints: [
+      'They pull the arm out of an armbar: their head and other arm are now ready for a triangle.',
+      'They post to stop a sweep: the posted arm is now ready to attack.',
+      'Learn techniques in pairs and threes, linked by the reaction they cause.',
+      'Your first attack does not have to work. It has to make them move.',
+    ],
+    drill:
+      'From closed guard, go slowly: sit up for the hip bump sweep; partner posts a hand, so go to the kimura on that arm; partner pulls the arm free, so wrap the head for the guillotine. Repeat as a chain.',
+    order: 22,
+  },
+  {
+    id: 'hip-control',
+    name: 'Control the hips to pass',
+    summary:
+      'The legs move with the hips. To pass the guard, pin or steer their hips, then go around the legs instead of fighting through them.',
+    keyPoints: [
+      'Hands or knees on their hips stop them turning in to face you and re-guarding.',
+      'Push the legs to one side and step to the other side: go around, not through.',
+      'Once you are past the knees, put your hip on their hip and settle before you let go.',
+    ],
+    drill:
+      'Your partner lies in open guard. Grip their knees, push them to one side and step around to the other side, then pin their hip with your hand. Alternate sides.',
+    order: 23,
+  },
 ];
 
 const positions: StarterRow<Position>[] = [
@@ -216,7 +331,7 @@ const positions: StarterRow<Position>[] = [
     summary: 'Every match starts here. Both people are on their feet trying to take the other down or pull guard.',
     topGoals: ['Get grips first', 'Take them down and land on top', 'Keep a strong stance and base'],
     bottomGoals: ['Break their grips', 'Keep your hips back to defend takedowns', 'Pull guard on your terms'],
-    conceptIds: ['base', 'grips', 'posture', 'distance', 'off-balancing'],
+    conceptIds: ['base', 'grips', 'posture', 'distance', 'off-balancing', 'angles'],
     order: 1,
   },
   {
@@ -226,7 +341,7 @@ const positions: StarterRow<Position>[] = [
     summary: "The bottom person has their legs wrapped around the top person's waist with ankles crossed.",
     topGoals: ['Keep good posture', 'Control their hips', 'Open the guard and pass'],
     bottomGoals: ['Break their posture by pulling them down', 'Sweep them', 'Attack with submissions'],
-    conceptIds: ['posture', 'grips', 'elbows-in', 'off-balancing'],
+    conceptIds: ['posture', 'grips', 'elbows-in', 'off-balancing', 'angles', 'two-on-one', 'action-reaction'],
     order: 2,
   },
   {
@@ -240,7 +355,7 @@ const positions: StarterRow<Position>[] = [
       'Hold grips to control distance',
       'Re-guard when they get close',
     ],
-    conceptIds: ['frames', 'hip-escape', 'grips', 'inside-position', 'distance'],
+    conceptIds: ['frames', 'hip-escape', 'grips', 'inside-position', 'distance', 'hip-control'],
     order: 3,
   },
   {
@@ -250,7 +365,15 @@ const positions: StarterRow<Position>[] = [
     summary: "The bottom person traps one of the top person's legs between their own legs.",
     topGoals: ['Flatten them and stop the underhook', 'Free your trapped leg', 'Pass to side control or mount'],
     bottomGoals: ['Stay on your side, not flat on your back', 'Get the underhook', 'Sweep or recover full guard'],
-    conceptIds: ['underhooks', 'frames', 'pressure', 'inside-position', 'head-position'],
+    conceptIds: [
+      'underhooks',
+      'frames',
+      'pressure',
+      'inside-position',
+      'head-position',
+      'face-your-opponent',
+      'hip-control',
+    ],
     order: 4,
   },
   {
@@ -260,7 +383,15 @@ const positions: StarterRow<Position>[] = [
     summary: 'The top person has passed the legs and is lying chest to chest across the bottom person.',
     topGoals: ['Stay heavy and chest to chest', 'Block their hips from turning in', 'Move to mount or attack'],
     bottomGoals: ['Build frames before they settle', 'Shrimp to make space', 'Recover guard'],
-    conceptIds: ['pressure', 'frames', 'hip-escape', 'head-position'],
+    conceptIds: [
+      'pressure',
+      'frames',
+      'hip-escape',
+      'head-position',
+      'breathing',
+      'face-your-opponent',
+      'defend-early',
+    ],
     order: 5,
   },
   {
@@ -270,7 +401,15 @@ const positions: StarterRow<Position>[] = [
     summary: "The top person sits on the bottom person's torso with a knee on each side.",
     topGoals: ['Stay balanced with a wide base', 'Keep your knees tight to their hips', 'Attack the arms and neck'],
     bottomGoals: ['Protect your neck and keep elbows in', 'Bridge to off-balance them', 'Escape to guard'],
-    conceptIds: ['base', 'bridge', 'elbows-in', 'position-before-submission'],
+    conceptIds: [
+      'base',
+      'bridge',
+      'elbows-in',
+      'position-before-submission',
+      'breathing',
+      'positional-hierarchy',
+      'defend-early',
+    ],
     order: 6,
   },
   {
@@ -281,7 +420,14 @@ const positions: StarterRow<Position>[] = [
       'The attacker is behind the defender, usually with a seatbelt grip and both feet hooked inside the thighs.',
     topGoals: ['Keep the seatbelt grip', 'Keep your hooks in', 'Finish with a choke'],
     bottomGoals: ['Protect your neck with both hands', 'Get your back to the mat', 'Turn to face them'],
-    conceptIds: ['grips', 'elbows-in', 'position-before-submission'],
+    conceptIds: [
+      'grips',
+      'elbows-in',
+      'position-before-submission',
+      'positional-hierarchy',
+      'defend-early',
+      'two-on-one',
+    ],
     order: 7,
   },
   {
@@ -291,7 +437,7 @@ const positions: StarterRow<Position>[] = [
     summary: 'The defender is on knees and elbows, curled up, often after avoiding a guard pass.',
     topGoals: ['Stay on top and heavy', 'Get a seatbelt grip', 'Insert hooks to take the back'],
     bottomGoals: ['Keep elbows tight to knees', 'Do not let them get hooks in', 'Recover guard or come up to stand'],
-    conceptIds: ['elbows-in', 'base'],
+    conceptIds: ['elbows-in', 'base', 'face-your-opponent'],
     order: 8,
   },
 ];
@@ -928,6 +1074,70 @@ const videos: Omit<VideoBookmark, 'createdAt' | 'startSeconds'>[] = [
     linkedKind: 'concept',
     linkedId: 'off-balancing',
     note: 'Breaking your opponent’s balance before every sweep or attack from guard.',
+  },
+  {
+    id: 'video-breathing',
+    title: 'How to breathe when you’re trapped on the bottom and getting crushed (Stephan Kesting)',
+    youtubeId: 'Vf07y7rmsxE',
+    linkedKind: 'concept',
+    linkedId: 'breathing',
+    note: 'Staying calm and getting air under heavy pressure, before you try to escape.',
+  },
+  {
+    id: 'video-face-your-opponent',
+    title: 'What to do when flattened out in half guard (Inverted Gear)',
+    youtubeId: 'JQD-SamuGsU',
+    linkedKind: 'concept',
+    linkedId: 'face-your-opponent',
+    note: 'Getting off your back and onto your side again when you have been flattened.',
+  },
+  {
+    id: 'video-positional-hierarchy',
+    title: 'Positional hierarchy (Lachlan Giles)',
+    youtubeId: '81bjvwIMAUM',
+    linkedKind: 'concept',
+    linkedId: 'positional-hierarchy',
+    note: 'Which positions rank above which, and why.',
+  },
+  {
+    id: 'video-defend-early',
+    title: 'Rear naked choke defense (Gracie Ohio Jiu-Jitsu Academy)',
+    youtubeId: '0ubZ65hvM2M',
+    linkedKind: 'concept',
+    linkedId: 'defend-early',
+    note: 'Defending the rear naked choke.',
+  },
+  {
+    id: 'video-angles',
+    title: '3 steps to make an angle and get a big advantage in closed guard (Stephan Kesting)',
+    youtubeId: '7SsZWyNn4-I',
+    linkedKind: 'concept',
+    linkedId: 'angles',
+    note: 'Getting your hips off the centre line before you attack from guard.',
+  },
+  {
+    id: 'video-two-on-one',
+    title: 'BJJ basics: How to get the 2 on 1 arm control (Ritchie Yip)',
+    youtubeId: '97_WqDya5VE',
+    linkedKind: 'concept',
+    linkedId: 'two-on-one',
+    note: 'Controlling one arm with both of yours.',
+  },
+  {
+    id: 'video-action-reaction',
+    title: 'How to do the armbar, triangle, omoplata combination (Ritchie Yip)',
+    youtubeId: 'aAYciVM-zk0',
+    linkedKind: 'concept',
+    linkedId: 'action-reaction',
+    note: 'Chaining the armbar, triangle and omoplata from closed guard.',
+  },
+  {
+    id: 'video-hip-control',
+    title: 'Hip and lever control passing with 5 guard pass examples (Stephan Kesting)',
+    youtubeId: 'yk9H_cqjNQg',
+    linkedKind: 'concept',
+    linkedId: 'hip-control',
+    note: 'Controlling the hips, and what moves them, to pass the guard.',
   },
   // Positions
   {

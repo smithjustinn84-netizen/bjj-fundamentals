@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
-import { useLibrary } from '../../bindings';
+import { items, useLibrary, useMissingStarterConcepts } from '../../bindings';
 import { reviewOf } from '../../core/library';
 import { Loading, ProgressDot } from '../components/common';
+import { StarterOffer } from '../components/StarterOffer';
 import { ConceptArtwork } from '../graphics/ConceptSvg';
 import { itemPath, newItemPath } from '../routes';
 
 export default function Concepts() {
   const lib = useLibrary();
+  const missing = useMissingStarterConcepts();
   if (!lib) return <Loading />;
   return (
     <div className="stack">
@@ -19,6 +21,12 @@ export default function Concepts() {
           + New concept
         </Link>
       </div>
+      <StarterOffer
+        noun="concept"
+        names={missing?.map((concept) => concept.name)}
+        onAdd={items.addMissingStarterConcepts}
+        onDismiss={items.dismissMissingStarterConcepts}
+      />
       <ol className="tile-list">
         {lib.concepts.map((c, i) => (
           <li key={c.id}>

@@ -3,7 +3,7 @@ import type { CoreEnv } from '../core';
 import { type Concept, endsTheRoll, type ItemKind, type Position, type Transition } from '../models';
 import { starterContent } from '../seed';
 import { cardId } from '../srs';
-import { findMissingStarterTechniques } from '../starter';
+import { findMissingStarterConcepts, findMissingStarterTechniques, linkAddedConcepts } from '../starter';
 import type { Repository } from '../storage';
 
 /** Fields the service fills in, so callers cannot get ids or timestamps wrong. */
@@ -57,6 +57,11 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
     );
   }
 
+  /** The starter concepts the Concepts page offers. Call inside a transaction. */
+  async function offeredStarterConcepts(starter: Concept[]): Promise<Concept[]> {
+    return findMissingStarterConcepts(starter, await storage.concepts.all(), await storage.starterDismissals.all());
+  }
+
   async function deleteConcept(id: string) {
     await storage.concepts.remove(id);
     const referencing = (await storage.positions.all()).filter((p) => p.conceptIds.includes(id));
@@ -101,6 +106,44 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
       return storage.transaction(async () => {
         const offered = await offeredStarterTechniques(starter);
         await storage.starterDismissals.putMany(offered.map((t) => ({ id: t.id, dismissedAt: timestamp })));
+        return offered.length;
+      });
+    },
+
+    /**
+     * Add the starter concepts on offer (missing and not dismissed), leaving everything stored untouched except
+     * that each one is linked to the stored starter positions whose starter version lists it. A concept the
+     * library never had also gets its starter video bookmark; one the user deleted does not, because deleting
+     * kept that bookmark, unlinked. Resolves to how many concepts were added.
+     */
+    addMissingStarterConcepts(): Promise<number> {
+      const timestamp = now();
+      const starter = starterContent(timestamp);
+      return storage.transaction(async () => {
+        const missing = await offeredStarterConcepts(starter.concepts);
+        const addedIds = new Set(missing.map((c) => c.id));
+        const storedVideoIds = new Set((await storage.videos.all()).map((v) => v.id));
+        const videos = starter.videos.filter(
+          (v) => v.linkedKind === 'concept' && addedIds.has(v.linkedId) && !storedVideoIds.has(v.id),
+        );
+        const linked = linkAddedConcepts(addedIds, starter.positions, await storage.positions.all());
+        await storage.concepts.putMany(missing);
+        await storage.videos.putMany(videos);
+        await storage.positions.putMany(linked.map((p) => ({ ...p, updatedAt: timestamp })));
+        return missing.length;
+      });
+    },
+
+    /**
+     * Stop offering the starter concepts on offer now. One that goes missing later is still offered.
+     * Resolves to how many were dismissed.
+     */
+    dismissMissingStarterConcepts(): Promise<number> {
+      const timestamp = now();
+      const starter = starterContent(timestamp).concepts;
+      return storage.transaction(async () => {
+        const offered = await offeredStarterConcepts(starter);
+        await storage.starterDismissals.putMany(offered.map((c) => ({ id: c.id, dismissedAt: timestamp })));
         return offered.length;
       });
     },

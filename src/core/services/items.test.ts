@@ -143,3 +143,56 @@ describe('adding missing starter techniques', () => {
     expect((await core.queries.missingStarterTechniques()).map((t) => t.id)).toEqual(['kimura-guard']);
   });
 });
+
+describe('adding missing starter concepts', () => {
+  it('adds back what is missing, relinks it to starter positions, and only once', async () => {
+    const { core, storage, clock } = testCore();
+    expect(await core.queries.missingStarterConcepts()).toEqual([]);
+    const before = await storage.concepts.count();
+
+    await core.items.deleteItem('concept', 'angles');
+    expect((await storage.positions.get('closed-guard'))?.conceptIds).not.toContain('angles');
+    expect((await core.queries.missingStarterConcepts()).map((c) => c.id)).toEqual(['angles']);
+
+    clock.now += 5000;
+    expect(await core.items.addMissingStarterConcepts()).toBe(1);
+    expect(await storage.concepts.count()).toBe(before);
+    expect(await storage.concepts.get('angles')).toMatchObject({ createdAt: clock.now });
+    expect(await storage.positions.get('closed-guard')).toMatchObject({ updatedAt: clock.now });
+    expect((await storage.positions.get('closed-guard'))?.conceptIds).toContain('angles');
+    expect((await storage.positions.get('standing'))?.conceptIds).toContain('angles');
+    // Deleting a concept keeps its bookmark, unlinked, so it is not re-added.
+    expect(await storage.videos.get('video-angles')).toMatchObject({ linkedId: '' });
+
+    expect(await core.items.addMissingStarterConcepts()).toBe(0);
+  });
+
+  it('brings the starter video for a concept the library never had, keeping the user’s position edits', async () => {
+    const { core, storage } = testCore();
+    // A library set up before "Breathe and stay calm" was added to the starter content.
+    await storage.concepts.remove('breathing');
+    await storage.videos.remove('video-breathing');
+    const mount = await storage.positions.get('mount');
+    if (!mount) throw new Error('starter content has no mount');
+    await storage.positions.put({ ...mount, conceptIds: ['base'] });
+
+    expect(await core.items.addMissingStarterConcepts()).toBe(1);
+    expect(await storage.videos.get('video-breathing')).toMatchObject({ linkedKind: 'concept', linkedId: 'breathing' });
+    expect((await storage.positions.get('mount'))?.conceptIds).toEqual(['base', 'breathing']);
+  });
+
+  it('dismissing stops offering the current concepts, but not ones that go missing later', async () => {
+    const { core, storage, clock } = testCore();
+    await core.items.deleteItem('concept', 'angles');
+    clock.now = 7000;
+
+    expect(await core.items.dismissMissingStarterConcepts()).toBe(1);
+    expect(await storage.starterDismissals.get('angles')).toEqual({ id: 'angles', dismissedAt: 7000 });
+    expect(await core.queries.missingStarterConcepts()).toEqual([]);
+    expect(await core.items.addMissingStarterConcepts()).toBe(0);
+    expect(await storage.concepts.get('angles')).toBeUndefined();
+
+    await core.items.deleteItem('concept', 'breathing');
+    expect((await core.queries.missingStarterConcepts()).map((c) => c.id)).toEqual(['breathing']);
+  });
+});

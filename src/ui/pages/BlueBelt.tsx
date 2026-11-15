@@ -4,40 +4,15 @@ import { blueBeltTestList } from '../../core/beltTest';
 import { TRANSITION_GROUP_LABELS } from '../../core/labels';
 import { reviewOf } from '../../core/library';
 import { Loading, ProgressDot } from '../components/common';
+import { StarterOffer } from '../components/StarterOffer';
 import { Belt } from '../graphics/Belt';
 import { EmptyState } from '../graphics/EmptyState';
 import { ProgressBar } from '../graphics/ProgressBar';
 import { itemPath, newItemPath, ROUTES } from '../routes';
 
-/**
- * Offers starter techniques the library does not have, such as ones added to the app after it was set up.
- * Dismissing hides those techniques for good; one that goes missing later is offered again.
- */
-function MissingStarterTechniques() {
-  const missing = useMissingStarterTechniques();
-  if (!missing || missing.length === 0) return null;
-  return (
-    <div className="card stack">
-      <p>
-        <strong>
-          {missing.length} starter {missing.length === 1 ? 'technique is' : 'techniques are'} not in your library:
-        </strong>{' '}
-        {missing.map((technique) => technique.name).join(', ')}.
-      </p>
-      <div className="row">
-        <button type="button" className="primary" onClick={() => void items.addMissingStarterTechniques()}>
-          Add {missing.length === 1 ? 'it' : 'them'}
-        </button>
-        <button type="button" onClick={() => void items.dismissMissingStarterTechniques()}>
-          Dismiss
-        </button>
-      </div>
-    </div>
-  );
-}
-
 export default function BlueBelt() {
   const lib = useLibrary();
+  const missing = useMissingStarterTechniques();
   if (!lib) return <Loading />;
   const list = blueBeltTestList(lib);
 
@@ -55,7 +30,12 @@ export default function BlueBelt() {
           + Technique
         </Link>
       </div>
-      <MissingStarterTechniques />
+      <StarterOffer
+        noun="technique"
+        names={missing?.map((technique) => technique.name)}
+        onAdd={items.addMissingStarterTechniques}
+        onDismiss={items.dismissMissingStarterTechniques}
+      />
       {list.total === 0 ? (
         <div className="card">
           <EmptyState
