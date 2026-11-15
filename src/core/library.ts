@@ -1,5 +1,6 @@
 import { assertNever } from './assertNever';
 import type { Concept, ItemKind, Position, ReviewState, Transition } from './models';
+import { cardId } from './srs';
 
 /** An in-memory snapshot of everything the UI needs to render lists and look items up. */
 export interface Library {
@@ -38,6 +39,25 @@ export function buildLibrary(
   };
 }
 
+/** The study card for an item, or undefined if it has never been reviewed. */
+export function reviewOf(lib: Library, kind: ItemKind, id: string): ReviewState | undefined {
+  return lib.reviews.get(cardId(kind, id));
+}
+
+/** Every item of one kind, in library order. */
+export function itemsOfKind(lib: Library, kind: ItemKind): (Concept | Position | Transition)[] {
+  switch (kind) {
+    case 'concept':
+      return lib.concepts;
+    case 'position':
+      return lib.positions;
+    case 'transition':
+      return lib.transitions;
+    default:
+      return assertNever(kind);
+  }
+}
+
 /** Display name of any item, or null if it no longer exists. */
 export function itemName(lib: Library, kind: ItemKind, id: string): string | null {
   switch (kind) {
@@ -50,4 +70,19 @@ export function itemName(lib: Library, kind: ItemKind, id: string): string | nul
     default:
       return assertNever(kind);
   }
+}
+
+export interface Connections {
+  /** Techniques that start here, including any that also end here. */
+  outgoing: Transition[];
+  /** Techniques from elsewhere that end here. */
+  incoming: Transition[];
+}
+
+/** The techniques touching a position. Deleting the position deletes exactly these. */
+export function connections(lib: Library, positionId: string): Connections {
+  return {
+    outgoing: lib.transitions.filter((t) => t.fromId === positionId),
+    incoming: lib.transitions.filter((t) => t.toId === positionId && t.fromId !== positionId),
+  };
 }

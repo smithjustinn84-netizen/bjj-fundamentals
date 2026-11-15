@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { items, useLibrary, useMissingStarterTechniques } from '../../bindings';
 import { blueBeltTestList } from '../../core/beltTest';
 import { TRANSITION_GROUP_LABELS } from '../../core/labels';
-import { cardId } from '../../core/srs';
+import { reviewOf } from '../../core/library';
 import { Loading, ProgressDot } from '../components/common';
 import { Belt } from '../graphics/Belt';
 import { EmptyState } from '../graphics/EmptyState';
@@ -88,7 +88,7 @@ export default function BlueBelt() {
                   const from = lib.positionById.get(technique.fromId);
                   return (
                     <li key={technique.id} className="transition-row">
-                      <ProgressDot state={lib.reviews.get(cardId('transition', technique.id))} />
+                      <ProgressDot state={reviewOf(lib, 'transition', technique.id)} />
                       <Link to={itemPath('transition', technique.id)}>{technique.name}</Link>
                       {from && <span className="muted small">from {from.name}</span>}
                     </li>

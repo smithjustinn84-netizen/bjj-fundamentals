@@ -1,9 +1,10 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { items, useLibrary } from '../../bindings';
+import { useLibrary } from '../../bindings';
 import { CATEGORY_LABELS, ROLE_LABELS } from '../../core/labels';
-import { cardId } from '../../core/srs';
+import { connections, reviewOf } from '../../core/library';
 import { Bullets, Loading, Missing, NotesBlock, ProgressDot, Section } from '../components/common';
-import { TransitionLink } from '../components/TransitionLink';
+import { confirmDelete } from '../components/confirmDelete';
+import { NO_TECHNIQUES_FROM_HERE, TransitionList } from '../components/TransitionLink';
 import { LinkedVideos } from '../components/VideoList';
 import { PositionArtwork } from '../graphics/PositionSvg';
 import { editPath, itemPath, newItemPath, ROUTES } from '../routes';
@@ -17,18 +18,11 @@ export default function PositionDetail() {
   if (!position) return <Missing what="Position" back={{ to: ROUTES.positions, label: 'Position map' }} />;
 
   const [top, bottom] = ROLE_LABELS[position.category];
-  const outgoing = lib.transitions.filter((t) => t.fromId === position.id);
-  const incoming = lib.transitions.filter((t) => t.toId === position.id && t.fromId !== position.id);
+  const { outgoing, incoming } = connections(lib, position.id);
   const concepts = position.conceptIds.map((c) => lib.conceptById.get(c)).filter((c) => c !== undefined);
 
   const remove = async () => {
-    const connected = outgoing.length + incoming.length;
-    const warning = connected
-      ? ` This also deletes ${connected} technique${connected === 1 ? '' : 's'} connected to it.`
-      : '';
-    if (!confirm(`Delete "${position.name}"?${warning}`)) return;
-    await items.deleteItem('position', position.id);
-    navigate(ROUTES.positions);
+    if (await confirmDelete(lib, 'position', position.id)) navigate(ROUTES.positions);
   };
 
   return (
@@ -39,8 +33,7 @@ export default function PositionDetail() {
       <div className="page-head">
         <div>
           <p className="eyebrow">
-            {CATEGORY_LABELS[position.category]}{' '}
-            <ProgressDot state={lib.reviews.get(cardId('position', position.id))} />
+            {CATEGORY_LABELS[position.category]} <ProgressDot state={reviewOf(lib, 'position', position.id)} />
           </p>
           <h1>{position.name}</h1>
           <p className="lead">{position.summary}</p>
@@ -86,22 +79,14 @@ export default function PositionDetail() {
           }
         >
           {outgoing.length > 0 ? (
-            <ul className="transition-list">
-              {outgoing.map((t) => (
-                <TransitionLink key={t.id} transition={t} positionById={lib.positionById} direction="out" />
-              ))}
-            </ul>
+            <TransitionList transitions={outgoing} positionById={lib.positionById} direction="out" />
           ) : (
-            <p className="muted">Nothing yet.</p>
+            <p className="muted">{NO_TECHNIQUES_FROM_HERE}</p>
           )}
         </Section>
         {incoming.length > 0 && (
           <Section title="Ways to get here">
-            <ul className="transition-list">
-              {incoming.map((t) => (
-                <TransitionLink key={t.id} transition={t} positionById={lib.positionById} direction="in" />
-              ))}
-            </ul>
+            <TransitionList transitions={incoming} positionById={lib.positionById} direction="in" />
           </Section>
         )}
         <NotesBlock notes={position.notes} />

@@ -1,9 +1,14 @@
-import { useState } from 'react';
 import { items } from '../../../bindings';
 import { CATEGORY_LABELS } from '../../../core/labels';
-import { POSITION_CATEGORIES, type Position, type PositionCategory } from '../../../core/models';
+import {
+  DEFAULT_POSITION_CATEGORY,
+  POSITION_CATEGORIES,
+  type Position,
+  type PositionCategory,
+} from '../../../core/models';
 import type { PositionInput } from '../../../core/services/items';
 import {
+  ChoiceField,
   Field,
   FormShell,
   fromLines,
@@ -12,7 +17,9 @@ import {
   NotesField,
   nextOrder,
   OrderField,
+  SummaryField,
   toLines,
+  useDraft,
 } from './shared';
 
 interface Draft {
@@ -30,7 +37,7 @@ function toDraft(position: Position | undefined, defaultOrder: number): Draft {
   return {
     name: position?.name ?? '',
     summary: position?.summary ?? '',
-    category: position?.category ?? 'guard',
+    category: position?.category ?? DEFAULT_POSITION_CATEGORY,
     topGoals: fromLines(position?.topGoals ?? []),
     bottomGoals: fromLines(position?.bottomGoals ?? []),
     conceptIds: position?.conceptIds ?? [],
@@ -53,11 +60,9 @@ function fromDraft(draft: Draft): PositionInput {
 }
 
 export function PositionForm({ itemId, library, cancelTo, onSaved, onDelete }: ItemFormProps) {
-  // Read once on mount: later live updates must not overwrite what the user is typing.
-  const [draft, setDraft] = useState(() =>
+  const [draft, set] = useDraft(() =>
     toDraft(itemId ? library.positionById.get(itemId) : undefined, nextOrder(library.positions)),
   );
-  const set = <K extends keyof Draft>(key: K, value: Draft[K]) => setDraft((d) => ({ ...d, [key]: value }));
   const toggleConcept = (conceptId: string, checked: boolean) =>
     set('conceptIds', checked ? [...draft.conceptIds, conceptId] : draft.conceptIds.filter((c) => c !== conceptId));
 
@@ -68,18 +73,14 @@ export function PositionForm({ itemId, library, cancelTo, onSaved, onDelete }: I
       onSubmit={async () => onSaved(await items.savePosition(itemId, fromDraft(draft)))}
     >
       <NameField value={draft.name} onChange={(v) => set('name', v)} />
-      <Field label="Summary" hint="One plain-language sentence.">
-        <textarea rows={2} value={draft.summary} onChange={(e) => set('summary', e.target.value)} />
-      </Field>
-      <Field label="Category">
-        <select value={draft.category} onChange={(e) => set('category', e.target.value as PositionCategory)}>
-          {POSITION_CATEGORIES.map((c) => (
-            <option key={c} value={c}>
-              {CATEGORY_LABELS[c]}
-            </option>
-          ))}
-        </select>
-      </Field>
+      <SummaryField value={draft.summary} onChange={(v) => set('summary', v)} />
+      <ChoiceField
+        label="Category"
+        options={POSITION_CATEGORIES}
+        labels={CATEGORY_LABELS}
+        value={draft.category}
+        onChange={(v) => set('category', v)}
+      />
       <div className="two-col">
         <Field label="Goals on top / attacking" hint="One per line.">
           <textarea rows={4} value={draft.topGoals} onChange={(e) => set('topGoals', e.target.value)} />

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLibrary } from '../../bindings';
-import { cardId } from '../../core/srs';
+import { reviewOf } from '../../core/library';
 import { Loading, ProgressDot } from '../components/common';
 import { ConceptArtwork } from '../graphics/ConceptSvg';
 import { itemPath, newItemPath } from '../routes';
@@ -29,7 +29,7 @@ export default function Concepts() {
                 <strong>{c.name}</strong>
                 <span className="muted small block">{c.summary}</span>
               </span>
-              <ProgressDot state={lib.reviews.get(cardId('concept', c.id))} />
+              <ProgressDot state={reviewOf(lib, 'concept', c.id)} />
             </Link>
           </li>
         ))}

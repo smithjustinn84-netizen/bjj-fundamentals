@@ -1,9 +1,11 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { items, useLibrary } from '../../bindings';
+import { useLibrary } from '../../bindings';
 import { isOnBlueBeltTest } from '../../core/beltTest';
 import { TRANSITION_LABELS } from '../../core/labels';
-import { cardId } from '../../core/srs';
+import { reviewOf } from '../../core/library';
+import { endsTheRoll } from '../../core/models';
 import { Bullets, Loading, Missing, NotesBlock, ProgressDot, Section } from '../components/common';
+import { confirmDelete } from '../components/confirmDelete';
 import { LinkedVideos } from '../components/VideoList';
 import { TransitionArtwork } from '../graphics/Artwork';
 import { editPath, itemPath, ROUTES } from '../routes';
@@ -21,9 +23,7 @@ export default function TransitionDetail() {
   const backPath = from ? itemPath('position', from.id) : ROUTES.positions;
 
   const remove = async () => {
-    if (!confirm(`Delete "${transition.name}"?`)) return;
-    await items.deleteItem('transition', transition.id);
-    navigate(backPath);
+    if (await confirmDelete(lib, 'transition', transition.id)) navigate(backPath);
   };
 
   return (
@@ -42,13 +42,13 @@ export default function TransitionDetail() {
                 </Link>{' '}
               </>
             )}
-            <ProgressDot state={lib.reviews.get(cardId('transition', transition.id))} />
+            <ProgressDot state={reviewOf(lib, 'transition', transition.id)} />
           </p>
           <h1>{transition.name}</h1>
           <p className="route">
             {from ? <Link to={itemPath('position', from.id)}>{from.name}</Link> : <span className="muted">?</span>}
             <span aria-hidden="true"> → </span>
-            {transition.type === 'submission' ? (
+            {endsTheRoll(transition.type) ? (
               <strong>Tap</strong>
             ) : to ? (
               <Link to={itemPath('position', to.id)}>{to.name}</Link>
@@ -76,7 +76,7 @@ export default function TransitionDetail() {
             <Bullets items={transition.commonMistakes} />
           </Section>
         )}
-        {transition.type === 'submission' && (
+        {endsTheRoll(transition.type) && (
           <p className="drill">Apply submissions slowly in training and let go as soon as your partner taps.</p>
         )}
         <NotesBlock notes={transition.notes} />

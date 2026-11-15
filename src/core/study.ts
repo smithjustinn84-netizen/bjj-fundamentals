@@ -1,5 +1,5 @@
-import type { Library } from './library';
-import type { ItemKind } from './models';
+import { type Library, reviewOf } from './library';
+import type { Deck, ItemKind } from './models';
 import { cardId, isLearned } from './srs';
 
 /** One thing that can be studied as a flashcard. */
@@ -8,10 +8,8 @@ export interface StudyItem {
   id: string;
 }
 
-export type Deck = 'all' | ItemKind;
-
 /** Every card, in learning order: concepts, then positions, then the techniques that connect them. */
-export function allStudyItems(lib: Library): StudyItem[] {
+function allStudyItems(lib: Library): StudyItem[] {
   return [
     ...lib.concepts.map((c) => ({ kind: 'concept' as const, id: c.id })),
     ...lib.positions.map((p) => ({ kind: 'position' as const, id: p.id })),
@@ -33,7 +31,7 @@ export function buildQueue(lib: Library, deck: Deck, newLimit: number, now: numb
   const due: { item: StudyItem; dueAt: number }[] = [];
   const fresh: StudyItem[] = [];
   for (const item of items) {
-    const state = lib.reviews.get(cardId(item.kind, item.id));
+    const state = reviewOf(lib, item.kind, item.id);
     if (!state) fresh.push(item);
     else if (state.due <= now) due.push({ item, dueAt: state.due });
   }

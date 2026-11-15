@@ -6,6 +6,8 @@
  */
 export const POSITION_CATEGORIES = ['standing', 'guard', 'top', 'back', 'scramble'] as const;
 export type PositionCategory = (typeof POSITION_CATEGORIES)[number];
+/** What a new position starts as: most of what beginners add is a guard. */
+export const DEFAULT_POSITION_CATEGORY: PositionCategory = 'guard';
 
 export interface Position {
   id: string;
@@ -28,13 +30,19 @@ export interface Position {
 
 export const TRANSITION_TYPES = ['sweep', 'pass', 'escape', 'submission', 'takedown', 'transition'] as const;
 export type TransitionType = (typeof TRANSITION_TYPES)[number];
+export const DEFAULT_TRANSITION_TYPE: TransitionType = 'sweep';
+
+/** A submission ends the roll: it has no destination position, so its `toId` is empty. */
+export function endsTheRoll(type: TransitionType): boolean {
+  return type === 'submission';
+}
 
 export interface Transition {
   id: string;
   name: string;
   type: TransitionType;
   fromId: string;
-  /** Destination position id. Submissions may leave this empty (the match ends). */
+  /** Destination position id. Empty for a type that `endsTheRoll`. */
   toId: string;
   steps: string[];
   commonMistakes: string[];
@@ -63,6 +71,10 @@ export interface Concept {
 
 export const ITEM_KINDS = ['concept', 'position', 'transition'] as const;
 export type ItemKind = (typeof ITEM_KINDS)[number];
+
+/** What a review session can draw from: every kind, or just one. */
+export const DECKS = ['all', ...ITEM_KINDS] as const;
+export type Deck = (typeof DECKS)[number];
 
 export function isItemKind(value: unknown): value is ItemKind {
   return typeof value === 'string' && (ITEM_KINDS as readonly string[]).includes(value);

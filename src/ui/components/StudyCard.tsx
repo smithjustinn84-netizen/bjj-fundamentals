@@ -2,7 +2,12 @@ import { assertNever } from '../../core/assertNever';
 import { ROLE_LABELS, TRANSITION_LABELS } from '../../core/labels';
 import type { Library } from '../../core/library';
 import type { StudyItem } from '../../core/study';
+import { TransitionArtwork } from '../graphics/Artwork';
+import { ConceptArtwork } from '../graphics/ConceptSvg';
+import { PositionArtwork } from '../graphics/PositionSvg';
 import { Bullets } from './common';
+
+const ARTWORK_CLASS = 'review-artwork';
 
 /** The question side of a review card, or null if the item no longer exists. */
 export function cardPrompt(item: StudyItem, lib: Library): { eyebrow: string; question: string } | null {
@@ -31,7 +36,7 @@ export function cardPrompt(item: StudyItem, lib: Library): { eyebrow: string; qu
   }
 }
 
-/** The answer side of a review card. */
+/** The answer side of a review card: the item's picture, then what the student should have recalled. */
 export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
   switch (item.kind) {
     case 'concept': {
@@ -39,6 +44,7 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
       if (!concept) return null;
       return (
         <>
+          <ConceptArtwork id={concept.id} name={concept.name} className={ARTWORK_CLASS} />
           <p className="lead">{concept.summary}</p>
           <Bullets items={concept.keyPoints} />
           {concept.drill && (
@@ -55,6 +61,7 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
       const [top, bottom] = ROLE_LABELS[position.category];
       return (
         <>
+          <PositionArtwork id={position.id} name={position.name} className={ARTWORK_CLASS} />
           <p className="lead">{position.summary}</p>
           <div className="two-col">
             <div>
@@ -75,6 +82,7 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
       const to = transition.toId ? lib.positionById.get(transition.toId)?.name : null;
       return (
         <>
+          <TransitionArtwork transition={transition} positionById={lib.positionById} className={ARTWORK_CLASS} />
           {to && (
             <p className="lead">
               Ends in: <strong>{to}</strong>

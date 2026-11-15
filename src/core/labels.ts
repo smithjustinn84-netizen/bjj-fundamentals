@@ -1,5 +1,5 @@
 import type { BackupTable } from './backup';
-import type { BeltRank, ItemKind, PositionCategory, TransitionType } from './models';
+import type { BeltRank, Grade, ItemKind, PositionCategory, TransitionType } from './models';
 
 export const CATEGORY_LABELS: Record<PositionCategory, string> = {
   standing: 'Standing',
@@ -43,6 +43,18 @@ export const KIND_LABELS: Record<ItemKind, string> = {
   transition: 'Technique',
 };
 
+/** Headings for a list of items of one kind. */
+export const KIND_GROUP_LABELS: Record<ItemKind, string> = {
+  concept: 'Concepts',
+  position: 'Positions',
+  transition: 'Techniques',
+};
+
+export const GRADE_LABELS: Record<Grade, string> = { again: 'Again', hard: 'Hard', good: 'Good', easy: 'Easy' };
+
+/** Shared by the technique form's checkbox and the blue belt page that tells people to tick it. */
+export const BLUE_BELT_TEST_LABEL = 'On the blue belt test';
+
 export const TABLE_LABELS: Record<BackupTable, string> = {
   concepts: 'Concepts',
   positions: 'Positions',
@@ -59,3 +71,8 @@ export const BELT_LABELS: Record<BeltRank, string> = {
   brown: 'Brown belt',
   black: 'Black belt',
 };
+
+/** "1 card", "2 cards". Only for nouns that take a plain "s". */
+export function plural(count: number, noun: string): string {
+  return `${count} ${noun}${count === 1 ? '' : 's'}`;
+}

@@ -1,4 +1,11 @@
-import type { MapOrientation, Position, PositionCategory, Transition, TransitionType } from './models';
+import {
+  endsTheRoll,
+  type MapOrientation,
+  type Position,
+  type PositionCategory,
+  type Transition,
+  type TransitionType,
+} from './models';
 
 /**
  * Geometry for the position map: where each position sits and how each technique's arrow curves.
@@ -208,7 +215,7 @@ export function layoutPositionMap(
 
   const submissionsFrom = new Map<string, number>();
   for (const t of transitions) {
-    if (t.type === 'submission') submissionsFrom.set(t.fromId, (submissionsFrom.get(t.fromId) ?? 0) + 1);
+    if (endsTheRoll(t.type)) submissionsFrom.set(t.fromId, (submissionsFrom.get(t.fromId) ?? 0) + 1);
   }
 
   const lanes: MapLane[] = [];
@@ -249,7 +256,7 @@ export function layoutPositionMap(
   const takenBows = new Map<string, Set<number>>();
   const edges: MapEdge[] = [];
   for (const t of transitions) {
-    if (t.type === 'submission' || t.fromId === t.toId) continue;
+    if (endsTheRoll(t.type) || t.fromId === t.toId) continue;
     const from = nodeById.get(t.fromId);
     const to = nodeById.get(t.toId);
     if (!from || !to) continue;

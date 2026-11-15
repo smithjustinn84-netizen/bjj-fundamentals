@@ -1,11 +1,34 @@
+import { assertNever } from './assertNever';
 import type { Grade, ItemKind, ReviewState } from './models';
 
 /** A simplified SM-2 scheduler. Pure functions so they are easy to test. */
 
-export const DAY_MS = 24 * 60 * 60 * 1000;
+const MINUTE_MS = 60 * 1000;
+const HOUR_MS = 60 * MINUTE_MS;
+export const DAY_MS = 24 * HOUR_MS;
 /** "Again" brings a card back within the same session. */
-export const RELEARN_MS = 10 * 60 * 1000;
+export const RELEARN_MS = 10 * MINUTE_MS;
+
+/** SM-2's starting ease: each successful review multiplies the interval by roughly this much. */
+const INITIAL_EASE = 2.5;
+/** Ease never drops below this, so a card that was hard once can still grow its interval. */
 const MIN_EASE = 1.3;
+const AGAIN_EASE_PENALTY = 0.2;
+const HARD_EASE_PENALTY = 0.15;
+const EASY_EASE_BONUS = 0.15;
+/** "Hard" grows the interval far more slowly than the ease would. */
+const HARD_INTERVAL_FACTOR = 1.2;
+/** "Easy" stretches the interval beyond what the ease alone would give. */
+const EASY_INTERVAL_FACTOR = 1.3;
+/** First intervals, in days, before the ease takes over. */
+const FIRST_INTERVAL_DAYS = 1;
+const SECOND_INTERVAL_DAYS = 3;
+const FIRST_EASY_INTERVAL_DAYS = 4;
+/** An interval this long means the card has stuck across several days. */
+const LEARNED_INTERVAL_DAYS = 3;
+
+const DAYS_PER_MONTH = 30;
+const DAYS_PER_YEAR = 365;
 
 export function cardId(kind: ItemKind, itemId: string): string {
   return `${kind}:${itemId}`;
@@ -16,7 +39,7 @@ export function newReviewState(kind: ItemKind, itemId: string, now: number): Rev
     id: cardId(kind, itemId),
     kind,
     itemId,
-    ease: 2.5,
+    ease: INITIAL_EASE,
     intervalDays: 0,
     repetitions: 0,
     lapses: 0,
@@ -26,30 +49,45 @@ export function newReviewState(kind: ItemKind, itemId: string, now: number): Rev
 }
 
 export function schedule(prev: ReviewState, grade: Grade, now: number): ReviewState {
-  let { ease, intervalDays, repetitions, lapses } = prev;
+  const { repetitions } = prev;
+  let ease = prev.ease;
+  let intervalDays: number;
 
-  if (grade === 'again') {
-    return {
-      ...prev,
-      ease: Math.max(MIN_EASE, ease - 0.2),
-      intervalDays: 0,
-      repetitions: 0,
-      lapses: lapses + 1,
-      due: now + RELEARN_MS,
-      lastReviewed: now,
-    };
+  switch (grade) {
+    case 'again':
+      return {
+        ...prev,
+        ease: Math.max(MIN_EASE, ease - AGAIN_EASE_PENALTY),
+        intervalDays: 0,
+        repetitions: 0,
+        lapses: prev.lapses + 1,
+        due: now + RELEARN_MS,
+        lastReviewed: now,
+      };
+    case 'hard':
+      ease = Math.max(MIN_EASE, ease - HARD_EASE_PENALTY);
+      intervalDays =
+        repetitions === 0
+          ? FIRST_INTERVAL_DAYS
+          : Math.max(FIRST_INTERVAL_DAYS, Math.round(prev.intervalDays * HARD_INTERVAL_FACTOR));
+      break;
+    case 'good':
+      intervalDays =
+        repetitions === 0
+          ? FIRST_INTERVAL_DAYS
+          : repetitions === 1
+            ? SECOND_INTERVAL_DAYS
+            : Math.round(prev.intervalDays * ease);
+      break;
+    case 'easy':
+      intervalDays =
+        repetitions === 0 ? FIRST_EASY_INTERVAL_DAYS : Math.round(prev.intervalDays * ease * EASY_INTERVAL_FACTOR);
+      ease += EASY_EASE_BONUS;
+      break;
+    default:
+      return assertNever(grade);
   }
-
-  if (grade === 'hard') {
-    ease = Math.max(MIN_EASE, ease - 0.15);
-    intervalDays = repetitions === 0 ? 1 : Math.max(1, Math.round(intervalDays * 1.2));
-  } else if (grade === 'good') {
-    intervalDays = repetitions === 0 ? 1 : repetitions === 1 ? 3 : Math.round(intervalDays * ease);
-  } else {
-    intervalDays = repetitions === 0 ? 4 : Math.round(intervalDays * ease * 1.3);
-    ease = ease + 0.15;
-  }
-  // Never let a successful review shrink the interval below the previous one (except "hard").
+  // A successful review never leaves the interval where it was; "hard" is allowed to.
   if (grade !== 'hard') intervalDays = Math.max(intervalDays, prev.intervalDays + 1);
 
   return {
@@ -57,7 +95,6 @@ export function schedule(prev: ReviewState, grade: Grade, now: number): ReviewSt
     ease,
     intervalDays,
     repetitions: repetitions + 1,
-    lapses,
     due: now + intervalDays * DAY_MS,
     lastReviewed: now,
   };
@@ -67,16 +104,16 @@ export function schedule(prev: ReviewState, grade: Grade, now: number): ReviewSt
 export function describeInterval(prev: ReviewState, grade: Grade, now: number): string {
   const next = schedule(prev, grade, now);
   const ms = next.due - now;
-  if (ms < 60 * 60 * 1000) return `${Math.round(ms / 60000)}m`;
+  if (ms < HOUR_MS) return `${Math.round(ms / MINUTE_MS)}m`;
   const days = Math.round(ms / DAY_MS);
-  if (days < 30) return `${days}d`;
-  if (days < 365) return `${Math.round(days / 30)}mo`;
-  return `${(days / 365).toFixed(1)}y`;
+  if (days < DAYS_PER_MONTH) return `${days}d`;
+  if (days < DAYS_PER_YEAR) return `${Math.round(days / DAYS_PER_MONTH)}mo`;
+  return `${(days / DAYS_PER_YEAR).toFixed(1)}y`;
 }
 
 /** A card counts as "learned" once it has survived a multi-day interval. */
 export function isLearned(state: ReviewState | undefined): boolean {
-  return !!state && state.intervalDays >= 3;
+  return !!state && state.intervalDays >= LEARNED_INTERVAL_DAYS;
 }
 
 export function localDayKey(ts: number): string {

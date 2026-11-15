@@ -1,6 +1,8 @@
 import { type FormEvent, useState } from 'react';
 import { useLibrary, videos } from '../../bindings';
-import { type ItemKind, isItemKind } from '../../core/models';
+import { KIND_GROUP_LABELS } from '../../core/labels';
+import { itemsOfKind } from '../../core/library';
+import { ITEM_KINDS, type ItemKind, isItemKind } from '../../core/models';
 import { formatTime, parseTime, parseYouTubeId, parseYouTubeStart } from '../../core/youtube';
 
 interface ItemRef {
@@ -94,31 +96,16 @@ export function VideoForm({ linkedTo, onDone }: Props) {
           About
           <select value={picked} onChange={(e) => setPicked(e.target.value)}>
             <option value="">— Not linked —</option>
-            {library && (
-              <>
-                <optgroup label="Concepts">
-                  {library.concepts.map((c) => (
-                    <option key={c.id} value={encodeRef({ kind: 'concept', id: c.id })}>
-                      {c.name}
+            {library &&
+              ITEM_KINDS.map((kind) => (
+                <optgroup key={kind} label={KIND_GROUP_LABELS[kind]}>
+                  {itemsOfKind(library, kind).map((item) => (
+                    <option key={item.id} value={encodeRef({ kind, id: item.id })}>
+                      {item.name}
                     </option>
                   ))}
                 </optgroup>
-                <optgroup label="Positions">
-                  {library.positions.map((p) => (
-                    <option key={p.id} value={encodeRef({ kind: 'position', id: p.id })}>
-                      {p.name}
-                    </option>
-                  ))}
-                </optgroup>
-                <optgroup label="Techniques">
-                  {library.transitions.map((t) => (
-                    <option key={t.id} value={encodeRef({ kind: 'transition', id: t.id })}>
-                      {t.name}
-                    </option>
-                  ))}
-                </optgroup>
-              </>
-            )}
+              ))}
           </select>
         </label>
       )}

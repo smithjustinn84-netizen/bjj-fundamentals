@@ -1,6 +1,6 @@
 import { assertNever } from '../assertNever';
 import type { CoreEnv } from '../core';
-import type { Concept, ItemKind, Position, Transition } from '../models';
+import { type Concept, endsTheRoll, type ItemKind, type Position, type Transition } from '../models';
 import { starterContent } from '../seed';
 import { cardId } from '../srs';
 import { missingStarterTechniques } from '../starter';
@@ -58,7 +58,8 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
   return {
     saveConcept: (id: string | null, input: ConceptInput) => save(storage.concepts, id, input),
     savePosition: (id: string | null, input: PositionInput) => save(storage.positions, id, input),
-    saveTransition: (id: string | null, input: TransitionInput) => save(storage.transitions, id, input),
+    saveTransition: (id: string | null, input: TransitionInput) =>
+      save(storage.transitions, id, endsTheRoll(input.type) ? { ...input, toId: '' } : input),
 
     /**
      * Add the starter techniques the library is missing, each with its starter video bookmark, leaving
@@ -100,7 +101,7 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
             await deleteConcept(id);
             break;
           default:
-            assertNever(kind);
+            return assertNever(kind);
         }
         await storage.reviews.remove(cardId(kind, id));
         await unlinkVideos(kind, [id]);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DAY_MS, newReviewState, RELEARN_MS, schedule, streakDays } from './srs';
+import { DAY_MS, describeInterval, isLearned, newReviewState, RELEARN_MS, schedule, streakDays } from './srs';
 
 const NOW = new Date(2026, 10, 14, 12).getTime();
 
@@ -35,6 +35,41 @@ describe('schedule', () => {
     const s = schedule(newReviewState('concept', 'x', NOW), 'easy', NOW);
     expect(s.intervalDays).toBe(4);
     expect(s.ease).toBeCloseTo(2.65);
+  });
+
+  it('"hard" grows the interval slowly, lowers ease, and may keep the interval flat', () => {
+    let s = schedule(newReviewState('concept', 'x', NOW), 'hard', NOW);
+    expect(s.intervalDays).toBe(1);
+    expect(s.ease).toBeCloseTo(2.35);
+    s = schedule(s, 'hard', NOW);
+    expect(s.intervalDays).toBe(1); // max(1, round(1 * 1.2))
+  });
+
+  it('"easy" on a reviewed card multiplies by ease and the easy bonus', () => {
+    let s = schedule(newReviewState('concept', 'x', NOW), 'good', NOW);
+    s = schedule(s, 'easy', NOW);
+    expect(s.intervalDays).toBe(3); // round(1 * 2.5 * 1.3) = 3
+    expect(s.ease).toBeCloseTo(2.65);
+  });
+});
+
+describe('describeInterval', () => {
+  const fresh = newReviewState('concept', 'x', NOW);
+  it('shows minutes for "again", days otherwise', () => {
+    expect(describeInterval(fresh, 'again', NOW)).toBe('10m');
+    expect(describeInterval(fresh, 'good', NOW)).toBe('1d');
+  });
+  it('switches to months and years for long intervals', () => {
+    expect(describeInterval({ ...fresh, repetitions: 5, intervalDays: 20 }, 'good', NOW)).toBe('2mo');
+    expect(describeInterval({ ...fresh, repetitions: 5, intervalDays: 200 }, 'good', NOW)).toBe('1.4y');
+  });
+});
+
+describe('isLearned', () => {
+  it('needs a multi-day interval', () => {
+    expect(isLearned(undefined)).toBe(false);
+    expect(isLearned({ ...newReviewState('concept', 'x', NOW), intervalDays: 2 })).toBe(false);
+    expect(isLearned({ ...newReviewState('concept', 'x', NOW), intervalDays: 3 })).toBe(true);
   });
 });
 

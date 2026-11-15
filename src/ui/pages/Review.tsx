@@ -1,28 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLibrary, useStudyStats } from '../../bindings';
-import { GRADES, type Grade } from '../../core/models';
-import { cardId, describeInterval, newReviewState } from '../../core/srs';
-import { buildQueue, type Deck } from '../../core/study';
+import { GRADE_LABELS, KIND_GROUP_LABELS, plural } from '../../core/labels';
+import { reviewOf } from '../../core/library';
+import { DECKS, type Deck, GRADES, type Grade } from '../../core/models';
+import { describeInterval, newReviewState } from '../../core/srs';
+import { buildQueue } from '../../core/study';
 import { Loading } from '../components/common';
 import { CardAnswer, cardPrompt } from '../components/StudyCard';
-import { TransitionArtwork } from '../graphics/Artwork';
-import { ConceptArtwork } from '../graphics/ConceptSvg';
 import { EmptyState } from '../graphics/EmptyState';
 import { Icon } from '../graphics/icons';
 import { prefersReducedMotion } from '../graphics/motion';
-import { PositionArtwork } from '../graphics/PositionSvg';
 import { ProgressBar } from '../graphics/ProgressBar';
 import { itemPath, ROUTES } from '../routes';
 import { type GradeTally, useReviewSession } from './useReviewSession';
 
-const DECKS: { value: Deck; label: string }[] = [
-  { value: 'all', label: 'Everything' },
-  { value: 'concept', label: 'Concepts' },
-  { value: 'position', label: 'Positions' },
-  { value: 'transition', label: 'Techniques' },
-];
-const GRADE_LABELS: Record<Grade, string> = { again: 'Again', hard: 'Hard', good: 'Good', easy: 'Easy' };
+const DECK_LABELS: Record<Deck, string> = { all: 'Everything', ...KIND_GROUP_LABELS };
 /** Keyboard shortcut for each grade: its place in the row, starting from 1. */
 const GRADE_BUTTONS = GRADES.map((grade, index) => ({ grade, label: GRADE_LABELS[grade], key: String(index + 1) }));
 const DEFAULT_NEW_CARDS = 5;
@@ -33,12 +26,10 @@ const CARD_LEAVE_MS = 220;
 const isTyping = (target: EventTarget | null) =>
   target instanceof HTMLInputElement || target instanceof HTMLSelectElement || target instanceof HTMLTextAreaElement;
 
-const plural = (count: number, noun: string) => `${count} ${noun}${count === 1 ? '' : 's'}`;
-
 /** How the session's answers split across the four grades, as one stacked bar with a legend. */
 function GradeBreakdown({ tally }: { tally: GradeTally }) {
   return (
-    <div className="breakdown">
+    <div>
       <div className="breakdown-bar" aria-hidden="true">
         {GRADES.filter((grade) => tally[grade] > 0).map((grade) => (
           <span key={grade} className={`grade-${grade}`} style={{ flexGrow: tally[grade] }} />
@@ -146,8 +137,8 @@ export default function Review() {
             {/* The cast is safe: every option's value comes from DECKS. */}
             <select value={deck} onChange={(e) => setDeck(e.target.value as Deck)}>
               {DECKS.map((d) => (
-                <option key={d.value} value={d.value}>
-                  {d.label}
+                <option key={d} value={d}>
+                  {DECK_LABELS[d]}
                 </option>
               ))}
             </select>
@@ -196,9 +187,8 @@ export default function Review() {
   const { current } = session;
   const prompt = current ? cardPrompt(current, lib) : null;
   if (!current || !prompt) return <Loading />;
-  const transition = lib.transitionById.get(current.id);
   const now = Date.now();
-  const state = lib.reviews.get(cardId(current.kind, current.id)) ?? newReviewState(current.kind, current.id, now);
+  const state = reviewOf(lib, current.kind, current.id) ?? newReviewState(current.kind, current.id, now);
 
   return (
     <div className="stack narrow-page">
@@ -226,27 +216,6 @@ export default function Review() {
             <h2 className="question">{prompt.question}</h2>
             {revealed ? (
               <div className="answer">
-                {current.kind === 'position' && (
-                  <PositionArtwork
-                    id={current.id}
-                    name={lib.positionById.get(current.id)?.name ?? 'position'}
-                    className="review-artwork"
-                  />
-                )}
-                {current.kind === 'concept' && (
-                  <ConceptArtwork
-                    id={current.id}
-                    name={lib.conceptById.get(current.id)?.name ?? 'concept'}
-                    className="review-artwork"
-                  />
-                )}
-                {current.kind === 'transition' && transition && (
-                  <TransitionArtwork
-                    transition={transition}
-                    positionById={lib.positionById}
-                    className="review-artwork"
-                  />
-                )}
                 <CardAnswer item={current} lib={lib} />
                 <p className="small">
                   <Link to={itemPath(current.kind, current.id)} target="_blank">

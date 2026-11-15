@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useLibrary, useStudyStats, useVideos } from '../../bindings';
 import { BELT_LABELS } from '../../core/labels';
+import { reviewOf } from '../../core/library';
 import { beltRank } from '../../core/rank';
 import { cardId } from '../../core/srs';
 import { progressSummary } from '../../core/study';
@@ -195,7 +196,7 @@ export default function Home() {
           {lib.concepts.map((c) => (
             <li key={c.id}>
               <Link to={itemPath('concept', c.id)} className="chip">
-                <ProgressDot state={lib.reviews.get(cardId('concept', c.id))} /> {c.name}
+                <ProgressDot state={reviewOf(lib, 'concept', c.id)} /> {c.name}
               </Link>
             </li>
           ))}

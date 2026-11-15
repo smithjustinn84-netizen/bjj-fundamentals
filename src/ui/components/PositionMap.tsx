@@ -1,16 +1,21 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CATEGORY_LABELS, TRANSITION_LABELS } from '../../core/labels';
-import type { Library } from '../../core/library';
+import { CATEGORY_LABELS, plural, TRANSITION_LABELS } from '../../core/labels';
+import { connections, type Library, reviewOf } from '../../core/library';
 import { layoutPositionMap, type MapNode } from '../../core/mapLayout';
-import { type MapOrientation, type Position, TRANSITION_TYPES, type TransitionType } from '../../core/models';
-import { cardId } from '../../core/srs';
+import {
+  endsTheRoll,
+  type MapOrientation,
+  type Position,
+  TRANSITION_TYPES,
+  type TransitionType,
+} from '../../core/models';
 import { itemPath } from '../routes';
 import { ProgressDot } from './common';
-import { TransitionLink } from './TransitionLink';
+import { NO_TECHNIQUES_FROM_HERE, TransitionList } from './TransitionLink';
 
 /** Submissions are counted on the position instead of drawn, so they get no arrowhead and no line in the legend. */
-const ARROW_TYPES = TRANSITION_TYPES.filter((type) => type !== 'submission');
+const ARROW_TYPES = TRANSITION_TYPES.filter((type) => !endsTheRoll(type));
 const markerId = (type: TransitionType) => `map-arrow-${type}`;
 
 function MapNodeButton({
@@ -44,22 +49,17 @@ function MapNodeButton({
         onBlur={() => onPeek(false)}
       >
         <span className="map-node-name">
-          <ProgressDot state={lib.reviews.get(cardId('position', position.id))} />
+          <ProgressDot state={reviewOf(lib, 'position', position.id)} />
           <span>{position.name}</span>
         </span>
-        {node.submissions > 0 && (
-          <span className="map-node-subs">
-            {node.submissions} submission{node.submissions === 1 ? '' : 's'}
-          </span>
-        )}
+        {node.submissions > 0 && <span className="map-node-subs">{plural(node.submissions, 'submission')}</span>}
       </button>
     </foreignObject>
   );
 }
 
 function SelectedPosition({ position, lib }: { position: Position; lib: Library }) {
-  const outgoing = lib.transitions.filter((t) => t.fromId === position.id);
-  const incoming = lib.transitions.filter((t) => t.toId === position.id && t.fromId !== position.id);
+  const { outgoing, incoming } = connections(lib, position.id);
   return (
     // Keyed by the caller, so choosing another position replays the entrance.
     <div className="map-panel-body">
@@ -70,22 +70,14 @@ function SelectedPosition({ position, lib }: { position: Position; lib: Library 
       <p className="muted small">{position.summary}</p>
       <h3>From here</h3>
       {outgoing.length > 0 ? (
-        <ul className="transition-list">
-          {outgoing.map((t) => (
-            <TransitionLink key={t.id} transition={t} positionById={lib.positionById} direction="out" />
-          ))}
-        </ul>
+        <TransitionList transitions={outgoing} positionById={lib.positionById} direction="out" />
       ) : (
-        <p className="muted small">No techniques from here yet.</p>
+        <p className="muted small">{NO_TECHNIQUES_FROM_HERE}</p>
       )}
       {incoming.length > 0 && (
         <>
           <h3>Ways to get here</h3>
-          <ul className="transition-list">
-            {incoming.map((t) => (
-              <TransitionLink key={t.id} transition={t} positionById={lib.positionById} direction="in" />
-            ))}
-          </ul>
+          <TransitionList transitions={incoming} positionById={lib.positionById} direction="in" />
         </>
       )}
     </div>

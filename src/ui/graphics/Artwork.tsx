@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Position, Transition } from '../../core/models';
+import { endsTheRoll, type Position, type Transition } from '../../core/models';
 import { TapArtwork } from './ConceptSvg';
 import { hasPositionArtwork, PositionArtwork } from './PositionSvg';
 
@@ -39,10 +39,10 @@ export function TransitionArtwork({
   className?: string;
 }) {
   const from = positionById.get(transition.fromId);
-  const to = positionById.get(transition.toId);
-  const isSubmission = transition.type === 'submission';
   if (!from || !hasPositionArtwork(from.id)) return null;
-  if (!isSubmission && (!to || !hasPositionArtwork(to.id))) return null;
+  // Undefined when the technique ends the roll: its picture is a tap instead.
+  const to = endsTheRoll(transition.type) ? undefined : positionById.get(transition.toId);
+  if (!endsTheRoll(transition.type) && (!to || !hasPositionArtwork(to.id))) return null;
   return (
     <div className={`transition-artwork ${className}`.trim()}>
       <div>
@@ -53,8 +53,8 @@ export function TransitionArtwork({
         <path d="M3 12h32M26 4l9 8-9 8" />
       </svg>
       <div>
-        {isSubmission || !to ? <TapArtwork /> : <PositionArtwork id={to.id} name={to.name} />}
-        <p className="small muted">{isSubmission || !to ? 'Tap' : to.name}</p>
+        {to ? <PositionArtwork id={to.id} name={to.name} /> : <TapArtwork />}
+        <p className="small muted">{to ? to.name : 'Tap'}</p>
       </div>
     </div>
   );

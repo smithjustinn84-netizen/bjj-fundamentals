@@ -17,6 +17,24 @@ describe('saving items', () => {
     expect(sameId).toBe(id);
     expect(await storage.concepts.get(id)).toMatchObject({ name: 'Balance 2', createdAt: 1000, updatedAt: 2000 });
   });
+
+  it('stores no destination for a submission, whatever the caller passed', async () => {
+    const { core, storage } = testCore();
+    const input = {
+      name: 'Choke',
+      type: 'submission' as const,
+      fromId: 'mount',
+      toId: 'back-control',
+      steps: [],
+      commonMistakes: [],
+      notes: '',
+    };
+    const id = await core.items.saveTransition(null, input);
+    expect(await storage.transitions.get(id)).toMatchObject({ toId: '' });
+
+    const sweep = await core.items.saveTransition(null, { ...input, type: 'sweep' });
+    expect(await storage.transitions.get(sweep)).toMatchObject({ toId: 'back-control' });
+  });
 });
 
 describe('deleting items', () => {

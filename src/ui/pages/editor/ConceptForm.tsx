@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { items } from '../../../bindings';
 import type { Concept } from '../../../core/models';
 import type { ConceptInput } from '../../../core/services/items';
@@ -11,7 +10,9 @@ import {
   NotesField,
   nextOrder,
   OrderField,
+  SummaryField,
   toLines,
+  useDraft,
 } from './shared';
 
 interface Draft {
@@ -46,11 +47,9 @@ function fromDraft(draft: Draft): ConceptInput {
 }
 
 export function ConceptForm({ itemId, library, cancelTo, onSaved, onDelete }: ItemFormProps) {
-  // Read once on mount: later live updates must not overwrite what the user is typing.
-  const [draft, setDraft] = useState(() =>
+  const [draft, set] = useDraft(() =>
     toDraft(itemId ? library.conceptById.get(itemId) : undefined, nextOrder(library.concepts)),
   );
-  const set = <K extends keyof Draft>(key: K, value: Draft[K]) => setDraft((d) => ({ ...d, [key]: value }));
 
   return (
     <FormShell
@@ -59,9 +58,7 @@ export function ConceptForm({ itemId, library, cancelTo, onSaved, onDelete }: It
       onSubmit={async () => onSaved(await items.saveConcept(itemId, fromDraft(draft)))}
     >
       <NameField value={draft.name} onChange={(v) => set('name', v)} />
-      <Field label="Summary" hint="One plain-language sentence.">
-        <textarea rows={2} value={draft.summary} onChange={(e) => set('summary', e.target.value)} />
-      </Field>
+      <SummaryField value={draft.summary} onChange={(v) => set('summary', v)} />
       <Field label="Key points" hint="One per line.">
         <textarea rows={5} value={draft.keyPoints} onChange={(e) => set('keyPoints', e.target.value)} />
       </Field>

@@ -1,10 +1,11 @@
 import type { ComponentType } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { items, useLibrary } from '../../../bindings';
+import { useLibrary } from '../../../bindings';
 import { KIND_LABELS } from '../../../core/labels';
 import { itemName } from '../../../core/library';
 import { type ItemKind, isItemKind } from '../../../core/models';
 import { Loading, Missing } from '../../components/common';
+import { confirmDelete } from '../../components/confirmDelete';
 import { itemPath, listPath, NEW_ITEM_ID, ROUTES } from '../../routes';
 import { ConceptForm } from './ConceptForm';
 import { PositionForm } from './PositionForm';
@@ -36,9 +37,7 @@ export default function EditorPage() {
 
   const cancelTo = itemId ? itemPath(kind, itemId) : listPath(kind);
   const remove = async () => {
-    if (!itemId || !confirm(`Delete "${existingName}"?`)) return;
-    await items.deleteItem(kind, itemId);
-    navigate(listPath(kind));
+    if (itemId && (await confirmDelete(library, kind, itemId))) navigate(listPath(kind));
   };
   const Form = FORMS[kind];
 

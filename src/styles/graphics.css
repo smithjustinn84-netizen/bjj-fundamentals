@@ -210,28 +210,10 @@
   /* Sit level with the pictures, not the captions under them. */
   margin-bottom: var(--space-5);
   fill: none;
-  stroke: currentColor;
+  stroke: var(--type-color);
   stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-.type-sweep {
-  color: var(--type-sweep);
-}
-.type-pass {
-  color: var(--type-pass);
-}
-.type-escape {
-  color: var(--type-escape);
-}
-.type-submission {
-  color: var(--type-submission);
-}
-.type-takedown {
-  color: var(--type-takedown);
-}
-.type-transition {
-  color: var(--type-transition);
 }
 
 /* Diagrams */

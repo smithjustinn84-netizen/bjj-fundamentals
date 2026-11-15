@@ -1,4 +1,4 @@
-import type { Position, Transition } from './models';
+import { endsTheRoll, type Position, type Transition } from './models';
 
 /**
  * The starter techniques a library does not have and could hold: no stored technique has the same id, and
@@ -12,7 +12,6 @@ export function missingStarterTechniques(
 ): Transition[] {
   const storedIds = new Set(stored.map((t) => t.id));
   const positionIds = new Set(positions.map((p) => p.id));
-  // A submission has no destination, so an empty `toId` needs no position.
-  const hasEnds = (t: Transition) => positionIds.has(t.fromId) && (t.toId === '' || positionIds.has(t.toId));
+  const hasEnds = (t: Transition) => positionIds.has(t.fromId) && (endsTheRoll(t.type) || positionIds.has(t.toId));
   return starter.filter((t) => !storedIds.has(t.id) && hasEnds(t));
 }

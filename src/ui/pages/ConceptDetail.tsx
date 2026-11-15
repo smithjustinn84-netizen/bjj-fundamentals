@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { useLibrary } from '../../bindings';
-import { cardId } from '../../core/srs';
+import { reviewOf } from '../../core/library';
 import { Bullets, Loading, Missing, NotesBlock, ProgressDot, Section } from '../components/common';
 import { LinkedVideos } from '../components/VideoList';
 import { ConceptArtwork } from '../graphics/ConceptSvg';
@@ -26,7 +26,7 @@ export default function ConceptDetail() {
       <div className="page-head">
         <div>
           <p className="eyebrow">
-            Concept <ProgressDot state={lib.reviews.get(cardId('concept', concept.id))} />
+            Concept <ProgressDot state={reviewOf(lib, 'concept', concept.id)} />
           </p>
           <h1>{concept.name}</h1>
           <p className="lead">{concept.summary}</p>

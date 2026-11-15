@@ -2,12 +2,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLibrary } from '../../bindings';
 import { CATEGORY_LABELS } from '../../core/labels';
-import type { Library } from '../../core/library';
+import { connections, type Library, reviewOf } from '../../core/library';
 import { POSITION_CATEGORIES } from '../../core/models';
-import { cardId } from '../../core/srs';
 import { Loading, ProgressDot } from '../components/common';
 import { PositionMap } from '../components/PositionMap';
-import { TransitionLink } from '../components/TransitionLink';
+import { NO_TECHNIQUES_FROM_HERE, TransitionList } from '../components/TransitionLink';
 import { EmptyState } from '../graphics/EmptyState';
 import { Icon, type IconName } from '../graphics/icons';
 import { useMediaQuery } from '../graphics/motion';
@@ -39,23 +38,19 @@ function PositionList({ lib }: { lib: Library }) {
             <h2 className="group-title">{CATEGORY_LABELS[category]}</h2>
             <div className="grid stagger">
               {inCategory.map((p) => {
-                const outgoing = lib.transitions.filter((t) => t.fromId === p.id);
+                const { outgoing } = connections(lib, p.id);
                 return (
                   <article key={p.id} className="card position-card">
                     <PositionArtwork id={p.id} name={p.name} className="card-artwork" />
                     <h3>
-                      <ProgressDot state={lib.reviews.get(cardId('position', p.id))} />{' '}
+                      <ProgressDot state={reviewOf(lib, 'position', p.id)} />{' '}
                       <Link to={itemPath('position', p.id)}>{p.name}</Link>
                     </h3>
                     <p className="muted small">{p.summary}</p>
                     {outgoing.length > 0 ? (
-                      <ul className="transition-list">
-                        {outgoing.map((t) => (
-                          <TransitionLink key={t.id} transition={t} positionById={lib.positionById} direction="out" />
-                        ))}
-                      </ul>
+                      <TransitionList transitions={outgoing} positionById={lib.positionById} direction="out" />
                     ) : (
-                      <p className="muted small">No techniques from here yet.</p>
+                      <p className="muted small">{NO_TECHNIQUES_FROM_HERE}</p>
                     )}
                   </article>
                 );
@@ -121,11 +116,7 @@ export default function Positions() {
       {orphans.length > 0 && (
         <section>
           <h2 className="group-title">Techniques without a starting position</h2>
-          <ul className="transition-list card">
-            {orphans.map((t) => (
-              <TransitionLink key={t.id} transition={t} positionById={lib.positionById} direction="out" />
-            ))}
-          </ul>
+          <TransitionList transitions={orphans} positionById={lib.positionById} direction="out" className="card" />
         </section>
       )}
     </div>

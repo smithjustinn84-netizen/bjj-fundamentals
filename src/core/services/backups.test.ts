@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { validateBackup } from '../backup';
+import { endsTheRoll } from '../models';
 import { testCore } from '../testing/testCore';
 
 describe('starter content', () => {
@@ -10,7 +11,7 @@ describe('starter content', () => {
     expect(positionIds.size).toBeGreaterThan(5);
     for (const t of await storage.transitions.all()) {
       expect(positionIds.has(t.fromId)).toBe(true);
-      if (t.type !== 'submission') expect(positionIds.has(t.toId)).toBe(true);
+      if (!endsTheRoll(t.type)) expect(positionIds.has(t.toId)).toBe(true);
     }
   });
 

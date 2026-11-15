@@ -1,4 +1,4 @@
-import type { FormEvent, ReactNode } from 'react';
+import { type FormEvent, type ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Library } from '../../../core/library';
 
@@ -11,6 +11,16 @@ export interface ItemFormProps {
   onSaved: (id: string) => void;
   /** Present only when editing an existing item. */
   onDelete?: () => void;
+}
+
+/**
+ * A form's working copy and a setter for one field. `init` runs once on mount, so later live updates
+ * to the library cannot overwrite what the user is typing.
+ */
+export function useDraft<Draft>(init: () => Draft) {
+  const [draft, setDraft] = useState(init);
+  const set = <K extends keyof Draft>(key: K, value: Draft[K]) => setDraft((d) => ({ ...d, [key]: value }));
+  return [draft, set] as const;
 }
 
 /** List fields are edited as one entry per line. */
@@ -67,6 +77,41 @@ export function NameField({ value, onChange }: { value: string; onChange: (value
   return (
     <Field label="Name">
       <input value={value} onChange={(e) => onChange(e.target.value)} required />
+    </Field>
+  );
+}
+
+export function SummaryField({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  return (
+    <Field label="Summary" hint="One plain-language sentence.">
+      <textarea rows={2} value={value} onChange={(e) => onChange(e.target.value)} />
+    </Field>
+  );
+}
+
+/** A select over one of the `const` lists in `core/models.ts`. */
+export function ChoiceField<T extends string>(props: {
+  label: string;
+  options: readonly T[];
+  labels: Record<T, string>;
+  value: T;
+  onChange: (value: T) => void;
+}) {
+  return (
+    <Field label={props.label}>
+      <select
+        value={props.value}
+        onChange={(e) => {
+          const picked = props.options.find((option) => option === e.target.value);
+          if (picked !== undefined) props.onChange(picked);
+        }}
+      >
+        {props.options.map((option) => (
+          <option key={option} value={option}>
+            {props.labels[option]}
+          </option>
+        ))}
+      </select>
     </Field>
   );
 }

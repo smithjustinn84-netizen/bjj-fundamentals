@@ -16,7 +16,7 @@ import Positions from './ui/pages/Positions';
 import Review from './ui/pages/Review';
 import TransitionDetail from './ui/pages/TransitionDetail';
 import Videos from './ui/pages/Videos';
-import { ROUTES } from './ui/routes';
+import { ROUTE_PATTERNS, ROUTES } from './ui/routes';
 
 const MAIN_ID = 'main';
 
@@ -85,15 +85,15 @@ export default function App() {
           <Routes>
             <Route path={ROUTES.home} element={<Home />} />
             <Route path={ROUTES.concepts} element={<Concepts />} />
-            <Route path={`${ROUTES.concepts}/:id`} element={<ConceptDetail />} />
+            <Route path={ROUTE_PATTERNS.concept} element={<ConceptDetail />} />
             <Route path={ROUTES.positions} element={<Positions />} />
-            <Route path={`${ROUTES.positions}/:id`} element={<PositionDetail />} />
-            <Route path="/transitions/:id" element={<TransitionDetail />} />
+            <Route path={ROUTE_PATTERNS.position} element={<PositionDetail />} />
+            <Route path={ROUTE_PATTERNS.transition} element={<TransitionDetail />} />
             <Route path={ROUTES.blueBelt} element={<BlueBelt />} />
             <Route path={ROUTES.review} element={<Review />} />
             <Route path={ROUTES.videos} element={<Videos />} />
             <Route path={ROUTES.backup} element={<Backup />} />
-            <Route path="/edit/:kind/:id" element={<EditorPage />} />
+            <Route path={ROUTE_PATTERNS.edit} element={<EditorPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </ErrorBoundary>

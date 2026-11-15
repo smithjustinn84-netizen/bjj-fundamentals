@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { TRANSITION_LABELS } from '../../core/labels';
-import type { Position, Transition } from '../../core/models';
+import { endsTheRoll, type Position, type Transition } from '../../core/models';
 import { itemPath } from '../routes';
 
 interface Props {
@@ -15,12 +15,12 @@ function describeOtherEnd({ transition, positionById, direction }: Props): strin
     const from = positionById.get(transition.fromId);
     return from ? ` from ${from.name}` : '';
   }
-  if (transition.type === 'submission') return ' → finish';
+  if (endsTheRoll(transition.type)) return ' → tap';
   const to = positionById.get(transition.toId);
   return to ? ` → ${to.name}` : '';
 }
 
-export function TransitionLink(props: Props) {
+function TransitionLink(props: Props) {
   const { transition } = props;
   return (
     <li className="transition-row">
@@ -30,3 +30,21 @@ export function TransitionLink(props: Props) {
     </li>
   );
 }
+
+/** Techniques as a list of links, each with its type and other end. */
+export function TransitionList({
+  transitions,
+  positionById,
+  direction,
+  className = '',
+}: Omit<Props, 'transition'> & { transitions: Transition[]; className?: string }) {
+  return (
+    <ul className={`transition-list ${className}`.trim()}>
+      {transitions.map((t) => (
+        <TransitionLink key={t.id} transition={t} positionById={positionById} direction={direction} />
+      ))}
+    </ul>
+  );
+}
+
+export const NO_TECHNIQUES_FROM_HERE = 'No techniques from here yet.';

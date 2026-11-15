@@ -1,7 +1,7 @@
-import type { Library } from './library';
+import { type Library, reviewOf } from './library';
 import { TRANSITION_TYPES, type Transition, type TransitionType } from './models';
 import { STARTER_BLUE_BELT_TEST_IDS } from './seed';
-import { cardId, isLearned } from './srs';
+import { isLearned } from './srs';
 
 /**
  * Whether a technique is on the blue belt test list. Techniques stored before the flag existed fall back
@@ -31,6 +31,6 @@ export function blueBeltTestList(lib: Library): BeltTestList {
   const groups = TRANSITION_TYPES.map((type) => ({ type, techniques: listed.filter((t) => t.type === type) })).filter(
     (group) => group.techniques.length > 0,
   );
-  const learned = listed.filter((t) => isLearned(lib.reviews.get(cardId('transition', t.id)))).length;
+  const learned = listed.filter((t) => isLearned(reviewOf(lib, 'transition', t.id))).length;
   return { groups, total: listed.length, learned };
 }
