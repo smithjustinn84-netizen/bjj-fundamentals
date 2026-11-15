@@ -15,33 +15,46 @@ const MAT_FROM_ABOVE = {
 type DiagramShape = keyof typeof VIEW_BOX;
 
 /** Where the mat is, for scenes to stand their figures on. */
-const MAT_Y = 196;
+export const MAT_Y = 196;
 
-/** A scene on paper. `view` is 'side' for the usual mat line, 'above' for a mat seen from overhead. */
+type DiagramView = 'side' | 'above';
+
+function Mat({ shape, view, opacity }: { shape: DiagramShape; view: DiagramView; opacity?: number }) {
+  return view === 'side' ? (
+    <g opacity={opacity}>
+      <ellipse className="dgm-shadow" cx="200" cy={MAT_Y + 2} rx="120" ry="6" />
+      <line className="dgm-mat" x1="60" y1={MAT_Y} x2="340" y2={MAT_Y} />
+    </g>
+  ) : (
+    <rect className="dgm-mat-fill" {...MAT_FROM_ABOVE[shape]} rx="6" opacity={opacity} />
+  );
+}
+
+/**
+ * A scene on paper. `view` is 'side' for the usual mat line, 'above' for a mat seen from overhead.
+ * `turning` fades the mat towards another view, for a picture that moves between the two.
+ */
 export function Diagram({
   label,
   shape,
   view = 'side',
+  turning,
   className = '',
   children,
 }: {
   label: string;
   shape: DiagramShape;
-  view?: 'side' | 'above';
+  view?: DiagramView;
+  turning?: { to: DiagramView; amount: number };
   className?: string;
   children: ReactNode;
 }) {
+  const turns = turning !== undefined && turning.to !== view;
   return (
     <figure className={`artwork-frame ${className}`.trim()}>
       <svg className="diagram-svg" viewBox={VIEW_BOX[shape]} role="img" aria-label={label}>
-        {view === 'side' ? (
-          <>
-            <ellipse className="dgm-shadow" cx="200" cy={MAT_Y + 2} rx="120" ry="6" />
-            <line className="dgm-mat" x1="60" y1={MAT_Y} x2="340" y2={MAT_Y} />
-          </>
-        ) : (
-          <rect className="dgm-mat-fill" {...MAT_FROM_ABOVE[shape]} rx="6" />
-        )}
+        <Mat shape={shape} view={view} opacity={turns ? 1 - turning.amount : undefined} />
+        {turns && <Mat shape={shape} view={turning.to} opacity={turning.amount} />}
         {children}
       </svg>
     </figure>

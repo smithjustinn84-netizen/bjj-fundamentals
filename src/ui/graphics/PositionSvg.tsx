@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { FigurePose } from '../../core/figure';
 import { Arrow, Diagram } from './Diagram';
-import { Figure } from './Figure';
+import { type BodyPart, Figure } from './Figure';
 
 /* Poses are joint positions in the shared diagram space (see Diagram.tsx). */
 
@@ -432,95 +432,137 @@ const ON_THE_BACK: FigurePose = {
   },
 };
 
-interface Scene {
-  view?: 'side' | 'above';
-  draw: () => ReactNode;
+type Gi = 'light' | 'dark';
+
+/** One pass of the brush: some or all of one person. Later layers sit in front of earlier ones. */
+interface SceneLayer {
+  gi: Gi;
+  parts?: readonly BodyPart[];
 }
 
-const POSITION_SCENES: Record<string, Scene> = {
+/**
+ * A position as data, so that a technique can move the same two people from one scene to another.
+ * The light gi is always the person underneath or being controlled.
+ */
+export interface PositionScene {
+  view?: 'side' | 'above';
+  light: FigurePose;
+  dark: FigurePose;
+  /** Drawing the same person twice with different `parts` puts one limb in front of the other person. */
+  layers: readonly SceneLayer[];
+  /** Marks that belong to the still picture: rings and arrows. */
+  extras?: () => ReactNode;
+}
+
+const POSITION_SCENES: Record<string, PositionScene> = {
   standing: {
-    draw: () => (
-      <>
-        <Figure pose={STANDING_LEFT} gi="dark" />
-        <Figure pose={STANDING_RIGHT} gi="light" />
-        {/* The collar grip reaches across in front of the other person. */}
-        <Figure pose={STANDING_LEFT} gi="dark" parts={['nearArm']} />
-      </>
-    ),
+    light: STANDING_RIGHT,
+    dark: STANDING_LEFT,
+    // The collar grip reaches across in front of the other person.
+    layers: [{ gi: 'dark' }, { gi: 'light' }, { gi: 'dark', parts: ['nearArm'] }],
   },
   'closed-guard': {
-    draw: () => (
-      <>
-        <Figure pose={CLOSED_GUARD_BOTTOM} gi="light" parts={['farLeg', 'farArm', 'body']} />
-        <Figure pose={CLOSED_GUARD_TOP} gi="dark" />
-        {/* The near leg wraps the waist; the ankles cross behind the back. */}
-        <Figure pose={CLOSED_GUARD_BOTTOM} gi="light" parts={['nearLeg', 'nearArm']} />
-      </>
-    ),
+    light: CLOSED_GUARD_BOTTOM,
+    dark: CLOSED_GUARD_TOP,
+    // The near leg wraps the waist; the ankles cross behind the back.
+    layers: [
+      { gi: 'light', parts: ['farLeg', 'farArm', 'body'] },
+      { gi: 'dark' },
+      { gi: 'light', parts: ['nearLeg', 'nearArm'] },
+    ],
   },
   'open-guard': {
-    draw: () => (
-      <>
-        <Figure pose={OPEN_GUARD_TOP} gi="dark" parts={['farLeg', 'farArm', 'body', 'nearLeg']} />
-        {/* Feet on the hips keep the distance. */}
-        <Figure pose={OPEN_GUARD_BOTTOM} gi="light" />
-        <Figure pose={OPEN_GUARD_TOP} gi="dark" parts={['nearArm']} />
-      </>
-    ),
+    light: OPEN_GUARD_BOTTOM,
+    dark: OPEN_GUARD_TOP,
+    // Feet on the hips keep the distance.
+    layers: [
+      { gi: 'dark', parts: ['farLeg', 'farArm', 'body', 'nearLeg'] },
+      { gi: 'light' },
+      { gi: 'dark', parts: ['nearArm'] },
+    ],
   },
   'side-control': {
     view: 'above',
-    draw: () => (
-      <>
-        <Figure pose={SIDE_CONTROL_BOTTOM} gi="light" />
-        <Figure pose={SIDE_CONTROL_TOP} gi="dark" />
-      </>
-    ),
+    light: SIDE_CONTROL_BOTTOM,
+    dark: SIDE_CONTROL_TOP,
+    layers: [{ gi: 'light' }, { gi: 'dark' }],
   },
   mount: {
-    draw: () => (
-      <>
-        <Figure pose={MOUNT_BOTTOM} gi="light" parts={['farLeg', 'farArm', 'body', 'nearLeg']} />
-        <Figure pose={MOUNT_TOP} gi="dark" />
-        <Figure pose={MOUNT_BOTTOM} gi="light" parts={['nearArm']} />
-      </>
-    ),
+    light: MOUNT_BOTTOM,
+    dark: MOUNT_TOP,
+    layers: [
+      { gi: 'light', parts: ['farLeg', 'farArm', 'body', 'nearLeg'] },
+      { gi: 'dark' },
+      { gi: 'light', parts: ['nearArm'] },
+    ],
   },
   'half-guard': {
-    draw: () => (
-      <>
-        <Figure pose={HALF_GUARD_BOTTOM} gi="light" parts={['farLeg', 'farArm', 'body']} />
-        <Figure pose={HALF_GUARD_TOP} gi="dark" />
-        {/* The bottom person's top leg closes over the trapped shin. */}
-        <Figure pose={HALF_GUARD_BOTTOM} gi="light" parts={['nearLeg', 'nearArm']} />
-        <circle className="dgm-ring" cx="216" cy="180" r="27" />
-      </>
-    ),
+    light: HALF_GUARD_BOTTOM,
+    dark: HALF_GUARD_TOP,
+    // The bottom person's top leg closes over the trapped shin.
+    layers: [
+      { gi: 'light', parts: ['farLeg', 'farArm', 'body'] },
+      { gi: 'dark' },
+      { gi: 'light', parts: ['nearLeg', 'nearArm'] },
+    ],
+    extras: () => <circle className="dgm-ring" cx="216" cy="180" r="27" />,
   },
   'back-control': {
-    draw: () => (
-      <>
-        <Figure pose={ON_THE_BACK} gi="dark" parts={['farLeg', 'farArm', 'body']} />
-        <Figure pose={BACK_TAKEN} gi="light" parts={['farLeg', 'farArm', 'body']} />
-        {/* The seatbelt arm crosses the chest and the hook sits inside the thigh, so both go on top. */}
-        <Figure pose={ON_THE_BACK} gi="dark" parts={['nearLeg', 'nearArm']} />
-        <Figure pose={BACK_TAKEN} gi="light" parts={['nearLeg', 'nearArm']} />
-      </>
-    ),
+    light: BACK_TAKEN,
+    dark: ON_THE_BACK,
+    // The seatbelt arm crosses the chest and the hook sits inside the thigh, so both go on top.
+    layers: [
+      { gi: 'dark', parts: ['farLeg', 'farArm', 'body'] },
+      { gi: 'light', parts: ['farLeg', 'farArm', 'body'] },
+      { gi: 'dark', parts: ['nearLeg', 'nearArm'] },
+      { gi: 'light', parts: ['nearLeg', 'nearArm'] },
+    ],
   },
   turtle: {
-    draw: () => (
-      <>
-        <Figure pose={TURTLED} gi="light" />
-        <Figure pose={ON_THE_TURTLE} gi="dark" />
-        <Arrow from={[200, 62]} to={[200, 92]} />
-      </>
-    ),
+    light: TURTLED,
+    dark: ON_THE_TURTLE,
+    layers: [{ gi: 'light' }, { gi: 'dark' }],
+    extras: () => <Arrow from={[200, 62]} to={[200, 92]} />,
   },
 };
 
-export function hasPositionArtwork(id: string): boolean {
-  return id in POSITION_SCENES;
+/** The scene for a built-in position, or nothing for a position the user added. */
+export function positionScene(id: string): PositionScene | undefined {
+  return POSITION_SCENES[id];
+}
+
+/**
+ * Draws a scene's layers. `people` says who is in each of the scene's two places and how they are
+ * posed right now: the scene's own poses for a still picture, or poses part-way through a technique.
+ */
+export function SceneFigures({
+  layers,
+  people,
+}: {
+  layers: readonly SceneLayer[];
+  people: Record<Gi, { pose: FigurePose; gi: Gi }>;
+}) {
+  return (
+    <>
+      {layers.map((layer, index) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: a scene's layers are a fixed list that never reorders
+        <Figure key={index} pose={people[layer.gi].pose} gi={people[layer.gi].gi} parts={layer.parts} />
+      ))}
+    </>
+  );
+}
+
+/** A scene exactly as it is posed, without the paper behind it. */
+export function StillScene({ scene }: { scene: PositionScene }) {
+  return (
+    <>
+      <SceneFigures
+        layers={scene.layers}
+        people={{ light: { pose: scene.light, gi: 'light' }, dark: { pose: scene.dark, gi: 'dark' } }}
+      />
+      {scene.extras?.()}
+    </>
+  );
 }
 
 /** The picture for a built-in position. Draws nothing for a position the user added. */
@@ -534,7 +576,7 @@ export function PositionArtwork({ id, name, className = '' }: { id: string; name
       view={scene.view}
       className={`position-artwork ${className}`.trim()}
     >
-      {scene.draw()}
+      <StillScene scene={scene} />
     </Diagram>
   );
 }

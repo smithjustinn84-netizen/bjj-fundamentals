@@ -1,7 +1,7 @@
 import { FIGURE_SIZE, type FigurePose, figureParts, LIMB_NAMES, type LimbName } from '../../core/figure';
 
 const BODY_PARTS = [...LIMB_NAMES, 'body'] as const;
-type BodyPart = (typeof BODY_PARTS)[number];
+export type BodyPart = (typeof BODY_PARTS)[number];
 
 /** Width of the ink line round every shape. */
 const OUTLINE = 2.25;
