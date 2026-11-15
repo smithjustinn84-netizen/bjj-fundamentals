@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useLibrary, useStudyStats, useTrainingLog, useVideos } from '../../bindings';
-import { BELT_LABELS } from '../../core/labels';
+import { BELT_LABELS, plural } from '../../core/labels';
 import { reviewOf } from '../../core/library';
 import { beltRank } from '../../core/rank';
 import { findSituation, situationName } from '../../core/situations';
@@ -25,13 +25,12 @@ import {
   studyFirst,
   trainingSummary,
 } from '../../core/trainingLog';
+import { BeltBand } from '../components/BeltBand';
 import { Loading, ProgressDot } from '../components/common';
 import { LibrarySearch } from '../components/LibrarySearch';
 import { ArtworkFrame, HERO_DOJO_ARTWORK } from '../graphics/Artwork';
-import { Belt } from '../graphics/Belt';
 import { Icon } from '../graphics/icons';
 import { PositionArtwork } from '../graphics/PositionSvg';
-import { ProgressBar } from '../graphics/ProgressBar';
 import { useCountUp } from '../graphics/useCountUp';
 import { itemPath, positionSidePath, ROUTES, studyItemPath } from '../routes';
 
@@ -73,7 +72,7 @@ function ReviewBlock({ preview, started }: { preview: StudyQueue; started: numbe
           <span className="block small">{reviewLine(preview, started)}</span>
         </div>
       </div>
-      <Link className="button large" to={ROUTES.review}>
+      <Link className="button large cta" to={ROUTES.review}>
         {ready > 0 ? 'Start review' : 'Open review'}
         <Icon name="arrow" />
       </Link>
@@ -204,20 +203,39 @@ export default function Home() {
         className="today-artwork"
         eager
       />
-      <header className="today-head">
-        <div>
-          <p className="eyebrow">{todayLabel()}</p>
-          <h1>Today</h1>
+      <header className="today-hero">
+        {/* 柔, "ju": the gentle of jiu-jitsu. Decoration only. */}
+        <span className="today-hero-mark" aria-hidden="true">
+          柔
+        </span>
+        <div className="today-head">
+          <div>
+            <p className="eyebrow">{todayLabel()}</p>
+            <h1>Today</h1>
+          </div>
+          {stats.streakDays > 0 && (
+            <p className="streak-stamp">
+              <strong>{stats.streakDays}</strong> day streak
+            </p>
+          )}
         </div>
-        {stats.streakDays > 0 && (
-          <p className="streak-pill">
-            <Icon name="flame" />
-            {stats.streakDays}-day streak
-          </p>
-        )}
+        <ReviewBlock preview={preview} started={progress.started} />
       </header>
 
-      <ReviewBlock preview={preview} started={progress.started} />
+      <section className="today-rank" aria-label="Study rank">
+        <BeltBand rank={rank.belt} stripes={rank.stripes} />
+        <p className="today-rank-line">
+          <strong>
+            {BELT_LABELS[rank.belt]}
+            {rank.nextBelt && ` · ${plural(rank.stripes, 'stripe')}`}
+          </strong>
+          <span className="muted">
+            {progress.learned} of {progress.total} learned
+            {rank.nextBelt && ` · ${rank.percentToNextBelt}% more for ${BELT_LABELS[rank.nextBelt].toLowerCase()}`}
+          </span>
+        </p>
+        <p className="muted small">A study rank, not a real one.</p>
+      </section>
 
       {drill && (
         <Link className="card today-drill" to={itemPath('transition', drill.technique.id)}>
@@ -274,22 +292,6 @@ export default function Home() {
             )}
           </>
         )}
-      </section>
-
-      <section className="card today-rank" aria-label="Study rank">
-        <Belt rank={rank.belt} stripes={rank.stripes} />
-        <div className="grow">
-          <p>
-            <strong>{BELT_LABELS[rank.belt]}</strong> of the fundamentals
-          </p>
-          <ProgressBar value={progress.learned} max={progress.total} label="Learned" />
-          <p className="muted small">
-            {progress.learned} of {progress.total} learned
-            {rank.nextBelt
-              ? ` · ${rank.percentToNextBelt}% more for ${BELT_LABELS[rank.nextBelt].toLowerCase()}. A study rank, not a real one.`
-              : '. Keep reviewing to stay sharp.'}
-          </p>
-        </div>
       </section>
 
       <section className="card">

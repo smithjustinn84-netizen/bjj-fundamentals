@@ -93,15 +93,19 @@
 /* Each grade has one colour, used by its button, the leaving card's tint and the session breakdown. */
 .grade-again {
   --grade-color: var(--grade-again);
+  --grade-on: var(--on-belt);
 }
 .grade-hard {
   --grade-color: var(--grade-hard);
+  --grade-on: var(--on-cta);
 }
 .grade-good {
   --grade-color: var(--grade-good);
+  --grade-on: var(--on-status);
 }
 .grade-easy {
   --grade-color: var(--grade-easy);
+  --grade-on: var(--on-fill);
 }
 
 @keyframes card-enter {
@@ -178,16 +182,16 @@
   gap: 0.1rem;
   min-height: 4rem;
   padding: 0.45rem 0.25rem;
-  border-color: color-mix(in srgb, var(--grade-color) 55%, var(--border));
-  border-bottom-width: 3px;
+  background: var(--grade-color);
+  color: var(--grade-on);
+  font-weight: 600;
+  box-shadow: var(--shadow-lift);
 }
 .grade > span:first-child {
-  color: var(--grade-color);
-  font-weight: 700;
+  font-size: var(--text-md);
+  font-weight: 800;
 }
 .grade:not(:disabled):hover {
-  border-color: var(--grade-color);
-  background: color-mix(in srgb, var(--grade-color) 10%, var(--surface));
   transform: translateY(-2px);
 }
 .grade kbd {

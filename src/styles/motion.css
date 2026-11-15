@@ -20,6 +20,23 @@
     transform: scale(0.85);
   }
 }
+/* A rubber stamp coming down: big and tilted, then it lands. */
+@keyframes stamp-in {
+  from {
+    opacity: 0;
+    transform: rotate(8deg) scale(1.9);
+  }
+  60% {
+    opacity: 1;
+    transform: rotate(-7deg) scale(0.94);
+  }
+}
+/* A stripe of tape wrapping onto the belt. */
+@keyframes stripe-on {
+  from {
+    transform: scaleY(0);
+  }
+}
 @keyframes draw {
   to {
     stroke-dashoffset: 0;
@@ -70,8 +87,12 @@ button,
     color var(--dur-fast) var(--ease-out),
     box-shadow var(--dur-base) var(--ease-out);
 }
+/* Pressing sinks a button onto its ink edge; chips and tiles, which have none, give a little instead. */
 button:not(:disabled, .link):active,
-.button:active,
+.button:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 var(--outline);
+}
 .chip:active,
 .tile:active {
   transform: scale(0.97);

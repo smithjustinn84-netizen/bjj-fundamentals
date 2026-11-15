@@ -14,9 +14,10 @@
 
 /* Progress bar */
 .progress {
-  height: 8px;
+  height: 12px;
+  border: var(--line) solid var(--outline);
   border-radius: var(--radius-pill);
-  background: var(--accent-soft);
+  background: var(--surface);
   overflow: hidden;
   margin-bottom: 1rem;
 }
@@ -27,9 +28,12 @@
 }
 
 /* Belt. Each rank sets the cloth colour; the rank bar is black except on the black belt, where it is red. */
-.belt-art {
+.belt-art,
+.belt-band {
   --belt-cloth: var(--belt-white);
   --belt-bar: var(--belt-black);
+}
+.belt-art {
   width: 100%;
   max-width: 200px;
 }
@@ -125,7 +129,7 @@
   margin: 0;
   overflow: hidden;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border);
+  border: var(--line) solid var(--outline);
   background: var(--art-paper);
 }
 .artwork-frame img {

@@ -38,11 +38,12 @@
 }
 .toggle-chip {
   background: var(--surface);
-  font-weight: 500;
+  box-shadow: none;
+  font-weight: 600;
 }
 .toggle-chip[aria-pressed="true"] {
   background: var(--fill);
-  border-color: var(--fill);
+  border-color: var(--outline);
   color: var(--on-fill);
 }
 .chip-more summary,

@@ -12,8 +12,9 @@ h3 {
 }
 h1 {
   font-size: var(--text-xl);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
 }
 h2 {
   font-size: var(--text-lg);
@@ -50,7 +51,7 @@ kbd {
 }
 .card {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: var(--line) solid var(--outline);
   border-radius: var(--radius-lg);
   padding: 1.25rem;
   box-shadow: var(--shadow);
@@ -90,9 +91,9 @@ kbd {
 }
 .eyebrow {
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: 800;
   color: var(--muted);
   margin-bottom: 0.4rem;
   display: flex;
@@ -205,7 +206,7 @@ ol.steps li::marker {
 button,
 .button {
   font: inherit;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -213,9 +214,10 @@ button,
   gap: 0.3rem;
   padding: 0.5rem 1rem;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-control);
+  border: var(--line) solid var(--border-control);
   background: var(--surface);
   color: var(--text);
+  box-shadow: var(--shadow);
   text-decoration: none;
   /* A thumb needs this much; from 600px, where a pointer is likely, buttons shrink to their text. */
   min-height: var(--tap);
@@ -231,8 +233,18 @@ button:disabled {
 button.primary,
 .button.primary {
   background: var(--fill);
-  border-color: var(--fill);
+  border-color: var(--outline);
   color: var(--on-fill);
+  font-weight: 800;
+}
+/* The one loud button on a screen. */
+button.cta,
+.button.cta {
+  background: var(--cta);
+  border-color: var(--outline);
+  color: var(--on-cta);
+  font-weight: 800;
+  box-shadow: var(--shadow-lift);
 }
 button.danger {
   color: var(--danger);
@@ -249,11 +261,12 @@ button.large,
 .button.large {
   padding: 0.7rem 1.4rem;
   font-size: var(--text-lg);
-  font-weight: 600;
+  font-weight: 800;
 }
 button.link {
   background: none;
   border: 0;
+  box-shadow: none;
   padding: 0 var(--space-1);
   color: var(--accent);
   text-decoration: underline;
@@ -285,6 +298,7 @@ button.link.danger {
   border: 0;
   border-radius: var(--radius-md);
   background: none;
+  box-shadow: none;
   color: var(--muted);
   font-weight: 500;
   text-decoration: none;
@@ -293,8 +307,8 @@ button.link.danger {
 .segmented a.active {
   background: var(--raised);
   color: var(--text);
-  font-weight: 700;
-  box-shadow: var(--shadow);
+  font-weight: 800;
+  box-shadow: 0 0 0 var(--line) var(--outline);
 }
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -322,7 +336,7 @@ textarea {
   font-size: var(--text-md);
   padding: 0.5rem 0.65rem;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-control);
+  border: var(--line) solid var(--border-control);
   background: var(--bg);
   color: var(--text);
   width: 100%;
@@ -419,7 +433,9 @@ legend {
   gap: 0.4rem;
   padding: 0.3rem 0.75rem;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--border-control);
+  border: var(--line) solid var(--border-control);
+  background: var(--surface);
+  font-weight: 600;
   text-decoration: none;
   color: var(--text);
   font-size: 0.9rem;
@@ -443,8 +459,9 @@ legend {
   padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
   min-height: 4.25rem;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: var(--line) solid var(--outline);
   border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
   text-decoration: none;
   color: var(--text);
 }
@@ -509,13 +526,13 @@ legend {
 .tag {
   --type-color: var(--type-transition);
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   padding: 0.1rem 0.45rem;
   border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--type-color) 15%, transparent);
-  color: var(--type-color);
+  background: var(--type-color);
+  color: var(--on-status);
 }
 /* One colour per technique type, shared by tags, map arrows and the map legend. */
 .tag-sweep,
@@ -601,7 +618,7 @@ legend {
   flex-direction: column;
   gap: 0.1rem;
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border-control);
+  border: var(--line) solid var(--border-control);
   border-radius: var(--radius-lg);
   background: var(--surface);
   color: var(--text);

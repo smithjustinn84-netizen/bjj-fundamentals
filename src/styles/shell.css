@@ -99,7 +99,7 @@
   height: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
   padding: var(--space-1) var(--space-1) calc(var(--space-1) + env(safe-area-inset-bottom));
   background: var(--surface);
-  border-top: 1px solid var(--border);
+  border-top: var(--line) solid var(--outline);
 }
 .nav a {
   position: relative;
@@ -123,8 +123,19 @@
   color: var(--text);
 }
 .nav a.active {
-  color: var(--accent);
-  font-weight: 700;
+  color: var(--text);
+  font-weight: 800;
+}
+/* The current tab wears a strip of red belt, hanging from the bar's top edge. */
+.nav a.active::before {
+  content: "";
+  position: absolute;
+  top: calc(-1 * var(--space-1) - var(--line));
+  width: 2.5rem;
+  height: 5px;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  background: var(--belt);
+  animation: pop-in var(--dur-base) var(--ease-spring) both;
 }
 .badge {
   position: absolute;
@@ -149,7 +160,7 @@
   max-width: 1000px;
   margin: 0 auto;
   /* Clear of the fixed tab bar. */
-  padding: var(--space-4) 0.85rem calc(var(--space-5) + var(--tabbar-height) + env(safe-area-inset-bottom));
+  padding: var(--space-4) var(--page-gutter) calc(var(--space-5) + var(--tabbar-height) + env(safe-area-inset-bottom));
 }
 .app:has(.review-session) .content {
   padding-bottom: 0;
@@ -176,7 +187,7 @@
     padding: var(--space-3) 1.25rem;
     background: color-mix(in srgb, var(--surface) 88%, transparent);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
+    border-bottom: var(--line) solid var(--outline);
   }
   .brand {
     display: flex;
@@ -209,7 +220,10 @@
     background: var(--accent-soft);
   }
   .nav a.active {
-    font-weight: 500;
+    font-weight: 700;
+  }
+  .nav a.active::before {
+    content: none;
   }
   .badge {
     position: static;
