@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
-import { useVideos } from '../../bindings';
-import { KIND_LABELS, plural } from '../../core/labels';
-import { ITEM_KINDS } from '../../core/models';
+import { settings, useThemeChoice, useVideos } from '../../bindings';
+import { KIND_LABELS, plural, THEME_LABELS } from '../../core/labels';
+import { ITEM_KINDS, THEME_CHOICES } from '../../core/models';
 import { Icon, type IconName } from '../graphics/icons';
 import { newItemPath, ROUTES } from '../routes';
+
+const THEME_TITLE_ID = 'theme-title';
 
 function MoreRow({ to, icon, title, detail }: { to: string; icon: IconName; title: string; detail?: string }) {
   return (
@@ -25,6 +27,7 @@ function MoreRow({ to, icon, title, detail }: { to: string; icon: IconName; titl
 /** Everything that has no tab of its own: videos, the belt test, adding items and backups. */
 export default function More() {
   const videos = useVideos();
+  const theme = useThemeChoice();
   return (
     <div className="stack narrow-page">
       <h1>More</h1>
@@ -56,6 +59,23 @@ export default function More() {
             <MoreRow key={kind} to={newItemPath(kind)} icon="plus" title={`New ${KIND_LABELS[kind].toLowerCase()}`} />
           ))}
         </ul>
+      </section>
+      <section>
+        <h2 className="group-title" id={THEME_TITLE_ID}>
+          Appearance
+        </h2>
+        <fieldset className="segmented" aria-labelledby={THEME_TITLE_ID}>
+          {THEME_CHOICES.map((choice) => (
+            <button
+              key={choice}
+              type="button"
+              aria-pressed={theme === choice}
+              onClick={() => void settings.setTheme(choice)}
+            >
+              {THEME_LABELS[choice]}
+            </button>
+          ))}
+        </fieldset>
       </section>
       <section>
         <h2 className="group-title">Your data</h2>

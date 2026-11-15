@@ -43,6 +43,7 @@ function openDatabase(name: string, initialData: StorageOptions['initialData']):
   db.version(5).stores({ trainingLog: 'id, day' });
   db.version(6).stores({}).upgrade(seedMissingStarterVideos);
   db.version(7).stores({}).upgrade(seedMissingStarterVideos);
+  db.version(8).stores({ settings: 'id' });
   // Fires only when the database is first created, which is exactly the "insert once" rule of StorageOptions.
   db.on('populate', (tx) => {
     for (const table of BACKUP_TABLES) tx.table(table).bulkAdd(initialData[table]);
@@ -103,6 +104,7 @@ export function createDexieStorage({ name = DEFAULT_DATABASE_NAME, initialData }
     reviewLog,
     starterDismissals: repository('starterDismissals'),
     trainingLog: repository('trainingLog'),
+    settings: repository('settings'),
 
     transaction: (work) => db.transaction('rw', db.tables, work),
 

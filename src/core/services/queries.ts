@@ -1,10 +1,11 @@
 import type { CoreEnv } from '../core';
 import { buildLibrary, type Library } from '../library';
-import type { Concept, ItemKind, TrainingEntry, Transition, VideoBookmark } from '../models';
+import type { Concept, ItemKind, ThemeChoice, TrainingEntry, Transition, VideoBookmark } from '../models';
 import { starterContent } from '../seed';
 import { DAY_MS, streakDays } from '../srs';
 import { findMissingStarterConcepts, findMissingStarterTechniques } from '../starter';
 import { buildQueue } from '../study';
+import { themeChoice } from '../theme';
 import { newestFirst } from '../trainingLog';
 
 /** How far back to look when computing the streak. Streaks longer than this are capped. */
@@ -82,6 +83,11 @@ export function createQueries({ storage, now }: CoreEnv) {
     /** Every class written up, most recent day first. */
     async trainingLog(): Promise<TrainingEntry[]> {
       return newestFirst(await storage.trainingLog.all());
+    },
+
+    /** The colours the user asked for; the device's own setting until they choose. */
+    async themeChoice(): Promise<ThemeChoice> {
+      return themeChoice(await storage.settings.all());
     },
 
     /** Oldest first, for one item. */

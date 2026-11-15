@@ -2874,6 +2874,7 @@ export function starterContent(now: number): BackupData {
     reviews: [],
     reviewLog: [],
     starterDismissals: [],
+    settings: [],
     trainingLog: [],
   };
 }

@@ -103,6 +103,7 @@ describe('validateBackup', () => {
     ['an unknown category', file({ positions: [{ ...position(), category: 'flying' }] }), /"category"/],
     ['a non-YouTube id', file({ videos: [{ ...validVideo, youtubeId: 'javascript:1' }] }), /"youtubeId"/],
     ['a negative start time', file({ videos: [{ ...validVideo, startSeconds: -1 }] }), /"startSeconds"/],
+    ['a setting this app does not have', file({ settings: [{ id: 'font', value: 'big', updatedAt: 1 }] }), /"id"/],
     ['a dismissal without a time', file({ starterDismissals: [{ id: 'scissor-sweep' }] }), /"dismissedAt"/],
     ['an unknown grade', file({ reviewLog: [{ cardId: 'a', grade: 'meh', reviewedAt: 1 }] }), /"grade"/],
     ['a non-finite number', file({ concepts: [{ ...concept(), order: Number.NaN }] }), /"order"/],

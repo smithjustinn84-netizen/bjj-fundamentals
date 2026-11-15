@@ -8,6 +8,8 @@ import {
   type Position,
   type ReviewLogEntry,
   type ReviewState,
+  SETTING_IDS,
+  type Setting,
   type StarterDismissal,
   TRANSITION_TYPES,
   type TrainingEntry,
@@ -25,7 +27,7 @@ import { isYouTubeId } from './youtube';
 
 export const BACKUP_APP = 'bjj-fundamentals';
 /** Bump when the shape of any table changes, and teach `validateBackup` to accept the older shape. */
-export const BACKUP_SCHEMA_VERSION = 8;
+export const BACKUP_SCHEMA_VERSION = 9;
 
 export interface BackupData {
   positions: Position[];
@@ -36,6 +38,7 @@ export interface BackupData {
   reviewLog: ReviewLogEntry[];
   starterDismissals: StarterDismissal[];
   trainingLog: TrainingEntry[];
+  settings: Setting[];
 }
 
 export type BackupTable = keyof BackupData;
@@ -48,6 +51,7 @@ export const BACKUP_TABLES = [
   'reviewLog',
   'starterDismissals',
   'trainingLog',
+  'settings',
 ] as const satisfies readonly BackupTable[];
 
 export interface BackupFile {
@@ -169,6 +173,13 @@ const SCHEMAS: { [T in BackupTable]: Schema<BackupData[T][number]> } = {
     // Absent before schema 8; `stuckSituationIds` reads a missing list as empty.
     stuckIds: optional(textList),
     createdAt: num,
+    updatedAt: num,
+  },
+  // Absent before schema 9; a missing table loads as empty, so every setting takes its default.
+  settings: {
+    id: oneOf(SETTING_IDS),
+    // What a value may be is each setting's own business: `themeChoice` reads an unknown one as the default.
+    value: text,
     updatedAt: num,
   },
 };

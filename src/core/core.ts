@@ -2,6 +2,7 @@ import { createBackupService } from './services/backups';
 import { createItemService } from './services/items';
 import { createQueries } from './services/queries';
 import { createReviewService } from './services/reviews';
+import { createSettingsService } from './services/settings';
 import { createTrainingLogService } from './services/trainingLog';
 import { createVideoService } from './services/videos';
 import type { AppStorage } from './storage';
@@ -25,6 +26,7 @@ export function createCore(env: CoreEnv) {
     videos: createVideoService(env),
     reviews: createReviewService(env),
     trainingLog: createTrainingLogService(env),
+    settings: createSettingsService(env),
     backups: createBackupService(env),
     queries: createQueries(env),
     /** Called after any stored change, so a UI knows when to re-run its queries. */

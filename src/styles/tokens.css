@@ -114,44 +114,47 @@
   --shadow: 0 1px 2px rgb(60 45 20 / 0.06), 0 2px 8px rgb(60 45 20 / 0.05);
   --shadow-lift: 0 2px 4px rgb(60 45 20 / 0.08), 0 8px 20px rgb(60 45 20 / 0.1);
 
-  color-scheme: light dark;
+  color-scheme: light;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   line-height: 1.5;
   color: var(--text);
   background: var(--bg);
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Warm ink, not grey: the night version of the paper, with layers that get lighter as they rise. */
-    --bg: #110f0c;
-    --weave: rgb(255 236 200 / 0.035);
-    --surface: #201d19;
-    --raised: #322d27;
-    --well: #0a0908;
-    --text: #f1ebdf;
-    --muted: #aaa192;
-    --border: #3a352e;
-    --border-control: #736b5e;
-    --accent: #8fb3ea;
-    --accent-soft: #1f2c42;
-    --fill: #3468b0;
-    --danger: #f08b7f;
-    --ok: #8ac793;
-    --warn: #e9b450;
-    --belt: #c8443c;
+/*
+ * The dark theme. `data-theme` is always set: by the script in index.html before the first paint (from the
+ * device), then by `useAppliedTheme` once the stored choice is read.
+ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  /* Warm ink, not grey: the night version of the paper, with layers that get lighter as they rise. */
+  --bg: #110f0c;
+  --weave: rgb(255 236 200 / 0.035);
+  --surface: #201d19;
+  --raised: #322d27;
+  --well: #0a0908;
+  --text: #f1ebdf;
+  --muted: #aaa192;
+  --border: #3a352e;
+  --border-control: #736b5e;
+  --accent: #8fb3ea;
+  --accent-soft: #1f2c42;
+  --fill: #3468b0;
+  --danger: #f08b7f;
+  --ok: #8ac793;
+  --warn: #e9b450;
+  --belt: #c8443c;
 
-    --belt-white: #f1ebdf;
-    --belt-blue: #4f8fe6;
-    --belt-purple: #9d74d6;
-    --belt-brown: #a8703f;
-    --belt-black: #0a0908;
-    --belt-outline: #8f877b;
+  --belt-white: #f1ebdf;
+  --belt-blue: #4f8fe6;
+  --belt-purple: #9d74d6;
+  --belt-brown: #a8703f;
+  --belt-black: #0a0908;
+  --belt-outline: #8f877b;
 
-    --type-submission: #f08b7f;
-    --type-takedown: #c3a4ef;
-    --type-transition: #b4aea3;
+  --type-submission: #f08b7f;
+  --type-takedown: #c3a4ef;
+  --type-transition: #b4aea3;
 
-    --shadow: inset 0 1px 0 rgb(255 240 215 / 0.05), 0 1px 3px rgb(0 0 0 / 0.5);
-    --shadow-lift: inset 0 1px 0 rgb(255 240 215 / 0.08), 0 6px 20px rgb(0 0 0 / 0.55);
-  }
+  --shadow: inset 0 1px 0 rgb(255 240 215 / 0.05), 0 1px 3px rgb(0 0 0 / 0.5);
+  --shadow-lift: inset 0 1px 0 rgb(255 240 215 / 0.08), 0 6px 20px rgb(0 0 0 / 0.55);
 }

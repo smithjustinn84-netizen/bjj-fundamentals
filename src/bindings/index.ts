@@ -8,7 +8,7 @@ import { useCallback } from 'react';
 import type { BackupTable } from '../core/backup';
 import { createCore } from '../core/core';
 import type { Library } from '../core/library';
-import type { Concept, ItemKind, TrainingEntry, Transition, VideoBookmark } from '../core/models';
+import type { Concept, ItemKind, ThemeChoice, TrainingEntry, Transition, VideoBookmark } from '../core/models';
 import { starterContent } from '../core/seed';
 import type { StudyStats } from '../core/services/queries';
 import { createDexieStorage } from '../storage/dexieStorage';
@@ -22,7 +22,7 @@ const core = createCore({
   now: () => Date.now(),
 });
 
-export const { items, videos, reviews, backups, trainingLog } = core;
+export const { items, videos, reviews, backups, trainingLog, settings } = core;
 const { queries, subscribe } = core;
 
 // Live reads: each returns undefined while loading and re-renders its component when stored data changes.
@@ -53,6 +53,11 @@ export function useVideos(): VideoBookmark[] | undefined {
 
 export function useTrainingLog(): TrainingEntry[] | undefined {
   return useQuery(subscribe, queries.trainingLog);
+}
+
+/** Undefined until the stored choice has been read. */
+export function useThemeChoice(): ThemeChoice | undefined {
+  return useQuery(subscribe, queries.themeChoice);
 }
 
 export function useLinkedVideos(kind: ItemKind, id: string): VideoBookmark[] | undefined {

@@ -19,6 +19,7 @@ import TrainingLog from './ui/pages/TrainingLog';
 import TransitionDetail from './ui/pages/TransitionDetail';
 import Videos from './ui/pages/Videos';
 import { LEARN_ROUTES, MORE_ROUTES, ROUTE_PATTERNS, ROUTES } from './ui/routes';
+import { useAppliedTheme } from './ui/theme';
 
 const MAIN_ID = 'main';
 
@@ -50,6 +51,7 @@ function ReviewNavLink() {
 
 export default function App() {
   const { pathname } = useLocation();
+  useAppliedTheme();
   return (
     <div className="app">
       <a className="skip-link" href={`#${MAIN_ID}`} onClick={focusMain}>

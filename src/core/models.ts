@@ -180,6 +180,26 @@ export interface StarterDismissal {
   dismissedAt: number;
 }
 
+/** Which colours the app uses: the device's own light or dark setting, or one of them regardless. */
+export const THEME_CHOICES = ['device', 'light', 'dark'] as const;
+export type ThemeChoice = (typeof THEME_CHOICES)[number];
+/** The two themes the styles define. A `ThemeChoice` always comes down to one of these (`core/theme.ts`). */
+export type Theme = Exclude<ThemeChoice, 'device'>;
+
+/** The preferences the app remembers. Each is one row of the settings table, keyed by its name. */
+export const SETTING_IDS = ['theme'] as const;
+export type SettingId = (typeof SETTING_IDS)[number];
+
+/**
+ * One remembered preference. `value` is text so every setting fits one table; read it through the
+ * setting's own function (`themeChoice`), which also supplies the default when the row is absent.
+ */
+export interface Setting {
+  id: SettingId;
+  value: string;
+  updatedAt: number;
+}
+
 /** Study ranks shown as a belt, lowest first. A motivational label for progress, not a real grading. */
 export const BELT_RANKS = ['white', 'blue', 'purple', 'brown', 'black'] as const;
 export type BeltRank = (typeof BELT_RANKS)[number];

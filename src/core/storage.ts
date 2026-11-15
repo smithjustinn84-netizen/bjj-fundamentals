@@ -4,6 +4,7 @@ import type {
   Position,
   ReviewLogEntry,
   ReviewState,
+  Setting,
   StarterDismissal,
   TrainingEntry,
   Transition,
@@ -55,6 +56,7 @@ export interface AppStorage {
   readonly reviewLog: ReviewLogRepository;
   readonly starterDismissals: Repository<StarterDismissal>;
   readonly trainingLog: Repository<TrainingEntry>;
+  readonly settings: Repository<Setting>;
 
   /**
    * Run `work` so that either all of its writes are stored or none are. If `work` rejects, every write it

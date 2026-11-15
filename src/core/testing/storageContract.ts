@@ -27,6 +27,7 @@ const initialData: BackupData = {
   reviewLog: [],
   starterDismissals: [],
   trainingLog: [],
+  settings: [],
 };
 
 const logEntry = (reviewedAt: number) => ({ cardId: 'concept:c1', grade: 'good' as const, reviewedAt });
@@ -60,6 +61,14 @@ export function describeStorageContract(name: string, { create, reopen }: Storag
       expect(await storage.starterDismissals.count()).toBe(0);
       await storage.starterDismissals.put({ id: 'sweep', dismissedAt: 5 });
       expect(await storage.starterDismissals.all()).toEqual([{ id: 'sweep', dismissedAt: 5 }]);
+    });
+
+    it('has an empty settings table that reads and writes by id', async () => {
+      const storage = await create({ initialData });
+      expect(await storage.settings.count()).toBe(0);
+      await storage.settings.put({ id: 'theme', value: 'dark', updatedAt: 5 });
+      await storage.settings.put({ id: 'theme', value: 'light', updatedAt: 6 });
+      expect(await storage.settings.all()).toEqual([{ id: 'theme', value: 'light', updatedAt: 6 }]);
     });
 
     it('has an empty training log table that reads and writes by id', async () => {

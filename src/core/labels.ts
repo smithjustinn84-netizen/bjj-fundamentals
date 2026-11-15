@@ -1,6 +1,6 @@
 import { assertNever } from './assertNever';
 import type { BackupTable } from './backup';
-import type { BeltRank, Grade, ItemKind, PositionCategory, PositionRole, TransitionType } from './models';
+import type { BeltRank, Grade, ItemKind, PositionCategory, PositionRole, ThemeChoice, TransitionType } from './models';
 
 export const CATEGORY_LABELS: Record<PositionCategory, string> = {
   standing: 'Standing',
@@ -99,6 +99,13 @@ export const TABLE_LABELS: Record<BackupTable, string> = {
   reviewLog: 'Review history',
   starterDismissals: 'Dismissed starter techniques',
   trainingLog: 'Training log entries',
+  settings: 'Settings',
+};
+
+export const THEME_LABELS: Record<ThemeChoice, string> = {
+  device: 'Device',
+  light: 'Light',
+  dark: 'Dark',
 };
 
 export const BELT_LABELS: Record<BeltRank, string> = {
