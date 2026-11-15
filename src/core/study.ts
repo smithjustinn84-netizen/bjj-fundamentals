@@ -125,6 +125,9 @@ export function progressSummary(lib: Library): ProgressSummary {
 }
 
 /** How many sticking points to show at once: enough to work on before the next class, few enough to read at a glance. */
+/** How many new cards a session brings in unless the student moves the slider. */
+export const DEFAULT_NEW_CARDS = 5;
+
 export const STICKING_POINT_LIMIT = 5;
 
 /** One miss is normal on a new card; a card is a sticking point once it has been forgotten this many times. */

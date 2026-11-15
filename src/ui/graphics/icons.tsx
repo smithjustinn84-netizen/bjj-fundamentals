@@ -55,6 +55,7 @@ const ICONS = {
   flame: <path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.2 2-4 .2 1.6 1 2.4 1.8 2.6C10.5 9 11 5.5 12 3z" />,
   check: <path d="m5 12.5 4.5 4.5L19 7.5" />,
   arrow: <path d="M5 12h14m0 0-5-5m5 5-5 5" />,
+  back: <path d="M19 12H5m0 0 5-5m-5 5 5 5" />,
   more: (
     <>
       <circle cx="5" cy="12" r="1" />

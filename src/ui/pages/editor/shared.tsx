@@ -56,15 +56,15 @@ export function FormShell(props: {
   return (
     <form className="card stack" onSubmit={submit}>
       {props.children}
-      <div className="row">
-        <button type="submit" className="primary">
+      <div className="action-bar">
+        <button type="submit" className="primary large">
           Save
         </button>
-        <Link to={props.cancelTo} className="button">
+        <Link to={props.cancelTo} className="button large">
           Cancel
         </Link>
         {props.onDelete && (
-          <button type="button" className="danger push-right" onClick={props.onDelete}>
+          <button type="button" className="danger large push-right" onClick={props.onDelete}>
             Delete
           </button>
         )}
@@ -89,7 +89,10 @@ export function SummaryField({ value, onChange }: { value: string; onChange: (va
   );
 }
 
-/** A select over one of the `const` lists in `core/models.ts`. */
+/** Up to this many choices fit side by side on a phone as a switch; more than that become a menu. */
+const MAX_SWITCH_OPTIONS = 3;
+
+/** A choice from one of the `const` lists in `core/models.ts`: a switch when there are few, a menu otherwise. */
 export function ChoiceField<T extends string>(props: {
   label: string;
   options: readonly T[];
@@ -97,6 +100,25 @@ export function ChoiceField<T extends string>(props: {
   value: T;
   onChange: (value: T) => void;
 }) {
+  if (props.options.length <= MAX_SWITCH_OPTIONS) {
+    return (
+      <fieldset className="choice-field">
+        <legend>{props.label}</legend>
+        <div className="segmented">
+          {props.options.map((option) => (
+            <button
+              key={option}
+              type="button"
+              aria-pressed={props.value === option}
+              onClick={() => props.onChange(option)}
+            >
+              {props.labels[option]}
+            </button>
+          ))}
+        </div>
+      </fieldset>
+    );
+  }
   return (
     <Field label={props.label}>
       <select

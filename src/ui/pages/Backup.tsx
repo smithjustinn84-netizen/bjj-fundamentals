@@ -95,7 +95,7 @@ export default function Backup() {
           Download everything — concepts, positions, techniques, video bookmarks, and review progress — as one JSON
           file.
         </p>
-        <button type="button" className="primary" onClick={onExport}>
+        <button type="button" className="primary backup-button" onClick={onExport}>
           Export backup
         </button>
       </div>
@@ -104,7 +104,7 @@ export default function Backup() {
         <h2>Import</h2>
         <p>Restore from a backup file. This replaces everything currently stored.</p>
         <input ref={fileRef} type="file" accept="application/json,.json" onChange={onFile} hidden />
-        <button type="button" onClick={() => fileRef.current?.click()}>
+        <button type="button" className="backup-button" onClick={() => fileRef.current?.click()}>
           Import backup…
         </button>
       </div>
@@ -127,7 +127,7 @@ export default function Backup() {
 
       <div className="card stack danger-zone">
         <h2>Start over</h2>
-        <div className="row">
+        <div className="backup-actions">
           <button type="button" onClick={resetProgress}>
             Reset review progress
           </button>

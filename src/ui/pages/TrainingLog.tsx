@@ -275,7 +275,7 @@ function EntryForm(props: {
         </p>
       )}
       {/* Pinned above the tab bar on a phone, so saving never needs a scroll. */}
-      <div className="log-save">
+      <div className="action-bar">
         <button type="submit" className="primary large" disabled={saving}>
           {entry ? 'Save changes' : 'Save entry'}
         </button>

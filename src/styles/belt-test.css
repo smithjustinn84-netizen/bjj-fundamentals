@@ -1,13 +1,15 @@
 /* Blue belt test list. */
 
+/* On a phone the belt and count share a line and the study button takes the next one, full width. */
 .belt-test-summary {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-3) var(--space-4);
 }
 .belt-test-summary .belt-art {
-  flex: 0 0 7rem;
-  width: 7rem;
+  flex: 0 0 6rem;
+  width: 6rem;
 }
 .belt-test-summary p {
   margin: 0 0 var(--space-2);
@@ -15,16 +17,26 @@
 .belt-test-summary .progress {
   margin-bottom: 0;
 }
+.belt-test-summary .button {
+  flex: 1 1 100%;
+}
 /* `.transition-list` clears list padding, which would also remove the card's own. */
 .belt-test-list {
-  padding: var(--space-3) var(--space-4);
-}
-.belt-test-list .transition-row {
-  align-items: center;
+  padding: var(--space-1) var(--space-4);
 }
 
 /* Marks a technique that is on the blue belt test; links to that list. */
 .tag-blue-belt {
   --type-color: var(--belt-blue);
   text-decoration: none;
+}
+
+@media (min-width: 600px) {
+  .belt-test-summary .belt-art {
+    flex-basis: 7rem;
+    width: 7rem;
+  }
+  .belt-test-summary .button {
+    flex: none;
+  }
 }

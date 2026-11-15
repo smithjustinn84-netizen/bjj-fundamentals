@@ -21,29 +21,36 @@ export function VideoRow({ video, linkedName }: RowProps) {
 
   return (
     <li className="video-row">
-      <a
-        href={watchUrl(video.youtubeId, video.startSeconds)}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="video-link"
-      >
-        <span className="play" aria-hidden="true">
-          ▶
-        </span>
-        <span>
-          <strong>{video.title}</strong>
-          <span className="muted"> · {formatTime(video.startSeconds)}</span>
-        </span>
-      </a>
+      <div className="video-row-head">
+        <a
+          href={watchUrl(video.youtubeId, video.startSeconds)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="video-link"
+        >
+          <span className="play" aria-hidden="true">
+            ▶
+          </span>
+          <span>
+            <strong>{video.title}</strong>
+            <span className="muted"> · {formatTime(video.startSeconds)}</span>
+          </span>
+        </a>
+        <button
+          type="button"
+          className="danger small"
+          aria-label={`Delete the bookmark "${video.title}"`}
+          onClick={remove}
+        >
+          Delete
+        </button>
+      </div>
       {video.note && <p className="muted small">{video.note}</p>}
       {linkedName && video.linkedKind && (
         <p className="small">
           {KIND_LABELS[video.linkedKind]}: <Link to={itemPath(video.linkedKind, video.linkedId)}>{linkedName}</Link>
         </p>
       )}
-      <button type="button" className="link danger small" onClick={remove}>
-        Delete
-      </button>
     </li>
   );
 }

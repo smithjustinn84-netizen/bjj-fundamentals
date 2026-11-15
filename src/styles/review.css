@@ -81,8 +81,13 @@
   font-weight: 500;
   font-size: 0.9rem;
 }
-.option .segmented {
+/* Six decks do not fit a phone's width, so the row scrolls sideways; each keeps its natural width. */
+.deck-switch {
   width: 100%;
+  overflow-x: auto;
+}
+.deck-switch button {
+  flex: none;
 }
 
 /* Each grade has one colour, used by its button, the leaving card's tint and the session breakdown. */
@@ -193,6 +198,12 @@
 .session-complete > * + * {
   margin-top: var(--space-4);
 }
+/* Stacked and full width on a phone; side by side from 600px. */
+.complete-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
 .complete-mark {
   width: 4.5rem;
   height: 4.5rem;
@@ -289,5 +300,13 @@
   }
   .session-ready .primary {
     width: auto;
+  }
+  .deck-switch {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+  .complete-actions {
+    flex-direction: row;
+    justify-content: center;
   }
 }

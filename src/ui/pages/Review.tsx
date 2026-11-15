@@ -5,7 +5,7 @@ import { GRADE_LABELS, KIND_GROUP_LABELS, plural } from '../../core/labels';
 import { reviewOf } from '../../core/library';
 import { DECKS, type Deck, GRADES, type Grade } from '../../core/models';
 import { describeInterval, newReviewState } from '../../core/srs';
-import { buildQueue, type StudyItem } from '../../core/study';
+import { buildQueue, DEFAULT_NEW_CARDS, type StudyItem } from '../../core/study';
 import { RECENT_CLASS_COUNT, studyFirst } from '../../core/trainingLog';
 import { Loading } from '../components/common';
 import { CardAnswer, CardCue, cardPrompt } from '../components/StudyCard';
@@ -14,7 +14,6 @@ import { Icon } from '../graphics/icons';
 import { prefersReducedMotion } from '../graphics/motion';
 import { ProgressBar } from '../graphics/ProgressBar';
 import { DECK_PARAM, ROUTES, studyItemPath } from '../routes';
-import { useMediaQuery } from '../useMediaQuery';
 import { type GradeTally, useReviewSession } from './useReviewSession';
 
 const DECK_LABELS: Record<Deck, string> = {
@@ -27,9 +26,6 @@ const DECK_LABELS: Record<Deck, string> = {
 const GRADE_BUTTONS = GRADES.map((grade, index) => ({ grade, label: GRADE_LABELS[grade], key: String(index + 1) }));
 const DECK_LABEL_ID = 'review-deck-label';
 const GRADES_LABEL_ID = 'review-grades-label';
-/** The phone breakpoint in shell.css. Six deck buttons wrap badly at that width, so a menu replaces them. */
-const PHONE_SCREEN = '(max-width: 599px)';
-const DEFAULT_NEW_CARDS = 5;
 const MAX_NEW_CARDS = 20;
 /** How long a graded card takes to slide away: `--dur-base`, which the `card-leave` animation in review.css uses. */
 const CARD_LEAVE_MS = 220;
@@ -89,7 +85,7 @@ function SessionComplete(props: {
             ? `${plural(moreWaiting, 'more card')} ready if you want another round.`
             : 'Nothing else is due. Come back tomorrow.'}
         </p>
-        <div className="row center">
+        <div className="complete-actions">
           {moreWaiting > 0 ? (
             <>
               <button type="button" className="primary" onClick={onAgain}>
@@ -118,7 +114,6 @@ function SessionComplete(props: {
 export default function Review() {
   const lib = useLibrary();
   const log = useTrainingLog();
-  const onPhone = useMediaQuery(PHONE_SCREEN);
   const session = useReviewSession(lib);
   const [params] = useSearchParams();
   // A list page can open the review on its own deck; anything unrecognised falls back to everything.
@@ -201,27 +196,14 @@ export default function Review() {
           <div className="session-options stack">
             <div className="option">
               <span id={DECK_LABEL_ID}>What to study</span>
-              {onPhone ? (
-                <select
-                  aria-labelledby={DECK_LABEL_ID}
-                  value={deck}
-                  onChange={(e) => setDeck(DECKS.find((d) => d === e.target.value) ?? 'all')}
-                >
-                  {DECKS.map((d) => (
-                    <option key={d} value={d}>
-                      {DECK_LABELS[d]}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <fieldset className="segmented" aria-labelledby={DECK_LABEL_ID}>
-                  {DECKS.map((d) => (
-                    <button key={d} type="button" aria-pressed={deck === d} onClick={() => setDeck(d)}>
-                      {DECK_LABELS[d]}
-                    </button>
-                  ))}
-                </fieldset>
-              )}
+              {/* One control at every width: on a phone the row scrolls sideways instead of wrapping. */}
+              <fieldset className="segmented deck-switch" aria-labelledby={DECK_LABEL_ID}>
+                {DECKS.map((d) => (
+                  <button key={d} type="button" aria-pressed={deck === d} onClick={() => setDeck(d)}>
+                    {DECK_LABELS[d]}
+                  </button>
+                ))}
+              </fieldset>
             </div>
             <label>
               <span>

@@ -8,6 +8,7 @@ import { LearnTabs } from '../components/LearnTabs';
 import { StarterOffer } from '../components/StarterOffer';
 import { Belt } from '../graphics/Belt';
 import { EmptyState } from '../graphics/EmptyState';
+import { Icon } from '../graphics/icons';
 import { ProgressBar } from '../graphics/ProgressBar';
 import { itemPath, newItemPath, ROUTES, reviewPath } from '../routes';
 
@@ -79,10 +80,15 @@ export default function BlueBelt() {
                 {group.techniques.map((technique) => {
                   const from = lib.positionById.get(technique.fromId);
                   return (
-                    <li key={technique.id} className="transition-row">
-                      <ProgressDot state={reviewOf(lib, 'transition', technique.id)} />
-                      <Link to={itemPath('transition', technique.id)}>{technique.name}</Link>
-                      {from && <span className="muted small">from {from.name}</span>}
+                    <li key={technique.id}>
+                      <Link className="row-link" to={itemPath('transition', technique.id)}>
+                        <ProgressDot state={reviewOf(lib, 'transition', technique.id)} />
+                        <span className="row-text">
+                          <span className="row-name">{technique.name}</span>
+                          {from && <span className="row-meta">from {from.name}</span>}
+                        </span>
+                        <Icon name="chevron" />
+                      </Link>
                     </li>
                   );
                 })}

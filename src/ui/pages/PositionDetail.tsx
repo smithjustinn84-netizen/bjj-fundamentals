@@ -7,7 +7,16 @@ import { POSITION_ROLES, type PositionRole } from '../../core/models';
 import { positionOptions } from '../../core/roles';
 import { roleGoals } from '../../core/situations';
 import { positionProgress } from '../../core/todaysDrill';
-import { Bullets, Loading, Missing, NotesBlock, Pager, Section, StudyStatusPill } from '../components/common';
+import {
+  Bullets,
+  DetailHeader,
+  Loading,
+  Missing,
+  NotesBlock,
+  Pager,
+  Section,
+  StudyStatusPill,
+} from '../components/common';
 import { ItemPicture } from '../components/ItemPicture';
 import { NO_TECHNIQUES_FROM_HERE, TransitionList } from '../components/TransitionLink';
 import { LinkedVideos } from '../components/VideoList';
@@ -39,21 +48,17 @@ export default function PositionDetail() {
 
   return (
     <article className="stack">
-      <Link to={ROUTES.positions} className="small">
-        ← Positions
-      </Link>
-      <div className="page-head">
-        <div>
-          <p className="eyebrow">
+      <DetailHeader
+        back={{ to: ROUTES.positions, label: 'Positions' }}
+        editTo={editPath('position', position.id)}
+        eyebrow={
+          <>
             {CATEGORY_LABELS[position.category]} <StudyStatusPill state={reviewOf(lib, 'position', position.id)} />
-          </p>
-          <h1>{position.name}</h1>
-          <p className="lead">{position.summary}</p>
-        </div>
-        <Link className="button small" to={editPath('position', position.id)}>
-          Edit
-        </Link>
-      </div>
+          </>
+        }
+        title={position.name}
+        lead={position.summary}
+      />
       <div className="card">
         <ItemPicture kind="position" id={position.id}>
           <PositionArtwork id={position.id} name={position.name} />

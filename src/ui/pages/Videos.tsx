@@ -12,6 +12,7 @@ export default function Videos() {
   const lib = useLibrary();
   const all = useVideos();
   const [query, setQuery] = useState('');
+  const [adding, setAdding] = useState(false);
   if (!lib || !all) return <Loading />;
 
   const withNames = all.map((video) => ({
@@ -34,22 +35,26 @@ export default function Videos() {
         </p>
       </div>
       <div className="card">
-        <h2>Add a bookmark</h2>
-        <VideoForm />
-      </div>
-      <div className="card">
         <div className="section-head">
           <h2>Saved ({all.length})</h2>
-          {all.length >= SEARCH_THRESHOLD && (
-            <input
-              type="search"
-              placeholder="Search…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              aria-label="Search bookmarks"
-            />
+          {!adding && (
+            <button type="button" onClick={() => setAdding(true)}>
+              + Add bookmark
+            </button>
           )}
         </div>
+        {/* Behind a button so the saved list, not an empty form, is what the page opens on. */}
+        {adding && <VideoForm onDone={() => setAdding(false)} />}
+        {all.length >= SEARCH_THRESHOLD && (
+          <input
+            type="search"
+            className="video-search"
+            placeholder="Search…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="Search bookmarks"
+          />
+        )}
         {shown.length === 0 ? (
           <p className="muted">{all.length === 0 ? 'No bookmarks yet.' : 'No matches.'}</p>
         ) : (

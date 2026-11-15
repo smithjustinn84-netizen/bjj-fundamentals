@@ -14,3 +14,21 @@
 .danger-zone {
   border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
 }
+/* Full width and stacked on a phone, so Erase is never a near miss for Reset. */
+.backup-button {
+  width: 100%;
+}
+.backup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+@media (min-width: 600px) {
+  .backup-button {
+    width: auto;
+  }
+  .backup-actions {
+    flex-direction: row;
+  }
+}

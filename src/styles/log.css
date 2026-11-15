@@ -70,22 +70,6 @@
 .log-notes label {
   margin-bottom: var(--space-3);
 }
-/* Pinned just above the tab bar on a phone; the page-coloured band hides the form scrolling underneath. */
-.log-save {
-  position: sticky;
-  bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
-  z-index: 5;
-  display: flex;
-  gap: var(--space-2);
-  margin: 0 -1.25rem -1.25rem;
-  padding: var(--space-2) var(--space-3);
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-}
-.log-save button {
-  flex: 1;
-}
 .log-list {
   list-style: none;
   padding: 0;
@@ -110,17 +94,4 @@
 }
 .log-entry .row {
   margin-top: var(--space-2);
-}
-
-@media (min-width: 600px) {
-  .log-save {
-    position: static;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: none;
-  }
-  .log-save button {
-    flex: none;
-  }
 }

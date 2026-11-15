@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { ReviewState } from '../../core/models';
 import { isLearned } from '../../core/srs';
+import { Icon } from '../graphics/icons';
 
 export function Loading() {
   return <p className="muted">Loading…</p>;
@@ -69,6 +70,37 @@ export function ProgressLegend() {
         </li>
       ))}
     </ul>
+  );
+}
+
+/**
+ * The top of a page about one item: the way back and Edit on one row, then what the item is.
+ * `eyebrow` is the small line above the name; `children` is anything that belongs under the summary.
+ */
+export function DetailHeader(props: {
+  back: { to: string; label: string };
+  editTo: string;
+  eyebrow: ReactNode;
+  title: string;
+  lead?: string;
+  children?: ReactNode;
+}) {
+  return (
+    <header className="detail-head">
+      <div className="detail-bar">
+        <Link to={props.back.to} className="back-link">
+          <Icon name="back" />
+          {props.back.label}
+        </Link>
+        <Link className="button small" to={props.editTo}>
+          Edit
+        </Link>
+      </div>
+      <p className="eyebrow">{props.eyebrow}</p>
+      <h1>{props.title}</h1>
+      {props.lead && <p className="lead">{props.lead}</p>}
+      {props.children}
+    </header>
   );
 }
 

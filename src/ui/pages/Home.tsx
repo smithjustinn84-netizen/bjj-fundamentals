@@ -6,13 +6,23 @@ import { reviewOf } from '../../core/library';
 import { beltRank } from '../../core/rank';
 import { findSituation, situationName } from '../../core/situations';
 import { cardId } from '../../core/srs';
-import { cardName, conceptsToLearn, progressSummary, STICKING_POINT_LIMIT, stickingPoints } from '../../core/study';
+import {
+  buildQueue,
+  cardName,
+  conceptsToLearn,
+  DEFAULT_NEW_CARDS,
+  progressSummary,
+  STICKING_POINT_LIMIT,
+  type StudyQueue,
+  stickingPoints,
+} from '../../core/study';
 import { type DrillReason, pickDrill } from '../../core/todaysDrill';
 import {
   formatClassCount,
   formatMatTime,
   RECENT_CLASS_COUNT,
   recentlyStuck,
+  studyFirst,
   trainingSummary,
 } from '../../core/trainingLog';
 import { Loading, ProgressDot } from '../components/common';
@@ -24,11 +34,6 @@ import { PositionArtwork } from '../graphics/PositionSvg';
 import { ProgressBar } from '../graphics/ProgressBar';
 import { useCountUp } from '../graphics/useCountUp';
 import { itemPath, positionSidePath, ROUTES, studyItemPath } from '../routes';
-
-function reviewButtonLabel(dueCount: number, started: number): string {
-  if (dueCount > 0) return `Review ${dueCount} card${dueCount === 1 ? '' : 's'}`;
-  return started === 0 ? 'Start studying' : 'Study new cards';
-}
 
 /** Home shows only the next few concepts; the Concepts page has them all. */
 const HOME_CONCEPT_LIMIT = 6;
@@ -46,28 +51,30 @@ function todayLabel(): string {
   return new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
 }
 
-/** What the review block says under its number. */
-function reviewLine(dueCount: number, started: number): string {
-  if (dueCount > 0) return 'A few minutes now keeps them from slipping.';
-  return started === 0
-    ? 'Start with the first few concepts.'
-    : 'Nothing is due. Learn something new while you are here.';
+/** What the review block says under its number: how the session splits, or what to do when nothing is ready. */
+function reviewLine(preview: StudyQueue, started: number): string {
+  if (preview.queue.length === 0) return 'Nothing is due. Come back tomorrow, or browse something new.';
+  const newCount = preview.queue.length - preview.due.length;
+  if (started === 0) return 'Start with the first few concepts.';
+  const split = `${preview.due.length} due · ${newCount} new`;
+  return preview.fromClass > 0 ? `${split}, ${preview.fromClass} from your recent classes` : split;
 }
 
-/** The one thing to do today: how many cards are due, and the button that starts them. */
-function ReviewBlock({ dueCount, started }: { dueCount: number; started: number }) {
-  const shown = useCountUp(dueCount);
+/** The one thing to do today: how many cards a session would hold, and the button that starts it. */
+function ReviewBlock({ preview, started }: { preview: StudyQueue; started: number }) {
+  const ready = preview.queue.length;
+  const shown = useCountUp(ready);
   return (
     <section className="today-review" aria-label="Review">
       <div className="today-review-count">
         <span className="stat">{shown}</span>
         <div>
-          <strong>{dueCount === 1 ? 'card due' : 'cards due'}</strong>
-          <span className="block small">{reviewLine(dueCount, started)}</span>
+          <strong>{ready === 1 ? 'card ready' : 'cards ready'}</strong>
+          <span className="block small">{reviewLine(preview, started)}</span>
         </div>
       </div>
       <Link className="button large" to={ROUTES.review}>
-        {reviewButtonLabel(dueCount, started)}
+        {ready > 0 ? 'Start review' : 'Open review'}
         <Icon name="arrow" />
       </Link>
     </section>
@@ -124,6 +131,8 @@ export default function Home() {
   const sticking = stickingPoints(lib, STICKING_POINT_LIMIT);
   const training = trainingSummary(log);
   const drill = pickDrill(lib, log);
+  // The same session the Review page would offer with its default settings.
+  const preview = buildQueue(lib, 'all', DEFAULT_NEW_CARDS, Date.now(), studyFirst(lib, log, RECENT_CLASS_COUNT));
   const nextConcepts = conceptsToLearn(lib, HOME_CONCEPT_LIMIT);
   const stuck = recentlyStuck(log, RECENT_CLASS_COUNT)
     .map((id) => findSituation(lib, id))
@@ -208,7 +217,7 @@ export default function Home() {
         )}
       </header>
 
-      <ReviewBlock dueCount={stats.dueCount} started={progress.started} />
+      <ReviewBlock preview={preview} started={progress.started} />
 
       {drill && (
         <Link className="card today-drill" to={itemPath('transition', drill.technique.id)}>

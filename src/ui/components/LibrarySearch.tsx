@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { KIND_LABELS } from '../../core/labels';
 import type { Library } from '../../core/library';
 import { SEARCH_RESULT_LIMIT, searchLibrary } from '../../core/search';
+import { Icon } from '../graphics/icons';
 import { itemPath } from '../routes';
 
 /** One box that finds any concept, position or technique by its name or its text. */
@@ -28,10 +29,17 @@ export function LibrarySearch({ lib }: { lib: Library }) {
       {hits.length > 0 && (
         <ul className="transition-list">
           {hits.map((hit) => (
-            <li key={`${hit.kind}:${hit.id}`} className="transition-row">
-              <span className="tag">{KIND_LABELS[hit.kind]}</span>
-              <Link to={itemPath(hit.kind, hit.id)}>{hit.name}</Link>
-              <span className="muted small">{hit.detail}</span>
+            <li key={`${hit.kind}:${hit.id}`}>
+              <Link className="row-link" to={itemPath(hit.kind, hit.id)}>
+                <span className="row-text">
+                  <span className="row-name">{hit.name}</span>
+                  <span className="row-meta">
+                    <span className="tag">{KIND_LABELS[hit.kind]}</span>
+                    {hit.detail}
+                  </span>
+                </span>
+                <Icon name="chevron" />
+              </Link>
             </li>
           ))}
         </ul>

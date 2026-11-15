@@ -6,10 +6,20 @@ import { connections, reviewOf } from '../../core/library';
 import { endsTheRoll } from '../../core/models';
 import { endRole, performerRole } from '../../core/roles';
 import { techniqueDrill } from '../../core/techniqueDrill';
-import { Bullets, Loading, Missing, NotesBlock, Pager, Section, StudyStatusPill } from '../components/common';
+import {
+  Bullets,
+  DetailHeader,
+  Loading,
+  Missing,
+  NotesBlock,
+  Pager,
+  Section,
+  StudyStatusPill,
+} from '../components/common';
 import { ItemPicture } from '../components/ItemPicture';
 import { LinkedVideos } from '../components/VideoList';
 import { TransitionArtwork } from '../graphics/Artwork';
+import { Icon } from '../graphics/icons';
 import { editPath, itemPath, ROUTES } from '../routes';
 
 export default function TransitionDetail() {
@@ -32,49 +42,52 @@ export default function TransitionDetail() {
 
   return (
     <article className="stack">
-      <Link to={backPath} className="small">
-        ← {from ? from.name : 'Positions'}
-      </Link>
-      <div className="page-head">
-        <div>
-          <p className="eyebrow">
-            <span className={`tag tag-${transition.type}`}>{TRANSITION_LABELS[transition.type]}</span>{' '}
+      <DetailHeader
+        back={{ to: backPath, label: from ? from.name : 'Positions' }}
+        editTo={editPath('transition', transition.id)}
+        eyebrow={
+          <>
+            <span className={`tag tag-${transition.type}`}>{TRANSITION_LABELS[transition.type]}</span>
             {isOnBlueBeltTest(transition) && (
-              <>
-                <Link className="tag tag-blue-belt" to={ROUTES.blueBelt}>
-                  Blue belt test
-                </Link>{' '}
-              </>
+              <Link className="tag tag-blue-belt" to={ROUTES.blueBelt}>
+                Blue belt test
+              </Link>
             )}
             <StudyStatusPill state={reviewOf(lib, 'transition', transition.id)} />
-          </p>
-          <h1>{transition.name}</h1>
-          <p className="route">
-            {from ? <Link to={itemPath('position', from.id)}>{from.name}</Link> : <span className="muted">?</span>}
-            <span aria-hidden="true"> → </span>
-            {endsTheRoll(transition.type) ? (
-              <strong>Tap</strong>
-            ) : to ? (
-              <Link to={itemPath('position', to.id)}>{to.name}</Link>
-            ) : (
-              <span className="muted">?</span>
+          </>
+        }
+        title={transition.name}
+      >
+        <p className="route">
+          {from ? (
+            <Link className="chip" to={itemPath('position', from.id)}>
+              {from.name}
+            </Link>
+          ) : (
+            <span className="muted">?</span>
+          )}
+          <Icon name="arrow" />
+          {endsTheRoll(transition.type) ? (
+            <strong>Tap</strong>
+          ) : to ? (
+            <Link className="chip" to={itemPath('position', to.id)}>
+              {to.name}
+            </Link>
+          ) : (
+            <span className="muted">?</span>
+          )}
+        </p>
+        {from && (
+          <p className="muted small">
+            Who does it: <strong>{roleLabel(from.category, performerRole(lib, transition))}</strong>
+            {to && endSide && (
+              <>
+                {' · '}You end up: <strong>{endSideLabel(to.category, endSide)}</strong>
+              </>
             )}
           </p>
-          {from && (
-            <p className="muted small">
-              Who does it: <strong>{roleLabel(from.category, performerRole(lib, transition))}</strong>
-              {to && endSide && (
-                <>
-                  {' · '}You end up: <strong>{endSideLabel(to.category, endSide)}</strong>
-                </>
-              )}
-            </p>
-          )}
-        </div>
-        <Link className="button small" to={editPath('transition', transition.id)}>
-          Edit
-        </Link>
-      </div>
+        )}
+      </DetailHeader>
       <div className="card">
         <ItemPicture kind="transition" id={transition.id}>
           <TransitionArtwork transition={transition} positionById={lib.positionById} />
