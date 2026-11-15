@@ -1,6 +1,7 @@
 import Dexie, { type Transaction } from 'dexie';
 import { BACKUP_TABLES } from '../core/backup';
-import type { ReviewLogEntry } from '../core/models';
+import type { Concept, Position, ReviewLogEntry, Transition } from '../core/models';
+import { refreshStarterCopy } from '../core/starter';
 import type { AppStorage, Repository, ReviewLogRepository, StorageOptions } from '../core/storage';
 
 /**
@@ -44,6 +45,21 @@ function openDatabase(name: string, initialData: StorageOptions['initialData']):
   db.version(6).stores({}).upgrade(seedMissingStarterVideos);
   db.version(7).stores({}).upgrade(seedMissingStarterVideos);
   db.version(8).stores({ settings: 'id' });
+  db.version(9)
+    .stores({})
+    .upgrade(async (tx) => {
+      const concepts = tx.table<Concept, string>('concepts');
+      const positions = tx.table<Position, string>('positions');
+      const transitions = tx.table<Transition, string>('transitions');
+      const refreshed = refreshStarterCopy(initialData, {
+        concepts: await concepts.toArray(),
+        positions: await positions.toArray(),
+        transitions: await transitions.toArray(),
+      });
+      if (refreshed.concepts.length > 0) await concepts.bulkPut(refreshed.concepts);
+      if (refreshed.positions.length > 0) await positions.bulkPut(refreshed.positions);
+      if (refreshed.transitions.length > 0) await transitions.bulkPut(refreshed.transitions);
+    });
   // Fires only when the database is first created, which is exactly the "insert once" rule of StorageOptions.
   db.on('populate', (tx) => {
     for (const table of BACKUP_TABLES) tx.table(table).bulkAdd(initialData[table]);

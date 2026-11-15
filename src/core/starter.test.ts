@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { findMissingStarterConcepts, findMissingStarterTechniques, linkAddedConcepts } from './starter';
+import {
+  findMissingStarterConcepts,
+  findMissingStarterTechniques,
+  linkAddedConcepts,
+  refreshStarterCopy,
+} from './starter';
 import { concept, position, transition } from './testing/testFixtures';
 
 describe('findMissingStarterTechniques', () => {
@@ -71,5 +76,89 @@ describe('linkAddedConcepts', () => {
   it('only links concepts that were added', () => {
     const stored = [position({ id: 'guard', conceptIds: [] })];
     expect(linkAddedConcepts(new Set(['breathing']), starterPositions, stored)).toEqual([]);
+  });
+});
+
+describe('refreshStarterCopy', () => {
+  const starter = {
+    concepts: [
+      concept({
+        id: 'base',
+        summary: 'Fresh base summary',
+        keyPoints: ['Active toes'],
+        createdAt: 999,
+        updatedAt: 999,
+      }),
+    ],
+    positions: [
+      position({
+        id: 'guard',
+        summary: 'Fresh guard summary',
+        topGoals: ['Posture'],
+        conceptIds: ['base'],
+        createdAt: 999,
+        updatedAt: 999,
+      }),
+    ],
+    transitions: [
+      transition({
+        id: 'sweep',
+        steps: ['New step 1', 'New step 2'],
+        blueBeltTest: true,
+        createdAt: 999,
+        updatedAt: 999,
+      }),
+    ],
+  };
+
+  it('refreshes unedited starter items while keeping their stored timestamps, concept links and blue belt flag', () => {
+    const stored = {
+      concepts: [concept({ id: 'base', summary: 'Old summary', createdAt: 10, updatedAt: 10 })],
+      positions: [
+        position({ id: 'guard', summary: 'Old guard', conceptIds: ['my-concept'], createdAt: 20, updatedAt: 20 }),
+      ],
+      transitions: [
+        transition({ id: 'sweep', steps: ['Old step'], blueBeltTest: false, createdAt: 30, updatedAt: 30 }),
+      ],
+    };
+    const refreshed = refreshStarterCopy(starter, stored);
+    expect(refreshed.concepts).toEqual([
+      concept({ id: 'base', summary: 'Fresh base summary', keyPoints: ['Active toes'], createdAt: 10, updatedAt: 10 }),
+    ]);
+    expect(refreshed.positions).toEqual([
+      position({
+        id: 'guard',
+        summary: 'Fresh guard summary',
+        topGoals: ['Posture'],
+        conceptIds: ['my-concept'],
+        createdAt: 20,
+        updatedAt: 20,
+      }),
+    ]);
+    expect(refreshed.transitions).toEqual([
+      transition({
+        id: 'sweep',
+        steps: ['New step 1', 'New step 2'],
+        blueBeltTest: false,
+        createdAt: 30,
+        updatedAt: 30,
+      }),
+    ]);
+  });
+
+  it('skips starter items the user edited or added notes to, and user-created items', () => {
+    const stored = {
+      concepts: [
+        concept({ id: 'base', summary: 'User edited', createdAt: 10, updatedAt: 15 }),
+        concept({ id: 'custom-concept', createdAt: 10, updatedAt: 10 }),
+      ],
+      positions: [position({ id: 'guard', notes: 'My class note', createdAt: 20, updatedAt: 20 })],
+      transitions: [transition({ id: 'sweep', createdAt: 30, updatedAt: 40 })],
+    };
+    expect(refreshStarterCopy(starter, stored)).toEqual({
+      concepts: [],
+      positions: [],
+      transitions: [],
+    });
   });
 });

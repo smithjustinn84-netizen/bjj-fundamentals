@@ -1,75 +1,116 @@
-# Next sprint: coaching gaps
+# Next sprint: coaching & curriculum roadmap
 
-Found on 2026-11-14 while reviewing the app as a BJJ coach would. The curriculum holes (13 starter techniques) are already done; these are what is left, in the order I would do them.
+Reviewed on 2026-11-15 as a BJJ coach. The coaching copy across all 25 starter concepts, 8 positions, and 37 techniques has been deepened with biomechanical cues, ordered position priorities, and solo/partner drills (and propagated to existing libraries via Dexie version 9). Below are the next three coaching initiatives, in priority order.
 
 Sizes: **S** is an hour or two, **M** is a day, **L** is several days.
 
-## 1. Fix study rough edges (S)
+## 1. Expand white-to-blue-belt starter curriculum (M)
 
-Small, independent fixes. Each can ship alone. The first five were done on 2026-11-15: a "Blue belt test" deck, a "Sticking points" section and next technique on Home, and the safety concept linked to closed guard, side control, mount and back control (new libraries only; an existing library keeps its own links).
+Every new starter concept and technique below connects to the existing 8 starter positions so existing libraries are offered them automatically on the Concepts and Blue belt pages (`core/starter.ts`).
+
+- [ ] **New starter concepts (3)**, each with an inline SVG pose scene in `ui/graphics/ConceptSvg.tsx`, position links in `core/seed.ts`, and at least two verified YouTube bookmarks:
+  - **`breakfalls` — Breakfalls (ukemi):** Tucking the chin, slapping the mat at 45° to spread impact across the back/lat, and never posting a straight arm on the floor during a takedown or sweep. Linked to `standing`.
+  - **`crossface` — Crossface and shoulder-line control:** Driving your shoulder under their jaw to turn their head away so their spine cannot bridge or turn toward you. Linked to `half-guard`, `side-control`, and `mount`.
+  - **`wedges` — Wedges vs. levers:** Blocking a hip or shoulder close to the torso (a wedge) to stop movement, vs. controlling the end of a limb (the knee, ankle, or wrist lever) to rotate or open it. Linked to `open-guard`, `half-guard`, `side-control`, and `back-control`.
+- [ ] **New starter techniques across existing positions (10)**, each with `role`, `endRole`, ordered biomechanical steps, common mistakes, a drill, and verified YouTube bookmarks:
+  - **Closed Guard:**
+    - `cross-collar-guard` — Cross collar choke from closed guard (`submission`, `bottom`).
+    - `omoplata-guard` — Omoplata shoulder lock / sweep from closed guard (`submission`, `bottom`).
+  - **Half Guard:**
+    - `knee-shield-sweep` — Knee shield (scissor/push) sweep from half guard (`sweep`, `bottom` → `side-control` `top`).
+    - `half-guard-to-mount` — Pass half guard directly to mount by flattening shoulders and walking the trapped foot up (`pass`, `top` → `mount` `top`).
+  - **Side Control:**
+    - `kimura-side-control` — Kimura from top side control / north-south step-over (`submission`, `top`).
+    - `side-control-to-back` — Gift-wrap from side control to back control when they turn onto their side (`transition`, `top` → `back-control` `top`).
+  - **Mount:**
+    - `americana-mount` — Americana from mount (`submission`, `top`).
+    - `ezekiel-mount` — Ezekiel choke from mount (`submission`, `top`).
+  - **Back Control:**
+    - `sliding-collar-choke` — Sliding lapel / bow-and-arrow choke from back control (`submission`, `top`).
+  - **Turtle:**
+    - `turtle-sit-out` — Sit-out and turn-in reversal from bottom turtle (`escape`, `bottom` → `side-control` `top`).
+
+## 2. Connect techniques in the UI: counters, defences, and follow-up chains (M)
+
+In live rolling, techniques do not exist in isolation: every attack has a primary defence, and every defensive reaction opens a follow-up attack.
+
+- [ ] **Pair attacks with their defences in `core/`:**
+  - Add a pure lookup or optional model fields (`counters?: string[]`, `chainsWith?: { id: string; when: string }[]`) with defaults from starter pairings in `core/seed.ts`.
+  - Starter attack ↔ defence pairs:
+    - `armbar-guard` ↔ `armbar-defence`
+    - `triangle-choke` ↔ `triangle-defence`
+    - `guillotine-guard` ↔ `guillotine-defence`
+    - `kimura-guard` ↔ `kimura-defence`
+    - `americana` ↔ `americana-defence`
+    - `rear-naked-choke` ↔ `rear-naked-choke-defence`
+    - `double-leg` / `single-leg` ↔ `sprawl`
+- [ ] **Show reaction-based follow-up chains on `TransitionDetail` and review answers:**
+  - Closed guard posture dilemma: `hip-bump-sweep` ("when they sit back") ↔ `kimura-guard` ("when they post a hand to stop the bump") ↔ `guillotine-guard` ("when they pull the arm back with head low").
+  - Closed guard angle dilemma: `armbar-guard` ↔ `triangle-choke` ("when they yank one arm free") ↔ `pendulum-sweep` ("when they stack into you").
+  - Mount escape dilemma: `upa-escape` ("when they reach for your collar or post close") ↔ `elbow-knee-escape` ("when they base wide to stop the bridge").
+  - Side control escape dilemma: `side-control-escape` ("when space opens at the hip") ↔ `side-control-escape-knees` ("when they block your bottom knee").
+
+## 3. Structured class-sized lessons (L)
+
+Give beginners a guided, week-by-week curriculum that groups concepts, a position, and 2–3 connected techniques into a single class-sized lesson.
+
+- [ ] **Pure lesson definitions in `core/lessons.ts` (with unit tests):**
+  - Each `Lesson` names a title, summary, 1–2 `conceptIds`, 1 `positionId`, 2–4 `transitionIds`, and a 15-minute partner practice script combining their drills.
+  - Suggested 8-lesson foundation track:
+    1. *Surviving Underneath* (`safety`, `breathing`, `frames`, `elbows-in` · `side-control` · `side-control-escape`, `americana-defence`)
+    2. *Escaping the Mount* (`bridge`, `hip-escape`, `positional-hierarchy` · `mount` · `upa-escape`, `elbow-knee-escape`)
+    3. *Inside the Closed Guard* (`posture`, `base`, `grips` · `closed-guard` · `break-closed-guard`, `scissor-sweep`, `hip-bump-sweep`)
+    4. *The Closed Guard Submission Triad* (`angles`, `two-on-one`, `action-reaction` · `closed-guard` · `armbar-guard`, `triangle-choke`, `kimura-guard`, `guillotine-guard`)
+    5. *Defending Inside the Guard* (`defend-early`, `posture` · `closed-guard` · `armbar-defence`, `triangle-defence`, `guillotine-defence`, `kimura-defence`)
+    6. *Open Guard & Passing* (`distance`, `inside-position`, `hip-control` · `open-guard` · `toreando-pass`, `double-under-pass`, `butterfly-sweep`, `tripod-sweep`, `guard-retention`)
+    7. *The Half Guard & Side Control Pin* (`underhooks`, `head-position`, `pressure`, `face-your-opponent` · `half-guard` & `side-control` · `knee-slice`, `half-to-full-guard`, `half-guard-underhook-sweep`, `side-to-mount`, `americana`)
+    8. *Back Control, Turtle & Standing Safely* (`position-before-submission`, `training-partner`, `roll-to-learn` · `back-control`, `turtle`, `standing` · `rear-naked-choke`, `back-escape`, `rear-naked-choke-defence`, `turtle-to-back`, `turtle-recover-guard`, `pull-guard`, `double-leg`, `sprawl`)
+- [ ] **Lesson progress & study deck:**
+  - Compute each lesson's progress automatically from the review states of its items (no new storage table needed).
+  - Allow starting a Review session filtered to a single lesson's cards.
+
+---
+
+# Completed sprint history (2026-11-14 – 2026-11-15)
+
+The items below were found on 2026-11-14 while reviewing the app as a BJJ coach and completed on 2026-11-15.
+
+## 1. Fix study rough edges (S) — Done 2026-11-15
 
 - [x] **Blue belt "Study techniques" studies the wrong deck.** The button goes to `reviewPath('transition')`, which is every technique, not the test list (`ui/pages/BlueBelt.tsx`). Needs a deck, or a filter, for `isOnBlueBeltTest` in `buildQueue` (`core/study.ts`), with a test.
 - [x] **Home never points at weak cards.** "Next up" is the first item never reviewed (`ui/pages/Home.tsx:87-89`). Nothing surfaces cards with lapses or low ease, and step 3 links to the map instead of the next technique. Add a pure "what to study next" function in `core/` with a test.
 - [x] **"Session complete" counts the wrong deck.** The "more waiting" count always uses the `all` deck, whatever deck was studied (`ui/pages/Review.tsx:55`).
 - [x] **"Keep going" does not keep going.** It returns to the options screen instead of starting another round (`Review.tsx`).
 - [x] **The safety concept is linked to no position.** "Tap early, tap often" is the only concept no position lists. Link it where submissions happen (closed guard, mount, back control, side control).
-- [x] **Tighten the tripod sweep step.** Done 2026-11-15 from written instructions (the video was not watched): the hip foot goes on the same side as the gripped ankle, the other foot hooks the far leg, and the push goes back, not up. The step is loose about which foot goes on the hip; confirm against how it is taught and fix the wording in `core/seed.ts`.
-- [x] **Skim the new starter videos.** Done 2026-11-15 by reading each video's YouTube transcript (auto-captions) against the written steps, with a few frames looked at; nobody watched them through.
-  - Match (11): pendulum, butterfly, tripod and half guard sweeps, armbar and rear naked choke defences, double-under pass, technical stand-up, side control escape to knees, single leg, and both concept videos. The etiquette video uses crude language.
-  - Swapped (2): the americana defence video showed a different escape (hips down and up to the knees), now Lachlan Giles turning toward the pinned arm; the turtle video ended in a back take, now a turnover to side control, and the written steps were rewritten to that breakdown (pull the far hip toward you).
-  - Kept with an honest note (3): the guillotine video ends inside the guard, not in the pass; the kimura and triangle videos show other late escapes than the written steps.
-  - Could not be checked (2): the sprawl video is a silent solo demonstration and the guard retention drill has no captions.
+- [x] **Tighten the tripod sweep step.** Done 2026-11-15 from written instructions (the video was not watched): the hip foot goes on the same side as the gripped ankle, the other foot hooks the far leg, and the push goes back, not up.
+- [x] **Skim the new starter videos.** Done 2026-11-15 by reading each video's YouTube transcript (auto-captions) against the written steps.
+- [x] **Deepen and sharpen all starter concepts, positions, and techniques.** Done 2026-11-15: clearer biomechanical cues, ordered position goals, 5–6 step breakdowns, common mistakes, and drills across all 25 concepts, 8 positions, and 37 techniques, with `refreshStarterCopy` in `core/starter.ts` and a Dexie `version(9)` upgrade for existing libraries.
 
-## 2. "What do I do here?" cards (M)
+## 2. "What do I do here?" cards (M) — Done 2026-11-15
 
-Today every card asks you to recite one thing. Rolling asks a different question: *I am stuck here, what are my options?*
-
-- [x] **Add who performs a technique.** Done 2026-11-15 as `Transition.role`, read through `performerRole` (`core/roles.ts`); backup schema is now 4. A technique has only `fromId` and `toId`; nothing says whether the person doing it is top or bottom. Add a role field to `Transition` (follow the "Add a field to an item" recipe in `AGENTS.md`: model, `SCHEMAS`, default for old rows through one function, bump `BACKUP_SCHEMA_VERSION`).
+- [x] **Add who performs a technique.** Done 2026-11-15 as `Transition.role`, read through `performerRole` (`core/roles.ts`); backup schema is now 4.
 - [x] **Fix the ambiguous destinations this exposes.** Done 2026-11-15 as `Transition.endRole`, read through `endRole` (`core/roles.ts`): technique lists and pages say which side you end up on ("→ Closed Guard, passing"). Backup schema 8.
-- [x] **Situation cards.** Done 2026-11-15: one card per side of each position that has techniques ("Mount, Bottom side: what are your options?"), in their own Situations deck and at the end of Everything. Cards use `CARD_KINDS` (item kinds plus `situation`); backup schema is 7. The position card went back to asking only for goals.
-- [x] **Coverage on the position page.** Done 2026-11-15: "From here" is split by side (`positionOptions`) and an empty side says so. It flags a side with nothing at all, not a missing escape specifically. Per role, show what you have and flag what is missing ("no escape from here yet"). The calculation is a pure function in `core/` with a test.
+- [x] **Situation cards.** Done 2026-11-15: one card per side of each position that has techniques ("Mount, underneath: what are your options?"), in their own Situations deck and at the end of Everything.
+- [x] **Coverage on the position page.** Done 2026-11-15: "From here" is split by side (`positionOptions`) and an empty side says so.
 
-## 3. Training log (L)
-
-The app tracks flashcard reviews but not mat time, and mat time is what makes the cards mean something.
+## 3. Training log (L) — Done 2026-11-15
 
 - [x] **Log a class.** Done 2026-11-15. Date, minutes on the mat, what was taught, what worked and what failed in rolling, and one thing to focus on next time, with techniques linked.
-- [x] **New table.** Done 2026-11-15 as `trainingLog` (Dexie version 5, backup schema 5). Deleting a technique or position removes it from entries and keeps the entry. Follow the "Add a table" recipe in `AGENTS.md`: model, backup schema and labels, `AppStorage`, both storage engines with a new Dexie `version(5)`, a service, the storage contract and service tests.
-- [x] **A Log screen**, plus the latest "focus for next time" on Home. Done 2026-11-15. On phones the tab bar is full, so the log is reached from Home's training log card.
-- [x] **Use the log in study.** Done 2026-11-15: an entry can name the situations you got stuck in (`stuckIds`); those cards and their techniques, then the techniques you practised, come first among new cards for the last three classes (`studyFirst`). Cards already being studied keep their schedule.
+- [x] **New table.** Done 2026-11-15 as `trainingLog` (Dexie version 5, backup schema 5).
+- [x] **A Log screen**, plus the latest "focus for next time" on Home. Done 2026-11-15.
+- [x] **Use the log in study.** Done 2026-11-15: an entry can name the situations you got stuck in (`stuckIds`); those cards and their techniques, then the techniques you practised, come first among new cards for the last three classes (`studyFirst`).
 
-Open question: should mat time feed the belt and streak display, or stay separate from study progress?
+## 4. Smaller content ideas (S each) — Done 2026-11-15
 
-## 4. Smaller content ideas (S each)
+- [x] **More curriculum.** Done 2026-11-15 for what fits the eight starter positions: single-leg takedown, kimura defence, americana defence and a turtle breakdown.
+- [x] **Drills on techniques.** Done 2026-11-15: `Transition.drill`, read through `techniqueDrill`, with a drill written for all starter techniques (backup schema 6).
+- [x] **Training etiquette and safety.** Done 2026-11-15 as two starter concepts, "Be a good training partner" and "Roll to learn, not to win", each with a video and a drawing.
+- [x] **Search.** Done 2026-11-15: one box on Home, Concepts, and Positions finds concepts, positions and techniques by name or text (`core/search.ts`).
 
-- [x] **More curriculum.** Done 2026-11-15 for what fits the eight starter positions: single-leg takedown, kimura defence, americana defence and a turtle breakdown (47 starter techniques). Not planned: knee-on-belly and north-south, which need a way to offer starter positions to existing libraries, and the straight ankle lock.
-- [x] **Drills on techniques.** Done 2026-11-15: `Transition.drill`, read through `techniqueDrill`, with a drill written for all 43 starter techniques (backup schema 6). Only concepts have a drill. A solo or partner drill per technique would give a white belt something to do between classes.
-- [x] **Training etiquette and safety.** Done 2026-11-15 as two starter concepts, "Be a good training partner" and "Roll to learn, not to win", each with a video and a drawing. One or two concepts on rolling intensity, hygiene, and what to tell a partner about an injury.
-- [x] **Search.** Done 2026-11-15: one box on Home finds concepts, positions and techniques by name or text (`core/search.ts`). Only the Videos page has a search box; there is none for concepts, positions or techniques.
+## 5. Follow-up & review fixes — Done 2026-11-15
 
-## 5. Found after the list above was done
-
-- [x] **Drill for today.** Done 2026-11-15: Home picks one drill (`pickDrill` in `core/todaysDrill.ts`): a way out of where you last got stuck, else a technique that keeps slipping, else one practised in class, else the next one not learned.
-- [x] **Progress per position.** Done 2026-11-15: the position page and the positions list say how many of the techniques that start there are learned (`positionProgress`).
-- [x] **Situation names read naturally.** Done 2026-11-15: "Mount, underneath" and "Closed Guard, passing" in place of "Mount, Bottom side".
-- [x] **Sticking points are sensitive.** Done 2026-11-15: a card is listed once it has been forgotten twice.
-- [x] **The deck picker wraps on phones.** Done 2026-11-15: a menu replaces the buttons below 600px.
-- [x] **The log has no phone tab.** Done 2026-11-15: Home's hero has a "Log a class" button. The tab bar still holds six.
-- [x] **Search is on Home only.** Done 2026-11-15: also on the Concepts and Positions pages.
-- [x] **Mat time and study progress are separate.** Decided 2026-11-15: a day with a logged class counts toward the streak; the study belt stays cards-only.
-
-## 6. Found by an independent review of sections 1 to 5
-
-No serious defects. Fixed on 2026-11-15:
-
-- [x] **Editing a technique froze "Who does it" and "You end up".** Changing a pass to a sweep kept the passer as the one doing it. A side that is just the usual one for the type now follows the type; only a side that differs stays put (`defaultEndRole` in `core/roles.ts`).
-- [x] **The log form failed silently.** A date with a five-digit year saved nothing and said nothing, and a double click could write two entries. It now shows a message and ignores the second click.
-- [x] **Home promised more than study does.** "Where you got stuck" and the drill read the latest class that named anywhere, however old, while study only looks at the last three classes. Both now use the last three (`recentlyStuck`), and the text says only cards not studied yet come first.
-- [x] **Drill for today could miss a slipping technique** when five other cards had slipped more.
-- [x] **A backup could hold half minutes**, and nothing tested `endRole` or a situation's study card on import.
-
-Left as they are:
-
-- [x] **Check the americana defence, step 3.** Checked 2026-11-15 against written instructions (the video was not watched): turning toward the trapped arm is how it is taught. The step now says to turn only far enough to free the elbow and then face them again, and the drill no longer says "turn in". "Turn onto your side toward the trapped arm" turns you away from the person on top, which the side control escape lists as a mistake; the drill says "turn in". Needs an instructor's eye, like the tripod sweep.
-- Situation cards count toward overall progress, so an existing library's belt on Home drops a little after updating. Intended.
-- Saving a log entry that another tab deleted brings it back. Items behave the same way.
+- [x] **Drill for today (`pickDrill` in `core/todaysDrill.ts`).**
+- [x] **Progress per position (`positionProgress`).**
+- [x] **Natural situation names ("Mount, underneath").**
+- [x] **Sticking points threshold (2 lapses).**
+- [x] **Phone layout improvements and independent review fixes.**
