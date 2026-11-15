@@ -11,6 +11,7 @@ import './styles/home.css';
 import './styles/review.css';
 import './styles/map.css';
 import './styles/belt-test.css';
+import './styles/log.css';
 import './styles/backup.css';
 
 const root = document.getElementById('root');

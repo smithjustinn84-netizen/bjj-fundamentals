@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { useLibrary, useStudyStats, useVideos } from '../../bindings';
+import { useLibrary, useStudyStats, useTrainingLog, useVideos } from '../../bindings';
 import { BELT_LABELS } from '../../core/labels';
 import { itemName, reviewOf } from '../../core/library';
 import { beltRank } from '../../core/rank';
 import { cardId } from '../../core/srs';
 import { progressSummary, STICKING_POINT_LIMIT, stickingPoints } from '../../core/study';
+import { formatClassCount, formatMatTime, trainingSummary } from '../../core/trainingLog';
 import { Loading, ProgressDot } from '../components/common';
 import { ArtworkFrame, HERO_DOJO_ARTWORK } from '../graphics/Artwork';
 import { Belt } from '../graphics/Belt';
@@ -80,7 +81,8 @@ export default function Home() {
   const lib = useLibrary();
   const stats = useStudyStats();
   const videos = useVideos();
-  if (!lib || !stats || !videos) return <Loading />;
+  const log = useTrainingLog();
+  if (!lib || !stats || !videos || !log) return <Loading />;
 
   const progress = progressSummary(lib);
   const rank = beltRank(progress.percentLearned);
@@ -89,6 +91,7 @@ export default function Home() {
   const nextTechnique = lib.transitions.find((t) => !lib.reviews.has(cardId('transition', t.id)));
 
   const sticking = stickingPoints(lib, STICKING_POINT_LIMIT);
+  const training = trainingSummary(log);
 
   const steps: PathStep[] = [
     {
@@ -192,6 +195,32 @@ export default function Home() {
             <StatTile icon="review" value={stats.dueCount} label="due now" />
             <StatTile icon="flame" value={stats.streakDays} label="day streak" />
           </div>
+        )}
+      </section>
+
+      <section className="card">
+        <div className="section-head">
+          <h2>Training log</h2>
+          <Link className="button small" to={ROUTES.log}>
+            {training.classes === 0 ? 'Log a class' : 'Open the log'}
+          </Link>
+        </div>
+        {training.classes === 0 ? (
+          <p className="muted">
+            Write up each class while it is fresh: what was taught, what worked in rolling, and one thing to work on
+            next time.
+          </p>
+        ) : (
+          <>
+            <p className="muted">
+              {formatClassCount(training.classes)} logged · {formatMatTime(training.minutes)} on the mat
+            </p>
+            {training.focus && (
+              <p>
+                <strong>Focus for your next class:</strong> {training.focus}
+              </p>
+            )}
+          </>
         )}
       </section>
 

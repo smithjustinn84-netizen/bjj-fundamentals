@@ -146,11 +146,15 @@
     top: 0;
     left: calc(50% + 0.4rem);
   }
-  /* Six tabs is the most that fit: Home takes Backup's place, and the footer links to Backup on every page. */
+  /*
+   * Six tabs is the most that fit: Home takes Backup's place, and the footer links to Backup on every page.
+   * The training log has no tab either; Home's training log card leads to it.
+   */
   .nav .nav-home {
     display: flex;
   }
-  .nav .nav-backup {
+  .nav .nav-backup,
+  .nav .nav-log {
     display: none;
   }
   /* Keep the footer clear of the fixed tab bar. */

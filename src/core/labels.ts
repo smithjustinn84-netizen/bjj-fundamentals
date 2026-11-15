@@ -77,6 +77,7 @@ export const TABLE_LABELS: Record<BackupTable, string> = {
   reviews: 'Cards studied',
   reviewLog: 'Review history',
   starterDismissals: 'Dismissed starter techniques',
+  trainingLog: 'Training log entries',
 };
 
 export const BELT_LABELS: Record<BeltRank, string> = {

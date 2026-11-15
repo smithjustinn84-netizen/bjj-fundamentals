@@ -100,6 +100,7 @@ export function createMemoryStorage({ initialData }: StorageOptions): AppStorage
     reviews: repository('reviews'),
     reviewLog,
     starterDismissals: repository('starterDismissals'),
+    trainingLog: repository('trainingLog'),
 
     async transaction(work) {
       const before = openTransactions === 0 ? copy(state) : null;

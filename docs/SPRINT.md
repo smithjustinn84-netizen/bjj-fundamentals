@@ -29,9 +29,9 @@ Today every card asks you to recite one thing. Rolling asks a different question
 
 The app tracks flashcard reviews but not mat time, and mat time is what makes the cards mean something.
 
-- [ ] **Log a class.** Date, minutes on the mat, what was taught, what worked and what failed in rolling, and one thing to focus on next time, with techniques linked.
-- [ ] **New table.** Follow the "Add a table" recipe in `AGENTS.md`: model, backup schema and labels, `AppStorage`, both storage engines with a new Dexie `version(5)`, a service, the storage contract and service tests.
-- [ ] **A Log screen**, plus the latest "focus for next time" on Home.
+- [x] **Log a class.** Done 2026-11-15. Date, minutes on the mat, what was taught, what worked and what failed in rolling, and one thing to focus on next time, with techniques linked.
+- [x] **New table.** Done 2026-11-15 as `trainingLog` (Dexie version 5, backup schema 5). Deleting a technique or position removes it from entries and keeps the entry. Follow the "Add a table" recipe in `AGENTS.md`: model, backup schema and labels, `AppStorage`, both storage engines with a new Dexie `version(5)`, a service, the storage contract and service tests.
+- [x] **A Log screen**, plus the latest "focus for next time" on Home. Done 2026-11-15. On phones the tab bar is full, so the log is reached from Home's training log card.
 - [ ] **Use the log in study.** Techniques logged as "failed in rolling" or drilled in class come up first in the next review.
 
 Open question: should mat time feed the belt and streak display, or stay separate from study progress?

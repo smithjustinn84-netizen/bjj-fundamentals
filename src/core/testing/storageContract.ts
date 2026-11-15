@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { BackupData } from '../backup';
 import type { AppStorage, StorageOptions } from '../storage';
-import { concept, position } from './testFixtures';
+import { concept, position, trainingEntry } from './testFixtures';
 
 /**
  * The behaviour every AppStorage implementation must have. To add a storage engine, write a test file
@@ -26,6 +26,7 @@ const initialData: BackupData = {
   reviews: [],
   reviewLog: [],
   starterDismissals: [],
+  trainingLog: [],
 };
 
 const logEntry = (reviewedAt: number) => ({ cardId: 'concept:c1', grade: 'good' as const, reviewedAt });
@@ -59,6 +60,16 @@ export function describeStorageContract(name: string, { create, reopen }: Storag
       expect(await storage.starterDismissals.count()).toBe(0);
       await storage.starterDismissals.put({ id: 'sweep', dismissedAt: 5 });
       expect(await storage.starterDismissals.all()).toEqual([{ id: 'sweep', dismissedAt: 5 }]);
+    });
+
+    it('has an empty training log table that reads and writes by id', async () => {
+      const storage = await create({ initialData });
+      expect(await storage.trainingLog.count()).toBe(0);
+      const entry = trainingEntry({ id: 'class-1', techniqueIds: ['a', 'b'] });
+      await storage.trainingLog.put(entry);
+      expect(await storage.trainingLog.get('class-1')).toEqual(entry);
+      await storage.trainingLog.remove('class-1');
+      expect(await storage.trainingLog.all()).toEqual([]);
     });
 
     it('stores nested lists intact', async () => {

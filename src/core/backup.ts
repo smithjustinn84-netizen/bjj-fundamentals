@@ -9,10 +9,12 @@ import {
   type ReviewState,
   type StarterDismissal,
   TRANSITION_TYPES,
+  type TrainingEntry,
   type Transition,
   type VideoBookmark,
 } from './models';
 import { localDayKey } from './srs';
+import { isDayKey } from './trainingLog';
 import { isYouTubeId } from './youtube';
 
 /**
@@ -22,7 +24,7 @@ import { isYouTubeId } from './youtube';
 
 export const BACKUP_APP = 'bjj-fundamentals';
 /** Bump when the shape of any table changes, and teach `validateBackup` to accept the older shape. */
-export const BACKUP_SCHEMA_VERSION = 4;
+export const BACKUP_SCHEMA_VERSION = 5;
 
 export interface BackupData {
   positions: Position[];
@@ -32,6 +34,7 @@ export interface BackupData {
   reviews: ReviewState[];
   reviewLog: ReviewLogEntry[];
   starterDismissals: StarterDismissal[];
+  trainingLog: TrainingEntry[];
 }
 
 export type BackupTable = keyof BackupData;
@@ -43,6 +46,7 @@ export const BACKUP_TABLES = [
   'reviews',
   'reviewLog',
   'starterDismissals',
+  'trainingLog',
 ] as const satisfies readonly BackupTable[];
 
 export interface BackupFile {
@@ -145,6 +149,19 @@ const SCHEMAS: { [T in BackupTable]: Schema<BackupData[T][number]> } = {
   starterDismissals: {
     id,
     dismissedAt: num,
+  },
+  // Absent before schema 5; a missing table loads as empty.
+  trainingLog: {
+    id,
+    day: (v) => typeof v === 'string' && isDayKey(v),
+    minutes: (v) => num(v) && v >= 0,
+    taught: text,
+    worked: text,
+    struggled: text,
+    focus: text,
+    techniqueIds: textList,
+    createdAt: num,
+    updatedAt: num,
   },
 };
 

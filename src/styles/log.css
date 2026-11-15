@@ -1,0 +1,46 @@
+/* Training log: the class write-up form and the list of entries. */
+.log-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.technique-picker summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.technique-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+.technique-groups fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.log-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.log-entry {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.log-entry h3 {
+  margin: 0;
+}
+.log-entry p {
+  margin: var(--space-1) 0 0;
+}
+.log-entry .chip-list {
+  margin-top: var(--space-2);
+}
+.log-entry .row {
+  margin-top: var(--space-2);
+}

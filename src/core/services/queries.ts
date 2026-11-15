@@ -1,9 +1,10 @@
 import type { CoreEnv } from '../core';
 import { buildLibrary, type Library } from '../library';
-import type { Concept, ItemKind, Transition, VideoBookmark } from '../models';
+import type { Concept, ItemKind, TrainingEntry, Transition, VideoBookmark } from '../models';
 import { starterContent } from '../seed';
 import { DAY_MS, streakDays } from '../srs';
 import { findMissingStarterConcepts, findMissingStarterTechniques } from '../starter';
+import { newestFirst } from '../trainingLog';
 
 /** How far back to look when computing the streak. Streaks longer than this are capped. */
 const STREAK_WINDOW_DAYS = 400;
@@ -67,6 +68,11 @@ export function createQueries({ storage, now }: CoreEnv) {
     /** Newest first. */
     async videos(): Promise<VideoBookmark[]> {
       return (await storage.videos.all()).sort((a, b) => b.createdAt - a.createdAt);
+    },
+
+    /** Every class written up, most recent day first. */
+    async trainingLog(): Promise<TrainingEntry[]> {
+      return newestFirst(await storage.trainingLog.all());
     },
 
     /** Oldest first, for one item. */

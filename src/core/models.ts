@@ -81,6 +81,27 @@ export interface Concept {
   updatedAt: number;
 }
 
+/** One class or open mat, written up afterwards. */
+export interface TrainingEntry {
+  id: string;
+  /** The day of the class as a local calendar day, `YYYY-MM-DD` (see `isDayKey`): a class belongs to a day, not an instant. */
+  day: string;
+  /** Whole minutes on the mat. */
+  minutes: number;
+  /** What was taught or drilled. */
+  taught: string;
+  /** What worked in rolling. */
+  worked: string;
+  /** What went wrong in rolling. */
+  struggled: string;
+  /** The one thing to work on next time. */
+  focus: string;
+  /** Techniques drilled or used, by id. */
+  techniqueIds: string[];
+  createdAt: number;
+  updatedAt: number;
+}
+
 export const ITEM_KINDS = ['concept', 'position', 'transition'] as const;
 export type ItemKind = (typeof ITEM_KINDS)[number];
 

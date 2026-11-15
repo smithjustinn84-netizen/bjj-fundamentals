@@ -1,4 +1,4 @@
-import type { Concept, ItemKind, Position, ReviewState, Transition } from '../models';
+import type { Concept, ItemKind, Position, ReviewState, TrainingEntry, Transition } from '../models';
 import { newReviewState } from '../srs';
 
 /** Minimal valid entities for tests. Override only the fields a test cares about. */
@@ -54,4 +54,20 @@ export function transition(overrides: Partial<Transition> = {}): Transition {
 /** A study card for an item, starting from a never-reviewed card due at time 0. */
 export function review(kind: ItemKind, itemId: string, overrides: Partial<ReviewState> = {}): ReviewState {
   return { ...newReviewState(kind, itemId, 0), ...overrides };
+}
+
+export function trainingEntry(overrides: Partial<TrainingEntry> = {}): TrainingEntry {
+  return {
+    id: 'log1',
+    day: '2026-11-14',
+    minutes: 60,
+    taught: '',
+    worked: '',
+    struggled: '',
+    focus: '',
+    techniqueIds: [],
+    createdAt: 0,
+    updatedAt: 0,
+    ...overrides,
+  };
 }

@@ -14,6 +14,7 @@ import NotFound from './ui/pages/NotFound';
 import PositionDetail from './ui/pages/PositionDetail';
 import Positions from './ui/pages/Positions';
 import Review from './ui/pages/Review';
+import TrainingLog from './ui/pages/TrainingLog';
 import TransitionDetail from './ui/pages/TransitionDetail';
 import Videos from './ui/pages/Videos';
 import { ROUTE_PATTERNS, ROUTES } from './ui/routes';
@@ -78,6 +79,10 @@ export default function App() {
           <ErrorBoundary>
             <ReviewNavLink />
           </ErrorBoundary>
+          <NavLink to={ROUTES.log} className="nav-log">
+            <Icon name="log" />
+            Log
+          </NavLink>
           <NavLink to={ROUTES.videos}>
             <Icon name="video" />
             Videos
@@ -100,6 +105,7 @@ export default function App() {
             <Route path={ROUTE_PATTERNS.transition} element={<TransitionDetail />} />
             <Route path={ROUTES.blueBelt} element={<BlueBelt />} />
             <Route path={ROUTES.review} element={<Review />} />
+            <Route path={ROUTES.log} element={<TrainingLog />} />
             <Route path={ROUTES.videos} element={<Videos />} />
             <Route path={ROUTES.backup} element={<Backup />} />
             <Route path={ROUTE_PATTERNS.edit} element={<EditorPage />} />

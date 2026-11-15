@@ -5,6 +5,7 @@ import type {
   ReviewLogEntry,
   ReviewState,
   StarterDismissal,
+  TrainingEntry,
   Transition,
   VideoBookmark,
 } from './models';
@@ -53,6 +54,7 @@ export interface AppStorage {
   readonly reviews: Repository<ReviewState>;
   readonly reviewLog: ReviewLogRepository;
   readonly starterDismissals: Repository<StarterDismissal>;
+  readonly trainingLog: Repository<TrainingEntry>;
 
   /**
    * Run `work` so that either all of its writes are stored or none are. If `work` rejects, every write it

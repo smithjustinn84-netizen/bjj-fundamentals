@@ -9,6 +9,7 @@ export const ROUTES = {
   transitions: '/transitions',
   blueBelt: '/blue-belt',
   review: '/review',
+  log: '/log',
   videos: '/videos',
   backup: '/backup',
   edit: '/edit',

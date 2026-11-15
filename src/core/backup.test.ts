@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { BACKUP_APP, BACKUP_SCHEMA_VERSION, BackupError, backupFilename, validateBackup } from './backup';
-import { concept, position, transition } from './testing/testFixtures';
+import { concept, position, trainingEntry, transition } from './testing/testFixtures';
 
 function file(data: Record<string, unknown>) {
   return { app: BACKUP_APP, schemaVersion: BACKUP_SCHEMA_VERSION, exportedAt: 123, data };
@@ -25,6 +25,15 @@ describe('validateBackup', () => {
     expect(() => validateBackup(backupOf({ ...transition(), role: 'sideways' }))).toThrow(
       /"role" is missing or invalid/,
     );
+  });
+
+  it('accepts training log entries, treats a backup without the table as an empty log, and checks the day', () => {
+    expect(validateBackup(file({ trainingLog: [trainingEntry()] })).data.trainingLog).toHaveLength(1);
+    expect(validateBackup(file({})).data.trainingLog).toEqual([]);
+    expect(() => validateBackup(file({ trainingLog: [trainingEntry({ day: 'yesterday' })] }))).toThrow(
+      /"day" is missing or invalid/,
+    );
+    expect(() => validateBackup(file({ trainingLog: [trainingEntry({ minutes: -1 })] }))).toThrow(/"minutes"/);
   });
 
   it('accepts a complete backup and returns its rows', () => {

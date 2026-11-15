@@ -34,16 +34,28 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
     await storage.videos.putMany(linked.map((v) => ({ ...v, linkedKind: '' as const, linkedId: '' })));
   }
 
+  /** A class write-up outlives the techniques it mentions: the entry is kept, without the deleted ones. */
+  async function unlinkFromTrainingLog(techniqueIds: string[]) {
+    const mentioning = (await storage.trainingLog.all()).filter((entry) =>
+      entry.techniqueIds.some((id) => techniqueIds.includes(id)),
+    );
+    await storage.trainingLog.putMany(
+      mentioning.map((entry) => ({
+        ...entry,
+        techniqueIds: entry.techniqueIds.filter((id) => !techniqueIds.includes(id)),
+      })),
+    );
+  }
+
   async function deletePosition(id: string) {
     const touching = (await storage.transitions.all()).filter((t) => t.fromId === id || t.toId === id);
     for (const transition of touching) {
       await storage.transitions.remove(transition.id);
       await storage.reviews.remove(cardId('transition', transition.id));
     }
-    await unlinkVideos(
-      'transition',
-      touching.map((t) => t.id),
-    );
+    const touchingIds = touching.map((t) => t.id);
+    await unlinkVideos('transition', touchingIds);
+    await unlinkFromTrainingLog(touchingIds);
     await storage.positions.remove(id);
   }
 
@@ -160,6 +172,7 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
             break;
           case 'transition':
             await storage.transitions.remove(id);
+            await unlinkFromTrainingLog([id]);
             break;
           case 'concept':
             await deleteConcept(id);
