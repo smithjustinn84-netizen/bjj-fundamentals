@@ -56,12 +56,19 @@ export const FOUNDATION_LESSONS: readonly Lesson[] = [
   {
     id: 'closed-guard-attacks',
     title: 'Attacking from the closed guard',
-    summary: 'Four submissions that feed each other once you have an angle and two hands on one arm.',
+    summary: 'Six submissions that feed each other once you have an angle and two hands on one arm.',
     conceptIds: ['angles', 'two-on-one', 'action-reaction'],
     positionIds: ['closed-guard'],
-    transitionIds: ['armbar-guard', 'triangle-choke', 'kimura-guard', 'guillotine-guard'],
+    transitionIds: [
+      'armbar-guard',
+      'triangle-choke',
+      'kimura-guard',
+      'guillotine-guard',
+      'cross-collar-guard',
+      'omoplata-guard',
+    ],
     practice:
-      '3 minutes each, slowly, pausing for the tap: armbar, triangle, kimura, guillotine. Last 3 minutes: partner defends the first attack at half speed and you switch to the one their reaction opens.',
+      '2 minutes each, slowly, pausing for the tap: armbar, triangle, kimura, guillotine, cross collar choke, omoplata. Last 3 minutes: partner defends the first attack at half speed and you switch to the one their reaction opens.',
   },
   {
     id: 'defending-inside-the-guard',
@@ -89,28 +96,48 @@ export const FOUNDATION_LESSONS: readonly Lesson[] = [
     summary: 'Win the underhook and head position in half guard, then pin from side control and move to mount.',
     conceptIds: ['underhooks', 'head-position', 'pressure', 'face-your-opponent', 'crossface'],
     positionIds: ['half-guard', 'side-control'],
-    transitionIds: ['knee-slice', 'half-to-full-guard', 'half-guard-underhook-sweep', 'side-to-mount', 'americana'],
+    transitionIds: [
+      'knee-slice',
+      'half-guard-to-mount',
+      'half-to-full-guard',
+      'half-guard-underhook-sweep',
+      'knee-shield-sweep',
+      'side-to-mount',
+      'americana',
+    ],
     practice:
-      '3 minutes: from half guard, both fight only for the underhook. 3 minutes each: 5 knee slice passes, 5 recoveries to full guard, 5 underhook sweeps per person. 3 minutes: hold side control for 20 seconds, slide to mount, and finish 5 slow americanas each.',
+      '2 minutes: from half guard, both fight only for the underhook. 5 minutes on top: 5 knee slice passes and 5 passes straight to mount each. 5 minutes underneath: 5 recoveries to full guard, 5 underhook sweeps and 5 knee shield sweeps each. 3 minutes: hold side control for 20 seconds, slide to mount, and finish 5 slow americanas each.',
+  },
+  {
+    id: 'attacking-from-the-pins',
+    title: 'Attacking from the pins',
+    summary: 'Settle the pin first, then attack an arm or the neck, or follow them to the back when they turn.',
+    conceptIds: ['position-before-submission'],
+    positionIds: ['side-control', 'mount'],
+    transitionIds: ['kimura-side-control', 'side-control-to-back', 'americana-mount', 'ezekiel-mount'],
+    practice:
+      '3 minutes: hold side control, then mount, for 30 seconds each against a partner trying to escape at half strength. 3 minutes each, at walking pace and stopping at the first resistance: 5 kimuras from side control, 5 gift wraps to the back, 5 americanas from mount, 5 Ezekiel chokes from mount.',
   },
   {
     id: 'back-turtle-and-standing',
     title: 'Back control, turtle and standing safely',
     summary: 'Take and escape the back, deal with turtle, and get the fight to the ground without getting hurt.',
-    conceptIds: ['position-before-submission', 'breakfalls', 'training-partner', 'roll-to-learn'],
+    conceptIds: ['breakfalls', 'training-partner', 'roll-to-learn'],
     positionIds: ['back-control', 'turtle', 'standing'],
     transitionIds: [
       'rear-naked-choke',
       'back-escape',
       'rear-naked-choke-defence',
+      'sliding-collar-choke',
       'turtle-to-back',
       'turtle-recover-guard',
+      'turtle-sit-out',
       'pull-guard',
       'double-leg',
       'sprawl',
     ],
     practice:
-      '2 minutes: breakfalls. 4 minutes: from back control, 5 slow rear naked chokes each, then 5 choke defences and back escapes each. 4 minutes: 5 back takes from turtle and 5 guard recoveries each. 5 minutes: 5 guard pulls, then 5 double legs against 5 sprawls each, at walking pace.',
+      '2 minutes: breakfalls. 5 minutes: from back control, 5 slow rear naked chokes and 5 sliding collar chokes each, then 5 choke defences and back escapes each. 4 minutes: 5 back takes from turtle, 5 guard recoveries and 5 sit-outs each. 4 minutes: 5 guard pulls, then 5 double legs against 5 sprawls each, at walking pace.',
   },
 ];
 

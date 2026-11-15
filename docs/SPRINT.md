@@ -56,7 +56,7 @@ In live rolling, techniques do not exist in isolation: every attack has a primar
 
 ## 3. Structured class-sized lessons (L) — Done 2026-11-15
 
-Done 2026-11-15: `core/lessons.ts`, a Lessons page behind Learn, the current lesson on Today, and `?lesson=` on Review. New cards now arrive lesson by lesson (`lessonOrder`), then by the survive-first rule for anything outside the lessons. Lessons 6, 7 and 8 also carry the newer concepts (wedges, crossface, breakfalls); lesson 4 is titled "Attacking from the closed guard". The ten techniques added in item 1 are in no lesson yet.
+Done 2026-11-15: `core/lessons.ts`, a Lessons page behind Learn, the current lesson on Today, and `?lesson=` on Review. New cards now arrive lesson by lesson (`lessonOrder`), then by the survive-first rule for anything outside the lessons. Lessons 6, 7 and 8 also carry the newer concepts (wedges, crossface, breakfalls); lesson 4 is titled "Attacking from the closed guard". The ten techniques added in item 1 were then placed: two each into lessons 4, 7 and the last, and four into a ninth lesson, "Attacking from the pins", which sits eighth and takes `position-before-submission` from the last lesson.
 
 Give beginners a guided, week-by-week curriculum that groups concepts, a position, and 2–3 connected techniques into a single class-sized lesson.
 

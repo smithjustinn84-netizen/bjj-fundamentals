@@ -73,6 +73,6 @@ describe('lessonOrder', () => {
     // The second lesson's mount escapes come before anything from the closed guard.
     expect(taught.indexOf('elbow-knee-escape')).toBeLessThan(taught.indexOf('scissor-sweep'));
     // What no lesson covers still follows by rule: an escape from a pin before a submission from one.
-    expect(taught.indexOf('side-control-escape-knees')).toBeLessThan(taught.indexOf('kimura-side-control'));
+    expect(taught.indexOf('side-control-escape-knees')).toBeLessThan(taught.indexOf('cross-collar-choke'));
   });
 });

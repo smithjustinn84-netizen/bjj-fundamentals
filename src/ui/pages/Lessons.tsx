@@ -77,8 +77,8 @@ export default function Lessons() {
         <div>
           <h1>Lessons</h1>
           <p className="muted">
-            Eight class-sized lessons, in the order to take them: survive underneath first, then the guard, then the
-            rest. Review brings new cards in this order too.
+            {FOUNDATION_LESSONS.length} class-sized lessons, in the order to take them: survive underneath first, then
+            the guard, then the rest. Review brings new cards in this order too.
           </p>
         </div>
       </div>
