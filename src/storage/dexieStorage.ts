@@ -42,6 +42,7 @@ function openDatabase(name: string, initialData: StorageOptions['initialData']):
   db.version(4).stores({ starterDismissals: 'id' });
   db.version(5).stores({ trainingLog: 'id, day' });
   db.version(6).stores({}).upgrade(seedMissingStarterVideos);
+  db.version(7).stores({}).upgrade(seedMissingStarterVideos);
   // Fires only when the database is first created, which is exactly the "insert once" rule of StorageOptions.
   db.on('populate', (tx) => {
     for (const table of BACKUP_TABLES) tx.table(table).bulkAdd(initialData[table]);

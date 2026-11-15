@@ -11,9 +11,11 @@ describe('starter content', () => {
     expect(ids.length).toBe(new Set(ids).size);
   });
 
-  it('gives every starter video a unique id and a valid YouTube id', () => {
+  it('gives every starter video a unique id and a unique, valid YouTube id', () => {
     const ids = starter.videos.map((v) => v.id);
+    const youtubeIds = starter.videos.map((v) => v.youtubeId);
     expect(ids.length).toBe(new Set(ids).size);
+    expect(youtubeIds.length).toBe(new Set(youtubeIds).size);
     expect(starter.videos.filter((v) => !isYouTubeId(v.youtubeId)).map((v) => v.id)).toEqual([]);
   });
 
@@ -41,8 +43,11 @@ describe('starter content', () => {
     expect(unlinked.map((v) => v.id)).toEqual([]);
   });
 
-  it('bookmarks a video for every starter concept', () => {
-    const linked = new Set(starter.videos.filter((v) => v.linkedKind === 'concept').map((v) => v.linkedId));
-    expect(starter.concepts.filter((c) => !linked.has(c.id)).map((c) => c.id)).toEqual([]);
+  it('bookmarks at least two videos for every starter concept', () => {
+    const counts = new Map<string, number>();
+    for (const v of starter.videos) {
+      if (v.linkedKind === 'concept') counts.set(v.linkedId, (counts.get(v.linkedId) ?? 0) + 1);
+    }
+    expect(starter.concepts.filter((c) => (counts.get(c.id) ?? 0) < 2).map((c) => c.id)).toEqual([]);
   });
 });
