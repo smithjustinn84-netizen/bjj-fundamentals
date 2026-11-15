@@ -1,0 +1,20 @@
+/* The Lessons page: one card per lesson, two columns once there is room. */
+
+.lesson-list {
+  display: grid;
+  gap: var(--space-4);
+}
+.lesson h2,
+.lesson p {
+  margin: 0;
+}
+.lesson .progress {
+  margin: var(--space-2) 0 0;
+}
+
+@media (min-width: 900px) {
+  .lesson-list {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}

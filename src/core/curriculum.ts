@@ -1,3 +1,4 @@
+import { FOUNDATION_LESSONS, lessonCards } from './lessons';
 import type { Library } from './library';
 import {
   type CardKind,
@@ -59,12 +60,15 @@ function alternate(techniques: StudyItem[], concepts: StudyItem[]): StudyItem[] 
 /**
  * Every card once, in the order a coach would teach a beginner: survive first, attack later.
  *
- * It opens with the first concept in the student's own order. Then the survive phase visits every position,
- * the pins first because that is where a beginner spends the first months: the position, its escapes (ways out before defences that leave you there) woven
- * with the concepts it lists that are still new (so a short session mixes doing with understanding), then
- * the situation card for each side that has an escape. A concept no position lists follows each lesson, and any still left close the phase.
- * The attack phase then visits the positions in their own order for the remaining techniques, submissions
- * last, and the remaining situations. Techniques whose starting position is gone come at the very end.
+ * The foundation lessons come first, each as a block (see `lessonCards`); they open with surviving side
+ * control and mount. Everything the lessons do not cover, including anything the user added, follows by rule.
+ * The rule opens with the first concept in the student's own order. Its survive phase visits every position,
+ * the pins first because that is where a beginner spends the first months: the position, its escapes (ways
+ * out before defences that leave you there) woven with the concepts it lists that are still new, then the
+ * situation card for each side that has an escape. A concept no position lists follows each lesson, and any
+ * still left close the phase. Its attack phase then visits the positions in their own order for the remaining
+ * techniques, submissions last, and the remaining situations. Techniques whose starting position is gone come
+ * at the very end.
  */
 export function lessonOrder(lib: Library): StudyItem[] {
   const cards: StudyItem[] = [];
@@ -78,6 +82,10 @@ export function lessonOrder(lib: Library): StudyItem[] {
   const conceptCards = (concepts: Concept[]) => concepts.flatMap((c) => teach('concept', c.id));
   const techniqueCards = (techniques: Transition[]) => techniques.flatMap((t) => teach('transition', t.id));
   const from = (position: Position) => lib.transitions.filter((t) => t.fromId === position.id);
+
+  for (const lesson of FOUNDATION_LESSONS) {
+    cards.push(...lessonCards(lib, lesson).flatMap((card) => teach(card.kind, card.id)));
+  }
 
   cards.push(...conceptCards(lib.concepts.slice(0, 1)));
   const listed = new Set(lib.positions.flatMap((p) => p.conceptIds));

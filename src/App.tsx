@@ -10,6 +10,7 @@ import ConceptDetail from './ui/pages/ConceptDetail';
 import Concepts from './ui/pages/Concepts';
 import EditorPage from './ui/pages/editor/EditorPage';
 import Home from './ui/pages/Home';
+import Lessons from './ui/pages/Lessons';
 import More from './ui/pages/More';
 import NotFound from './ui/pages/NotFound';
 import PositionDetail from './ui/pages/PositionDetail';
@@ -108,6 +109,7 @@ export default function App() {
             <Route path={ROUTES.positions} element={<Positions />} />
             <Route path={ROUTE_PATTERNS.position} element={<PositionDetail />} />
             <Route path={ROUTE_PATTERNS.transition} element={<TransitionDetail />} />
+            <Route path={ROUTES.lessons} element={<Lessons />} />
             <Route path={ROUTES.blueBelt} element={<BlueBelt />} />
             <Route path={ROUTES.review} element={<Review />} />
             <Route path={ROUTES.log} element={<TrainingLog />} />

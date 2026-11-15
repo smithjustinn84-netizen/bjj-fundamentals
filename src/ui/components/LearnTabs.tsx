@@ -13,6 +13,7 @@ export function LearnTabs() {
       >
         Positions
       </NavLink>
+      <NavLink to={ROUTES.lessons}>Lessons</NavLink>
       <NavLink to={ROUTES.blueBelt}>Blue belt</NavLink>
     </nav>
   );

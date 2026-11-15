@@ -1,6 +1,7 @@
 import { assertNever } from './assertNever';
 import { isOnBlueBeltTest } from './beltTest';
 import { lessonOrder, type StudyItem } from './curriculum';
+import { type Lesson, lessonCards } from './lessons';
 import { itemName, type Library, reviewOf } from './library';
 import type { Concept, Deck } from './models';
 import { findSituation, situationName } from './situations';
@@ -77,14 +78,13 @@ function isInDeck(lib: Library, deck: Deck, item: StudyItem): boolean {
  * `firstCardIds` are the cards the training log says to study first, in order (see `studyFirst`). Their fresh
  * cards jump the queue of new cards: what happened on the mat this week is learned while it is fresh.
  */
-export function buildQueue(
+function queueOf(
   lib: Library,
-  deck: Deck,
+  items: StudyItem[],
   newLimit: number,
   now: number,
-  firstCardIds: readonly string[] = [],
+  firstCardIds: readonly string[],
 ): StudyQueue {
-  const items = deckItems(lib, deck);
   const due: { item: StudyItem; dueAt: number }[] = [];
   const fresh: StudyItem[] = [];
   for (const item of items) {
@@ -105,6 +105,22 @@ export function buildQueue(
     queue: [...dueItems, ...newCards],
     fromClass: newCards.filter(wasPractised).length,
   };
+}
+
+/** A session on one deck. */
+export function buildQueue(
+  lib: Library,
+  deck: Deck,
+  newLimit: number,
+  now: number,
+  firstCardIds: readonly string[] = [],
+): StudyQueue {
+  return queueOf(lib, deckItems(lib, deck), newLimit, now, firstCardIds);
+}
+
+/** A session on one lesson's cards only, new ones in the lesson's own order. */
+export function buildLessonQueue(lib: Library, lesson: Lesson, newLimit: number, now: number): StudyQueue {
+  return queueOf(lib, lessonCards(lib, lesson), newLimit, now, []);
 }
 
 export interface ProgressSummary {

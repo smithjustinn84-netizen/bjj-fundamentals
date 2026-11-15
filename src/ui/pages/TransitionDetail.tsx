@@ -17,6 +17,7 @@ import {
   StudyStatusPill,
 } from '../components/common';
 import { ItemPicture } from '../components/ItemPicture';
+import { TechniqueLinks } from '../components/TechniqueLinks';
 import { LinkedVideos } from '../components/VideoList';
 import { TransitionArtwork } from '../graphics/Artwork';
 import { Icon } from '../graphics/icons';
@@ -111,6 +112,7 @@ export default function TransitionDetail() {
           {endsTheRoll(transition.type) && (
             <p className="drill">Apply submissions slowly in training and let go as soon as your partner taps.</p>
           )}
+          <TechniqueLinks lib={lib} id={transition.id} sections />
           <NotesBlock notes={transition.notes} />
           <LinkedVideos kind="transition" id={transition.id} />
         </div>

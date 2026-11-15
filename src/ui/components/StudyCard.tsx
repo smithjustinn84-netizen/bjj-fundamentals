@@ -9,6 +9,7 @@ import { ConceptArtwork } from '../graphics/ConceptSvg';
 import { hasPositionArtwork, PositionArtwork } from '../graphics/PositionSvg';
 import { Bullets } from './common';
 import { ItemPicture } from './ItemPicture';
+import { TechniqueLinks } from './TechniqueLinks';
 import { TransitionList } from './TransitionLink';
 
 const ARTWORK_CLASS = 'review-artwork';
@@ -136,6 +137,7 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
               <strong>Drill:</strong> {drill}
             </p>
           )}
+          <TechniqueLinks lib={lib} id={transition.id} />
         </>
       );
     }

@@ -9,6 +9,7 @@ export const ROUTES = {
   concepts: '/learn',
   positions: '/positions',
   transitions: '/transitions',
+  lessons: '/lessons',
   blueBelt: '/blue-belt',
   review: '/review',
   log: '/log',
@@ -38,7 +39,13 @@ export function positionSidePath(positionId: string, role: PositionRole): string
 }
 
 /** The pages behind the Learn tab, so the shell can keep it lit on all of them. */
-export const LEARN_ROUTES = [ROUTES.concepts, ROUTES.positions, ROUTES.transitions, ROUTES.blueBelt] as const;
+export const LEARN_ROUTES = [
+  ROUTES.concepts,
+  ROUTES.positions,
+  ROUTES.transitions,
+  ROUTES.lessons,
+  ROUTES.blueBelt,
+] as const;
 
 /** The pages reached from More, so the shell can keep that tab lit on all of them. */
 export const MORE_ROUTES = [ROUTES.more, ROUTES.videos, ROUTES.backup, ROUTES.edit] as const;
@@ -49,6 +56,14 @@ export const DECK_PARAM = 'deck';
 /** The review page, opened on one deck. */
 export function reviewPath(deck: Deck): string {
   return `${ROUTES.review}?${DECK_PARAM}=${deck}`;
+}
+
+/** Query parameter on the review page naming the lesson whose cards to study. */
+export const LESSON_PARAM = 'lesson';
+
+/** The review page, opened on one lesson's cards. */
+export function lessonReviewPath(lessonId: string): string {
+  return `${ROUTES.review}?${LESSON_PARAM}=${lessonId}`;
 }
 
 /** The detail page for one item. */

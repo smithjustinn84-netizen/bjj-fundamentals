@@ -22,6 +22,8 @@ The day-to-day rules are in [AGENTS.md](../AGENTS.md). This page explains why th
               │ roles     ← who does a technique; options per position   │
               │ situations ← one side of a position, studied as a card   │
               │ curriculum ← the order new cards are taught: survive first│
+              │ lessons   ← the eight foundation lessons and their progress│
+              │ chains    ← which techniques defend or follow one another │
               │ todaysDrill ← today's drill; progress per position       │
               │ trainingLog ← class write-ups: ordering, totals, focus   │
               │ search    ← finding any item by its name or text         │

@@ -67,18 +67,18 @@ describe('buildQueue', () => {
   it('brings new cards in lesson order, but keeps the concept and position decks in their own numbered order', () => {
     const lib = buildLibrary(
       concepts,
-      [position({ id: 'guard', order: 1 }), position({ id: 'mount', category: 'top', order: 2, conceptIds: ['c3'] })],
+      [position({ id: 'guard', order: 1 }), position({ id: 'pin', category: 'top', order: 2, conceptIds: ['c3'] })],
       [
         transition({ id: 'sweep', fromId: 'guard', role: 'bottom' }),
-        transition({ id: 'upa', type: 'escape', fromId: 'mount', role: 'bottom' }),
+        transition({ id: 'upa', type: 'escape', fromId: 'pin', role: 'bottom' }),
       ],
       [],
     );
     const queued = (deck: Parameters<typeof buildQueue>[1]) => buildQueue(lib, deck, 4, NOW).queue.map((i) => i.id);
-    expect(queued('all')).toEqual(['c1', 'mount', 'upa', 'c3']);
+    expect(queued('all')).toEqual(['c1', 'pin', 'upa', 'c3']);
     expect(queued('transition')).toEqual(['upa', 'sweep']);
     expect(queued('concept')).toEqual(['c1', 'c2', 'c3']);
-    expect(queued('position')).toEqual(['guard', 'mount']);
+    expect(queued('position')).toEqual(['guard', 'pin']);
   });
 
   it('adds no new cards when the limit is zero', () => {

@@ -2,10 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useLibrary, useStudyStats, useTrainingLog } from '../../bindings';
 import { GRADE_LABELS, KIND_GROUP_LABELS, plural } from '../../core/labels';
+import { FOUNDATION_LESSONS, findLesson } from '../../core/lessons';
 import { reviewOf } from '../../core/library';
 import { DECKS, type Deck, GRADES, type Grade } from '../../core/models';
 import { describeInterval, newReviewState } from '../../core/srs';
-import { buildQueue, DEFAULT_NEW_CARDS, type StudyItem } from '../../core/study';
+import { buildLessonQueue, buildQueue, DEFAULT_NEW_CARDS, type StudyItem } from '../../core/study';
 import { RECENT_CLASS_COUNT, studyFirst } from '../../core/trainingLog';
 import { Loading } from '../components/common';
 import { CardAnswer, CardCue, cardPrompt } from '../components/StudyCard';
@@ -13,7 +14,7 @@ import { EmptyState } from '../graphics/EmptyState';
 import { Icon } from '../graphics/icons';
 import { prefersReducedMotion } from '../graphics/motion';
 import { ProgressBar } from '../graphics/ProgressBar';
-import { DECK_PARAM, ROUTES, studyItemPath } from '../routes';
+import { DECK_PARAM, LESSON_PARAM, ROUTES, studyItemPath } from '../routes';
 import { type GradeTally, useReviewSession } from './useReviewSession';
 
 const DECK_LABELS: Record<Deck, string> = {
@@ -120,6 +121,8 @@ export default function Review() {
   const [params] = useSearchParams();
   // A list page can open the review on its own deck; anything unrecognised falls back to everything.
   const [deck, setDeck] = useState<Deck>(() => DECKS.find((d) => d === params.get(DECK_PARAM)) ?? 'all');
+  // The Lessons page can open the review on one lesson; picking a deck leaves it.
+  const [lesson, setLesson] = useState(() => findLesson(params.get(LESSON_PARAM)));
   const [newLimit, setNewLimit] = useState(DEFAULT_NEW_CARDS);
   /** The grade just given, while its card slides away. */
   const [leaving, setLeaving] = useState<Grade | null>(null);
@@ -164,8 +167,13 @@ export default function Review() {
   // While the log is still loading the queue is built without it; it only changes the order of new cards.
   const practised = studyFirst(lib, log ?? [], RECENT_CLASS_COUNT);
 
+  const queueNow = () =>
+    lesson
+      ? buildLessonQueue(lib, lesson, newLimit, Date.now())
+      : buildQueue(lib, deck, newLimit, Date.now(), practised);
+
   if (status === 'idle') {
-    const preview = buildQueue(lib, deck, newLimit, Date.now(), practised);
+    const preview = queueNow();
     const newCount = Math.min(newLimit, preview.fresh.length);
     return (
       <div className="stack narrow-page">
@@ -204,8 +212,21 @@ export default function Review() {
               <span id={DECK_LABEL_ID}>What to study</span>
               {/* One control at every width: on a phone the row scrolls sideways instead of wrapping. */}
               <fieldset className="segmented deck-switch" aria-labelledby={DECK_LABEL_ID}>
+                {lesson && (
+                  <button type="button" aria-pressed="true">
+                    Lesson {FOUNDATION_LESSONS.indexOf(lesson) + 1}: {lesson.title}
+                  </button>
+                )}
                 {DECKS.map((d) => (
-                  <button key={d} type="button" aria-pressed={deck === d} onClick={() => setDeck(d)}>
+                  <button
+                    key={d}
+                    type="button"
+                    aria-pressed={!lesson && deck === d}
+                    onClick={() => {
+                      setLesson(undefined);
+                      setDeck(d);
+                    }}
+                  >
                     {DECK_LABELS[d]}
                   </button>
                 ))}
@@ -234,7 +255,7 @@ export default function Review() {
   }
 
   if (status === 'finished') {
-    const nextRound = buildQueue(lib, deck, newLimit, Date.now(), practised).queue;
+    const nextRound = queueNow().queue;
     return (
       <SessionComplete
         doneCount={session.doneCount}

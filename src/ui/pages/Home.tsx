@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLibrary, useStudyStats, useTrainingLog, useVideos } from '../../bindings';
 import { lessonOrder, lessonTechniques } from '../../core/curriculum';
 import { BELT_LABELS, plural } from '../../core/labels';
+import { currentLesson, FOUNDATION_LESSONS, lessonProgress } from '../../core/lessons';
 import { reviewOf } from '../../core/library';
 import { isEscape } from '../../core/models';
 import { beltRank } from '../../core/rank';
@@ -33,7 +34,7 @@ import { LibrarySearch } from '../components/LibrarySearch';
 import { Icon } from '../graphics/icons';
 import { PositionArtwork } from '../graphics/PositionSvg';
 import { useCountUp } from '../graphics/useCountUp';
-import { itemPath, positionSidePath, ROUTES, studyItemPath } from '../routes';
+import { itemPath, lessonReviewPath, positionSidePath, ROUTES, studyItemPath } from '../routes';
 
 /** Home shows only the next few concepts; the Concepts page has them all. */
 const HOME_CONCEPT_LIMIT = 6;
@@ -133,6 +134,7 @@ export default function Home() {
   const nextEscape = notStarted.find((t) => isEscape(t.type));
   const nextAttack = notStarted.find((t) => !isEscape(t.type));
 
+  const lesson = currentLesson(lib);
   const sticking = stickingPoints(lib, STICKING_POINT_LIMIT);
   const training = trainingSummary(log);
   const drill = pickDrill(lib, log);
@@ -149,7 +151,7 @@ export default function Home() {
       done: lib.transitions.some((t) => isEscape(t.type)) && !nextEscape,
       body: (
         <>
-          Learn the way out of side control, mount and the back before anything else. New cards come in that order.
+          Learn the way out of side control and mount before anything else. The lessons start there.
           {nextEscape && (
             <>
               {' '}
@@ -312,6 +314,29 @@ export default function Home() {
         </section>
 
         <LibrarySearch lib={lib} />
+
+        {lesson && (
+          <section className="card">
+            <div className="section-head">
+              <h2>
+                <span className="eyebrow block">
+                  Lesson {FOUNDATION_LESSONS.indexOf(lesson) + 1} of {FOUNDATION_LESSONS.length}
+                </span>
+                {lesson.title}
+              </h2>
+              <Link className="button small" to={ROUTES.lessons}>
+                All lessons
+              </Link>
+            </div>
+            <p className="muted">{lesson.summary}</p>
+            <p className="small">
+              {lessonProgress(lib, lesson).learned} of {plural(lessonProgress(lib, lesson).total, 'card')} learned
+            </p>
+            <Link className="button" to={lessonReviewPath(lesson.id)}>
+              Study this lesson
+            </Link>
+          </section>
+        )}
 
         <section className="card">
           <h2>Suggested path</h2>

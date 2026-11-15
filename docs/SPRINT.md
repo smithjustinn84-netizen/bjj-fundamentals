@@ -32,11 +32,13 @@ Every new starter concept and technique below connects to the existing 8 starter
   - **Turtle:**
     - `turtle-sit-out` — Sit-out and turn-in reversal from bottom turtle (`escape`, `bottom` → `side-control` `top`).
 
-## 2. Connect techniques in the UI: counters, defences, and follow-up chains (M)
+## 2. Connect techniques in the UI: counters, defences, and follow-up chains (M) — Done 2026-11-15
+
+Done 2026-11-15 as a pure lookup by starter id (`core/chains.ts`), with no new stored fields, so a technique the user added has no links. `TechniqueLinks` shows them on the technique page and on the review answer.
 
 In live rolling, techniques do not exist in isolation: every attack has a primary defence, and every defensive reaction opens a follow-up attack.
 
-- [ ] **Pair attacks with their defences in `core/`:**
+- [x] **Pair attacks with their defences in `core/`:**
   - Add a pure lookup or optional model fields (`counters?: string[]`, `chainsWith?: { id: string; when: string }[]`) with defaults from starter pairings in `core/seed.ts`.
   - Starter attack ↔ defence pairs:
     - `armbar-guard` ↔ `armbar-defence`
@@ -46,17 +48,19 @@ In live rolling, techniques do not exist in isolation: every attack has a primar
     - `americana` ↔ `americana-defence`
     - `rear-naked-choke` ↔ `rear-naked-choke-defence`
     - `double-leg` / `single-leg` ↔ `sprawl`
-- [ ] **Show reaction-based follow-up chains on `TransitionDetail` and review answers:**
+- [x] **Show reaction-based follow-up chains on `TransitionDetail` and review answers:**
   - Closed guard posture dilemma: `hip-bump-sweep` ("when they sit back") ↔ `kimura-guard` ("when they post a hand to stop the bump") ↔ `guillotine-guard` ("when they pull the arm back with head low").
   - Closed guard angle dilemma: `armbar-guard` ↔ `triangle-choke` ("when they yank one arm free") ↔ `pendulum-sweep` ("when they stack into you").
   - Mount escape dilemma: `upa-escape` ("when they reach for your collar or post close") ↔ `elbow-knee-escape` ("when they base wide to stop the bridge").
   - Side control escape dilemma: `side-control-escape` ("when space opens at the hip") ↔ `side-control-escape-knees` ("when they block your bottom knee").
 
-## 3. Structured class-sized lessons (L)
+## 3. Structured class-sized lessons (L) — Done 2026-11-15
+
+Done 2026-11-15: `core/lessons.ts`, a Lessons page behind Learn, the current lesson on Today, and `?lesson=` on Review. New cards now arrive lesson by lesson (`lessonOrder`), then by the survive-first rule for anything outside the lessons. Lessons 6, 7 and 8 also carry the newer concepts (wedges, crossface, breakfalls); lesson 4 is titled "Attacking from the closed guard". The ten techniques added in item 1 are in no lesson yet.
 
 Give beginners a guided, week-by-week curriculum that groups concepts, a position, and 2–3 connected techniques into a single class-sized lesson.
 
-- [ ] **Pure lesson definitions in `core/lessons.ts` (with unit tests):**
+- [x] **Pure lesson definitions in `core/lessons.ts` (with unit tests):**
   - Each `Lesson` names a title, summary, 1–2 `conceptIds`, 1 `positionId`, 2–4 `transitionIds`, and a 15-minute partner practice script combining their drills.
   - Suggested 8-lesson foundation track:
     1. *Surviving Underneath* (`safety`, `breathing`, `frames`, `elbows-in` · `side-control` · `side-control-escape`, `americana-defence`)
@@ -67,7 +71,7 @@ Give beginners a guided, week-by-week curriculum that groups concepts, a positio
     6. *Open Guard & Passing* (`distance`, `inside-position`, `hip-control` · `open-guard` · `toreando-pass`, `double-under-pass`, `butterfly-sweep`, `tripod-sweep`, `guard-retention`)
     7. *The Half Guard & Side Control Pin* (`underhooks`, `head-position`, `pressure`, `face-your-opponent` · `half-guard` & `side-control` · `knee-slice`, `half-to-full-guard`, `half-guard-underhook-sweep`, `side-to-mount`, `americana`)
     8. *Back Control, Turtle & Standing Safely* (`position-before-submission`, `training-partner`, `roll-to-learn` · `back-control`, `turtle`, `standing` · `rear-naked-choke`, `back-escape`, `rear-naked-choke-defence`, `turtle-to-back`, `turtle-recover-guard`, `pull-guard`, `double-leg`, `sprawl`)
-- [ ] **Lesson progress & study deck:**
+- [x] **Lesson progress & study deck:**
   - Compute each lesson's progress automatically from the review states of its items (no new storage table needed).
   - Allow starting a Review session filtered to a single lesson's cards.
 
