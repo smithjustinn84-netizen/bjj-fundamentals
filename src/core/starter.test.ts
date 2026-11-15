@@ -13,14 +13,19 @@ describe('findMissingStarterTechniques', () => {
 
   it('returns starter techniques that are not stored, including submissions with no destination', () => {
     const stored = [transition({ id: 'sweep', name: 'Renamed by the user' }), transition({ id: 'my-own' })];
-    expect(findMissingStarterTechniques(starter, stored, positions).map((t) => t.id)).toEqual(['choke']);
+    expect(findMissingStarterTechniques(starter, stored, positions, []).map((t) => t.id)).toEqual(['choke']);
   });
 
   it('leaves out techniques whose start or end position the library no longer has', () => {
-    expect(findMissingStarterTechniques(starter, [], positions).map((t) => t.id)).toEqual(['sweep', 'choke']);
+    expect(findMissingStarterTechniques(starter, [], positions, []).map((t) => t.id)).toEqual(['sweep', 'choke']);
+  });
+
+  it('leaves out techniques the user dismissed', () => {
+    const dismissed = [{ id: 'sweep', dismissedAt: 1 }];
+    expect(findMissingStarterTechniques(starter, [], positions, dismissed).map((t) => t.id)).toEqual(['choke']);
   });
 
   it('is empty when everything is already stored', () => {
-    expect(findMissingStarterTechniques(starter, starter, positions)).toEqual([]);
+    expect(findMissingStarterTechniques(starter, starter, positions, [])).toEqual([]);
   });
 });

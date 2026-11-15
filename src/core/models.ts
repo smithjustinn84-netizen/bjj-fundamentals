@@ -116,6 +116,15 @@ export interface ReviewLogEntry {
   reviewedAt: number;
 }
 
+/**
+ * A starter technique the user chose not to be offered again (the Blue belt page's "Dismiss").
+ * `id` is the starter technique's id.
+ */
+export interface StarterDismissal {
+  id: string;
+  dismissedAt: number;
+}
+
 /** Study ranks shown as a belt, lowest first. A motivational label for progress, not a real grading. */
 export const BELT_RANKS = ['white', 'blue', 'purple', 'brown', 'black'] as const;
 export type BeltRank = (typeof BELT_RANKS)[number];

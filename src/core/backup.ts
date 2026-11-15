@@ -6,6 +6,7 @@ import {
   type Position,
   type ReviewLogEntry,
   type ReviewState,
+  type StarterDismissal,
   TRANSITION_TYPES,
   type Transition,
   type VideoBookmark,
@@ -20,7 +21,7 @@ import { isYouTubeId } from './youtube';
 
 export const BACKUP_APP = 'bjj-fundamentals';
 /** Bump when the shape of any table changes, and teach `validateBackup` to accept the older shape. */
-export const BACKUP_SCHEMA_VERSION = 2;
+export const BACKUP_SCHEMA_VERSION = 3;
 
 export interface BackupData {
   positions: Position[];
@@ -29,6 +30,7 @@ export interface BackupData {
   videos: VideoBookmark[];
   reviews: ReviewState[];
   reviewLog: ReviewLogEntry[];
+  starterDismissals: StarterDismissal[];
 }
 
 export type BackupTable = keyof BackupData;
@@ -39,6 +41,7 @@ export const BACKUP_TABLES = [
   'videos',
   'reviews',
   'reviewLog',
+  'starterDismissals',
 ] as const satisfies readonly BackupTable[];
 
 export interface BackupFile {
@@ -134,6 +137,11 @@ const SCHEMAS: { [T in BackupTable]: Schema<BackupData[T][number]> } = {
     cardId: id,
     grade: oneOf(GRADES),
     reviewedAt: num,
+  },
+  // Absent from schema 1 and 2 backups; a missing table loads as empty.
+  starterDismissals: {
+    id,
+    dismissedAt: num,
   },
 };
 

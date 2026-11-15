@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import type { FigurePose } from '../../core/figure';
 import { Arrow, Diagram } from './Diagram';
 import { Figure } from './Figure';
+import { positionScene, StillScene } from './PositionSvg';
 
 /*
  * Poses are joint positions in the shared diagram space (see Diagram.tsx). Lying figures keep their
@@ -386,6 +387,88 @@ const PRESSING: FigurePose = {
   },
 };
 
+/* Two people squared up out of reach, with the gap between them where hands would meet. */
+const SQUARED_UP_LEFT: FigurePose = {
+  head: [126, 58],
+  neck: [118, 72],
+  hip: [102, 124],
+  face: 1,
+  arms: {
+    far: [
+      [142, 98],
+      [166, 108],
+    ],
+    near: [
+      [146, 88],
+      [176, 80],
+    ],
+  },
+  legs: {
+    far: [
+      [86, 158],
+      [70, 190],
+    ],
+    near: [
+      [116, 156],
+      [112, 190],
+    ],
+  },
+};
+const SQUARED_UP_RIGHT: FigurePose = {
+  head: [274, 58],
+  neck: [282, 72],
+  hip: [298, 124],
+  face: -1,
+  arms: {
+    far: [
+      [258, 88],
+      [236, 82],
+    ],
+    near: [
+      [254, 98],
+      [226, 102],
+    ],
+  },
+  legs: {
+    far: [
+      [314, 158],
+      [330, 190],
+    ],
+    near: [
+      [284, 156],
+      [288, 190],
+    ],
+  },
+};
+
+/* WIDE_STANCE tipped over its far foot, the near foot lifting off the mat. */
+const TIPPING: FigurePose = {
+  head: [160, 42],
+  neck: [164, 57],
+  hip: [179, 110],
+  face: 1,
+  arms: {
+    far: [
+      [147, 86],
+      [144, 111],
+    ],
+    near: [
+      [193, 72],
+      [210, 93],
+    ],
+  },
+  legs: {
+    far: [
+      [159, 147],
+      [146, 190],
+    ],
+    near: [
+      [216, 130],
+      [250, 160],
+    ],
+  },
+};
+
 interface Scene {
   view?: 'side' | 'above';
   draw: () => ReactNode;
@@ -508,7 +591,68 @@ const CONCEPT_SCENES: Record<string, Scene> = {
       </>
     ),
   },
+  'inside-position': {
+    draw: () => (
+      <>
+        <StillPosition id="open-guard" />
+        {/* Knees and feet inside the hips: the bottom person owns the space between them. */}
+        <circle className="dgm-ring" cx="210" cy="142" r="28" />
+        <path className="dgm-good" d="M262 64 l8 9 l15 -19" />
+      </>
+    ),
+  },
+  distance: {
+    draw: () => (
+      <>
+        {/* The middle distance, where both people can reach and neither controls. */}
+        <rect className="dgm-zone" x="168" y="62" width="64" height="132" rx="10" />
+        <Figure pose={SQUARED_UP_LEFT} gi="dark" />
+        <Figure pose={SQUARED_UP_RIGHT} gi="light" />
+        <path className="dgm-bad" d="M193 40 l15 15 M208 40 l-15 15" />
+      </>
+    ),
+  },
+  'position-before-submission': {
+    draw: () => (
+      <>
+        {/* A settled base under the hips comes before any attack. */}
+        <polygon className="dgm-zone" points="150,158 112,195 186,195" />
+        <StillPosition id="mount" />
+        <path className="dgm-good" d="M184 72 l8 9 l15 -19" />
+      </>
+    ),
+  },
+  'head-position': {
+    draw: () => (
+      <>
+        <Figure pose={PINNED} gi="light" />
+        <Figure pose={PRESSING} gi="dark" />
+        {/* Where the head goes, the weight follows. */}
+        <circle className="dgm-ring" cx="128" cy="158" r="16" />
+        <Arrow from={[110, 110]} to={[122, 138]} bend={-6} />
+      </>
+    ),
+  },
+  'off-balancing': {
+    draw: () => (
+      <>
+        {/* The base they had: once the hips leave it, they have to post or fall. */}
+        <polygon className="dgm-zone" points="200,122 140,195 260,195" />
+        <g className="dgm-ghost">
+          <Figure pose={WIDE_STANCE} gi="light" />
+        </g>
+        <Figure pose={TIPPING} gi="light" />
+        <Arrow from={[138, 40]} to={[98, 66]} bend={-8} />
+      </>
+    ),
+  },
 };
+
+/** A built-in position's still picture, for a concept best shown inside that position. */
+function StillPosition({ id }: { id: string }) {
+  const scene = positionScene(id);
+  return scene ? <StillScene scene={scene} /> : null;
+}
 
 /** The tap without the paper behind it, for a picture that fades into it. */
 export function TapScene() {

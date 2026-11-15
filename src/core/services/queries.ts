@@ -48,10 +48,14 @@ export function createQueries({ storage, now }: CoreEnv) {
       };
     },
 
-    /** Starter techniques this library could hold but does not, e.g. ones added to the app after it was set up. */
+    /** Starter techniques to offer this library: ones it could hold but does not, and has not dismissed. */
     async missingStarterTechniques(): Promise<Transition[]> {
-      const [transitions, positions] = await Promise.all([storage.transitions.all(), storage.positions.all()]);
-      return findMissingStarterTechniques(starterContent(now()).transitions, transitions, positions);
+      const [transitions, positions, dismissed] = await Promise.all([
+        storage.transitions.all(),
+        storage.positions.all(),
+        storage.starterDismissals.all(),
+      ]);
+      return findMissingStarterTechniques(starterContent(now()).transitions, transitions, positions, dismissed);
     },
 
     /** Newest first. */

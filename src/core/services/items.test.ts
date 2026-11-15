@@ -127,4 +127,19 @@ describe('adding missing starter techniques', () => {
     expect(await core.items.addMissingStarterTechniques()).toBe(0);
     expect((await storage.transitions.all()).some((t) => t.fromId === 'mount' || t.toId === 'mount')).toBe(false);
   });
+
+  it('dismissing stops offering the current techniques, but not ones that go missing later', async () => {
+    const { core, storage, clock } = testCore();
+    await core.items.deleteItem('transition', 'triangle-choke');
+    clock.now = 7000;
+
+    expect(await core.items.dismissMissingStarterTechniques()).toBe(1);
+    expect(await storage.starterDismissals.get('triangle-choke')).toEqual({ id: 'triangle-choke', dismissedAt: 7000 });
+    expect(await core.queries.missingStarterTechniques()).toEqual([]);
+    expect(await core.items.addMissingStarterTechniques()).toBe(0);
+    expect(await storage.transitions.get('triangle-choke')).toBeUndefined();
+
+    await core.items.deleteItem('transition', 'kimura-guard');
+    expect((await core.queries.missingStarterTechniques()).map((t) => t.id)).toEqual(['kimura-guard']);
+  });
 });

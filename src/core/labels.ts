@@ -62,6 +62,7 @@ export const TABLE_LABELS: Record<BackupTable, string> = {
   videos: 'Video bookmarks',
   reviews: 'Cards studied',
   reviewLog: 'Review history',
+  starterDismissals: 'Dismissed starter techniques',
 };
 
 export const BELT_LABELS: Record<BeltRank, string> = {

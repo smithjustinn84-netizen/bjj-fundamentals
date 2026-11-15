@@ -9,7 +9,10 @@ import { EmptyState } from '../graphics/EmptyState';
 import { ProgressBar } from '../graphics/ProgressBar';
 import { itemPath, newItemPath, ROUTES } from '../routes';
 
-/** Offers starter techniques that were added to the app after this library was set up. */
+/**
+ * Offers starter techniques the library does not have, such as ones added to the app after it was set up.
+ * Dismissing hides those techniques for good; one that goes missing later is offered again.
+ */
 function MissingStarterTechniques() {
   const missing = useMissingStarterTechniques();
   if (!missing || missing.length === 0) return null;
@@ -24,6 +27,9 @@ function MissingStarterTechniques() {
       <div className="row">
         <button type="button" className="primary" onClick={() => void items.addMissingStarterTechniques()}>
           Add {missing.length === 1 ? 'it' : 'them'}
+        </button>
+        <button type="button" onClick={() => void items.dismissMissingStarterTechniques()}>
+          Dismiss
         </button>
       </div>
     </div>

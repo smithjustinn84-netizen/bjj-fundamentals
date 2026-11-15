@@ -63,7 +63,7 @@ Where does new code go?
 
 **Add a field to an item.** (1) Add it to the model in `core/models.ts`. (2) The compiler now fails in `core/backup.ts` until you add its check, and in the seed and form until you supply it. (3) Decide what old rows and old backups without the field should do: make the check `optional(...)` and default it on read (through one function, like `isOnBlueBeltTest`, never `row.field ?? ...` at each use), or add a Dexie `upgrade`. (4) Bump `BACKUP_SCHEMA_VERSION` in `core/backup.ts`. (5) Add a test.
 
-**Add starter content.** Edit `core/seed.ts`. New libraries get it on first run; existing libraries only see new starter *techniques*, offered by the button on the Blue belt page (`core/starter.ts`), and every starter technique starts on the blue belt test list. New starter concepts, positions or videos do not reach an existing library.
+**Add starter content.** Edit `core/seed.ts`. New libraries get it on first run; existing libraries only see new starter *techniques*, offered on the Blue belt page (`core/starter.ts`) unless the user dismissed them (`starterDismissals`), and every starter technique starts on the blue belt test list. New starter concepts, positions or videos do not reach an existing library.
 
 **Add a table.** (1) Model in `core/models.ts`. (2) Add it to `BackupData`, `BACKUP_TABLES` and `SCHEMAS` in `core/backup.ts`, to `TABLE_LABELS`, and to `AppStorage`. (3) Implement it in `memoryStorage.ts` and, with a new `version(n + 1)`, in `dexieStorage.ts`. (4) A service in `core/services/`, wired in `core/core.ts` and exposed in `bindings/index.ts`. (5) Extend the storage contract and add service tests.
 

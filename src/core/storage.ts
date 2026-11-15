@@ -1,5 +1,13 @@
 import type { BackupData } from './backup';
-import type { Concept, Position, ReviewLogEntry, ReviewState, Transition, VideoBookmark } from './models';
+import type {
+  Concept,
+  Position,
+  ReviewLogEntry,
+  ReviewState,
+  StarterDismissal,
+  Transition,
+  VideoBookmark,
+} from './models';
 
 /**
  * The storage contract. This is the ONLY thing a storage engine has to implement: IndexedDB today
@@ -44,6 +52,7 @@ export interface AppStorage {
   readonly videos: Repository<VideoBookmark>;
   readonly reviews: Repository<ReviewState>;
   readonly reviewLog: ReviewLogRepository;
+  readonly starterDismissals: Repository<StarterDismissal>;
 
   /**
    * Run `work` so that either all of its writes are stored or none are. If `work` rejects, every write it

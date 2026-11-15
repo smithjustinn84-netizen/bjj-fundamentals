@@ -136,6 +136,76 @@ const concepts: StarterRow<Concept>[] = [
       'Hold side control for 30 seconds while your partner tries to make space. Focus on staying heavy rather than squeezing.',
     order: 10,
   },
+  {
+    id: 'inside-position',
+    name: 'Inside position',
+    summary:
+      'Having your knees, elbows, and hands inside your opponent’s. Whoever is on the inside controls the space between you.',
+    keyPoints: [
+      'Inside limbs can push, block, and steer; outside limbs can only wrap around.',
+      'On the bottom, keep your knees and feet inside their arms and hips.',
+      'When they get inside, win it back before you try anything else.',
+    ],
+    drill:
+      'From open guard, both partners pummel knees and hands for the inside, light and slow. Reset whenever someone is clearly inside.',
+    order: 11,
+  },
+  {
+    id: 'distance',
+    name: 'Distance management',
+    summary:
+      'Choosing how far you are from your opponent. Be far enough that they cannot reach you, or close enough to control them, not in between.',
+    keyPoints: [
+      'Far away is safe: nobody can grip or attack.',
+      'Tight and connected is safe too: they have no room to move.',
+      'The middle distance is where guards get passed and arms get grabbed. Move through it, do not stay there.',
+    ],
+    drill:
+      'From open guard, your partner tries to close in. Use your feet to keep them far, or pull them tight into closed guard. Never let them settle halfway.',
+    order: 12,
+  },
+  {
+    id: 'position-before-submission',
+    name: 'Position before submission',
+    summary:
+      'Secure control first, then attack. A rushed submission from a loose position usually costs you the position.',
+    keyPoints: [
+      'Settle your weight and grips before you reach for a lock or choke.',
+      'If the submission fails, you should still be in a good position.',
+      'A good position gives you many attacks; a bad one gives you one rushed try.',
+    ],
+    drill:
+      'Hold mount for three full breaths before attacking. Your partner tries to escape the moment you rush. Swap after each round.',
+    order: 13,
+  },
+  {
+    id: 'head-position',
+    name: 'Head position',
+    summary:
+      'Where your head goes, your weight goes. Your head is like a fifth limb for pinning, posting, and defending.',
+    keyPoints: [
+      'On top, keep your head low and on the side you are moving toward.',
+      'On the bottom, keep your head off the mat and away from their chest.',
+      'Never let your head stay where your opponent can pull it down or wrap it.',
+    ],
+    drill:
+      'In side control, the top partner keeps their head low on the far side while the bottom partner tries to turn in. Swap every 30 seconds.',
+    order: 14,
+  },
+  {
+    id: 'off-balancing',
+    name: 'Off-balancing (kuzushi)',
+    summary:
+      'Pulling or pushing your opponent off their base before you sweep or throw. Techniques work on someone who is already tipping.',
+    keyPoints: [
+      'Move them first: pull them forward, push them back, or tip them to a side.',
+      'When they post a hand or foot to catch themselves, that is the moment to attack.',
+      'If they are balanced and heavy, keep off-balancing; do not force the technique.',
+    ],
+    drill:
+      'From closed guard, pull your partner forward and to each side until they post a hand. Reset and repeat without finishing a sweep.',
+    order: 15,
+  },
 ];
 
 const positions: StarterRow<Position>[] = [
@@ -146,7 +216,7 @@ const positions: StarterRow<Position>[] = [
     summary: 'Every match starts here. Both people are on their feet trying to take the other down or pull guard.',
     topGoals: ['Get grips first', 'Take them down and land on top', 'Keep a strong stance and base'],
     bottomGoals: ['Break their grips', 'Keep your hips back to defend takedowns', 'Pull guard on your terms'],
-    conceptIds: ['base', 'grips', 'posture'],
+    conceptIds: ['base', 'grips', 'posture', 'distance', 'off-balancing'],
     order: 1,
   },
   {
@@ -156,7 +226,7 @@ const positions: StarterRow<Position>[] = [
     summary: "The bottom person has their legs wrapped around the top person's waist with ankles crossed.",
     topGoals: ['Keep good posture', 'Control their hips', 'Open the guard and pass'],
     bottomGoals: ['Break their posture by pulling them down', 'Sweep them', 'Attack with submissions'],
-    conceptIds: ['posture', 'grips', 'elbows-in'],
+    conceptIds: ['posture', 'grips', 'elbows-in', 'off-balancing'],
     order: 2,
   },
   {
@@ -170,7 +240,7 @@ const positions: StarterRow<Position>[] = [
       'Hold grips to control distance',
       'Re-guard when they get close',
     ],
-    conceptIds: ['frames', 'hip-escape', 'grips'],
+    conceptIds: ['frames', 'hip-escape', 'grips', 'inside-position', 'distance'],
     order: 3,
   },
   {
@@ -180,7 +250,7 @@ const positions: StarterRow<Position>[] = [
     summary: "The bottom person traps one of the top person's legs between their own legs.",
     topGoals: ['Flatten them and stop the underhook', 'Free your trapped leg', 'Pass to side control or mount'],
     bottomGoals: ['Stay on your side, not flat on your back', 'Get the underhook', 'Sweep or recover full guard'],
-    conceptIds: ['underhooks', 'frames', 'pressure'],
+    conceptIds: ['underhooks', 'frames', 'pressure', 'inside-position', 'head-position'],
     order: 4,
   },
   {
@@ -190,7 +260,7 @@ const positions: StarterRow<Position>[] = [
     summary: 'The top person has passed the legs and is lying chest to chest across the bottom person.',
     topGoals: ['Stay heavy and chest to chest', 'Block their hips from turning in', 'Move to mount or attack'],
     bottomGoals: ['Build frames before they settle', 'Shrimp to make space', 'Recover guard'],
-    conceptIds: ['pressure', 'frames', 'hip-escape'],
+    conceptIds: ['pressure', 'frames', 'hip-escape', 'head-position'],
     order: 5,
   },
   {
@@ -200,7 +270,7 @@ const positions: StarterRow<Position>[] = [
     summary: "The top person sits on the bottom person's torso with a knee on each side.",
     topGoals: ['Stay balanced with a wide base', 'Keep your knees tight to their hips', 'Attack the arms and neck'],
     bottomGoals: ['Protect your neck and keep elbows in', 'Bridge to off-balance them', 'Escape to guard'],
-    conceptIds: ['base', 'bridge', 'elbows-in'],
+    conceptIds: ['base', 'bridge', 'elbows-in', 'position-before-submission'],
     order: 6,
   },
   {
@@ -211,7 +281,7 @@ const positions: StarterRow<Position>[] = [
       'The attacker is behind the defender, usually with a seatbelt grip and both feet hooked inside the thighs.',
     topGoals: ['Keep the seatbelt grip', 'Keep your hooks in', 'Finish with a choke'],
     bottomGoals: ['Protect your neck with both hands', 'Get your back to the mat', 'Turn to face them'],
-    conceptIds: ['grips', 'elbows-in'],
+    conceptIds: ['grips', 'elbows-in', 'position-before-submission'],
     order: 7,
   },
   {
@@ -819,6 +889,46 @@ const videos: Omit<VideoBookmark, 'createdAt' | 'startSeconds'>[] = [
     linkedId: 'pressure',
     note: 'Dropping your bodyweight through your chest with low hips instead of squeezing.',
   },
+  {
+    id: 'video-inside-position',
+    title: 'What is inside position? The most important concept in jiujitsu (Jordan Teaches Jiujitsu)',
+    youtubeId: 'peYJDb7LZMM',
+    linkedKind: 'concept',
+    linkedId: 'inside-position',
+    note: 'Why getting your limbs inside your opponent’s gives you control of the space between you.',
+  },
+  {
+    id: 'video-distance',
+    title: 'Distance management in guard (Jean Jacques Machado)',
+    youtubeId: '910ZJhHMKh0',
+    linkedKind: 'concept',
+    linkedId: 'distance',
+    note: 'Keeping your opponent at the right distance from guard so they cannot settle and pass.',
+  },
+  {
+    id: 'video-position-before-submission',
+    title: 'Jiu-jitsu for beginners: Position before submission (Budo Brothers)',
+    youtubeId: 'aJrAulixy9Y',
+    linkedKind: 'concept',
+    linkedId: 'position-before-submission',
+    note: 'Securing control before attacking so a missed submission does not cost you the position.',
+  },
+  {
+    id: 'video-head-position',
+    title: 'Use your head to get better at jiujitsu (Jordan Teaches Jiujitsu)',
+    youtubeId: 'O3qDjmbdHGU',
+    linkedKind: 'concept',
+    linkedId: 'head-position',
+    note: 'Using your head as a fifth limb to pin, post, and keep yourself safe.',
+  },
+  {
+    id: 'video-off-balancing',
+    title: 'What is kuzushi in BJJ and how it improves your guard (Stephan Kesting)',
+    youtubeId: 'Fy9h-dF6dcA',
+    linkedKind: 'concept',
+    linkedId: 'off-balancing',
+    note: 'Breaking your opponent’s balance before every sweep or attack from guard.',
+  },
   // Positions
   {
     id: 'video-standing',
@@ -1140,5 +1250,6 @@ export function starterContent(now: number): BackupData {
     videos: seedVideos(now),
     reviews: [],
     reviewLog: [],
+    starterDismissals: [],
   };
 }

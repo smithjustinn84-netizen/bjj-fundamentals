@@ -27,11 +27,13 @@ describe('validateBackup', () => {
         videos: [validVideo],
         reviews: [],
         reviewLog: [{ cardId: 'concept:c1', grade: 'good', reviewedAt: 5 }],
+        starterDismissals: [{ id: 'scissor-sweep', dismissedAt: 9 }],
       }),
     );
     expect(backup.exportedAt).toBe(123);
     expect(backup.data.positions).toHaveLength(1);
     expect(backup.data.reviewLog[0]?.grade).toBe('good');
+    expect(backup.data.starterDismissals).toEqual([{ id: 'scissor-sweep', dismissedAt: 9 }]);
   });
 
   it('accepts techniques with or without the blue belt flag, which older backups lack', () => {
@@ -43,6 +45,8 @@ describe('validateBackup', () => {
     const backup = validateBackup(file({ concepts: [concept()] }));
     expect(backup.data.videos).toEqual([]);
     expect(backup.data.reviewLog).toEqual([]);
+    // Schema 1 and 2 backups predate starter dismissals.
+    expect(backup.data.starterDismissals).toEqual([]);
   });
 
   it.each([
@@ -64,6 +68,7 @@ describe('validateBackup', () => {
     ['an unknown category', file({ positions: [{ ...position(), category: 'flying' }] }), /"category"/],
     ['a non-YouTube id', file({ videos: [{ ...validVideo, youtubeId: 'javascript:1' }] }), /"youtubeId"/],
     ['a negative start time', file({ videos: [{ ...validVideo, startSeconds: -1 }] }), /"startSeconds"/],
+    ['a dismissal without a time', file({ starterDismissals: [{ id: 'scissor-sweep' }] }), /"dismissedAt"/],
     ['an unknown grade', file({ reviewLog: [{ cardId: 'a', grade: 'meh', reviewedAt: 1 }] }), /"grade"/],
     ['a non-finite number', file({ concepts: [{ ...concept(), order: Number.NaN }] }), /"order"/],
   ])('rejects %s', (_name, input, message) => {

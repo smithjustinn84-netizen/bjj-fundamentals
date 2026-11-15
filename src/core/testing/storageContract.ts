@@ -25,6 +25,7 @@ const initialData: BackupData = {
   videos: [],
   reviews: [],
   reviewLog: [],
+  starterDismissals: [],
 };
 
 const logEntry = (reviewedAt: number) => ({ cardId: 'concept:c1', grade: 'good' as const, reviewedAt });
@@ -51,6 +52,13 @@ export function describeStorageContract(name: string, { create, reopen }: Storag
       await storage.concepts.remove('c1');
       await storage.concepts.remove('never-existed');
       expect((await storage.concepts.all()).map((c) => c.id).sort()).toEqual(['c2', 'c3']);
+    });
+
+    it('has an empty starter dismissals table that reads and writes by id', async () => {
+      const storage = await create({ initialData });
+      expect(await storage.starterDismissals.count()).toBe(0);
+      await storage.starterDismissals.put({ id: 'sweep', dismissedAt: 5 });
+      expect(await storage.starterDismissals.all()).toEqual([{ id: 'sweep', dismissedAt: 5 }]);
     });
 
     it('stores nested lists intact', async () => {

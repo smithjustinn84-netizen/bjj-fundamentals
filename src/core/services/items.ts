@@ -47,6 +47,16 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
     await storage.positions.remove(id);
   }
 
+  /** The starter techniques the Blue belt page offers. Call inside a transaction. */
+  async function offeredStarterTechniques(starter: Transition[]): Promise<Transition[]> {
+    return findMissingStarterTechniques(
+      starter,
+      await storage.transitions.all(),
+      await storage.positions.all(),
+      await storage.starterDismissals.all(),
+    );
+  }
+
   async function deleteConcept(id: string) {
     await storage.concepts.remove(id);
     const referencing = (await storage.positions.all()).filter((p) => p.conceptIds.includes(id));
@@ -62,18 +72,14 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
       save(storage.transitions, id, endsTheRoll(input.type) ? { ...input, toId: '' } : input),
 
     /**
-     * Add the starter techniques the library is missing, leaving everything already stored untouched.
+     * Add the starter techniques on offer (missing and not dismissed), leaving everything stored untouched.
      * A technique the library never had also gets its starter video bookmark; one the user deleted does
      * not, because deleting kept that bookmark, unlinked. Resolves to how many techniques were added.
      */
     addMissingStarterTechniques(): Promise<number> {
       const starter = starterContent(now());
       return storage.transaction(async () => {
-        const missing = findMissingStarterTechniques(
-          starter.transitions,
-          await storage.transitions.all(),
-          await storage.positions.all(),
-        );
+        const missing = await offeredStarterTechniques(starter.transitions);
         const addedIds = new Set(missing.map((t) => t.id));
         const storedVideoIds = new Set((await storage.videos.all()).map((v) => v.id));
         const videos = starter.videos.filter(
@@ -82,6 +88,20 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
         await storage.transitions.putMany(missing);
         await storage.videos.putMany(videos);
         return missing.length;
+      });
+    },
+
+    /**
+     * Stop offering the starter techniques on offer now. One that goes missing later is still offered.
+     * Resolves to how many were dismissed.
+     */
+    dismissMissingStarterTechniques(): Promise<number> {
+      const timestamp = now();
+      const starter = starterContent(timestamp).transitions;
+      return storage.transaction(async () => {
+        const offered = await offeredStarterTechniques(starter);
+        await storage.starterDismissals.putMany(offered.map((t) => ({ id: t.id, dismissedAt: timestamp })));
+        return offered.length;
       });
     },
 

@@ -15,6 +15,14 @@ describe('starter content', () => {
     }
   });
 
+  it('has every position linking only to real concepts', async () => {
+    const { storage } = testCore();
+    const conceptIds = new Set((await storage.concepts.all()).map((c) => c.id));
+    for (const p of await storage.positions.all()) {
+      for (const id of p.conceptIds) expect(conceptIds.has(id)).toBe(true);
+    }
+  });
+
   it('has a video bookmark for every starter concept, position, and transition', async () => {
     const { storage } = testCore();
     const videos = await storage.videos.all();
@@ -47,11 +55,14 @@ describe('backup round trip', () => {
       note: '',
     });
     await core.reviews.recordReview({ kind: 'concept', id: 'base' }, 'good');
+    await core.items.deleteItem('transition', 'triangle-choke');
+    await core.items.dismissMissingStarterTechniques();
     const before = await core.backups.tableCounts();
 
     const json = JSON.stringify(await core.backups.exportBackup());
 
     await storage.videos.clear();
+    await storage.starterDismissals.clear();
     await core.reviews.resetProgress();
     await core.items.deleteItem('position', 'mount');
 
@@ -60,6 +71,7 @@ describe('backup round trip', () => {
     expect(await core.backups.tableCounts()).toEqual(before);
     expect((await storage.reviews.get('concept:base'))?.intervalDays).toBe(1);
     expect(await storage.positions.get('mount')).toBeDefined();
+    expect(await storage.starterDismissals.get('triangle-choke')).toBeDefined();
   });
 
   it('import removes rows that are not in the backup', async () => {

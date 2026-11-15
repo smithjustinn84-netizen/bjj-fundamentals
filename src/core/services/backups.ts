@@ -19,6 +19,7 @@ export function createBackupService({ storage, now }: CoreEnv) {
         videos: await storage.videos.all(),
         reviews: await storage.reviews.all(),
         reviewLog: await storage.reviewLog.all(),
+        starterDismissals: await storage.starterDismissals.all(),
       }));
       return { app: BACKUP_APP, schemaVersion: BACKUP_SCHEMA_VERSION, exportedAt: now(), data };
     },
@@ -39,6 +40,8 @@ export function createBackupService({ storage, now }: CoreEnv) {
         await storage.reviews.putMany(data.reviews);
         await storage.reviewLog.clear();
         await storage.reviewLog.putMany(data.reviewLog);
+        await storage.starterDismissals.clear();
+        await storage.starterDismissals.putMany(data.starterDismissals);
       });
     },
 
