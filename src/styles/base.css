@@ -107,13 +107,28 @@ kbd {
   justify-content: space-between;
   align-items: flex-start;
 }
-/* On a phone a lone button stays beside the title; a row of controls takes its own line. */
+/*
+ * On a phone a row of controls takes its own line, with the view switch above the buttons, which share
+ * the width. A lone button stays beside the title instead, and the words about the page run full width
+ * under both.
+ */
 .page-head > div:first-child {
   flex: 1 1 0;
   min-width: 0;
 }
 .page-head > .row {
   flex: 1 1 100%;
+}
+.page-head > h1 {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  align-self: center;
+}
+.page-head > p {
+  flex: 1 1 100%;
+  /* The head's gap is sized for a row of controls; words belong closer to their title. */
+  margin: calc(-1 * var(--space-2)) 0 0;
 }
 .section + .section {
   margin-top: 1.25rem;
@@ -727,19 +742,48 @@ input[type="range"] {
   width: 100%;
 }
 
-/* The library search box, on Home, Concepts and Positions. */
+/* The library search box, on Home, Concepts and Positions: a field on the page, with what it finds in a card under it. */
 .library-search {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
 }
+/* Two attribute checks, to outrank the rule for every text input above. */
+.library-search > input[type="search"]:not([disabled]) {
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
 .library-search p {
   margin: 0;
+}
+/* `.transition-list` clears list padding, which would also remove the card's own. */
+.search-results {
+  padding: var(--space-1) var(--space-4);
 }
 
 /* The top of a page about one item: its picture, then everything written about it. */
 .detail-picture:empty {
   display: none;
+}
+
+/* Lists and fieldsets clear their own margins above, which must not clear a stack's gap too. */
+.stack > * + ul,
+.stack > * + ol,
+.stack > * + fieldset {
+  margin-top: 1rem;
+}
+/* A section's heading wraps before the button beside it does. */
+.section-head > .button {
+  flex: none;
+  white-space: nowrap;
+}
+/* A page head's controls on a phone: the view switch takes a line, and the buttons share the next. */
+.page-head > .row > .segmented {
+  flex: 1 1 100%;
+}
+.page-head > .row > .button {
+  flex: 1 1 0;
+  white-space: nowrap;
 }
 
 /* Tablet and wider: rows of controls stop stretching. */
@@ -752,6 +796,10 @@ input[type="range"] {
   }
   .page-head > .row {
     flex: 0 1 auto;
+  }
+  .page-head > .row > .segmented,
+  .page-head > .row > .button {
+    flex: none;
   }
   .pager {
     grid-template-columns: 1fr 1fr;

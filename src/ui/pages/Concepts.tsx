@@ -31,9 +31,7 @@ export default function Concepts() {
           </Link>
         </div>
       </div>
-      <div className="card">
-        <LibrarySearch lib={lib} />
-      </div>
+      <LibrarySearch lib={lib} />
       <StarterOffer
         noun="concept"
         names={missing?.map((concept) => concept.name)}

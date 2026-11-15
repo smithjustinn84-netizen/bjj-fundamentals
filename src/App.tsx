@@ -1,5 +1,5 @@
-import type { MouseEvent } from 'react';
-import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
+import { type MouseEvent, useLayoutEffect } from 'react';
+import { Link, NavLink, Route, Routes, useLocation, useNavigationType } from 'react-router-dom';
 import { useDueCount } from './bindings';
 import { ErrorBoundary } from './ui/components/ErrorBoundary';
 import { BrandMark } from './ui/graphics/BrandMark';
@@ -49,9 +49,22 @@ function ReviewNavLink() {
   );
 }
 
+/**
+ * A page opened by a link starts at its top; without this it opens as far down as the page before it was
+ * scrolled. Going back or forward is left alone so the browser can put the reader where they were.
+ */
+function useScrollToTopOnNavigate(pathname: string) {
+  const navigationType = useNavigationType();
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the path is the trigger; the effect reads nothing from it.
+  useLayoutEffect(() => {
+    if (navigationType !== 'POP') window.scrollTo(0, 0);
+  }, [pathname, navigationType]);
+}
+
 export default function App() {
   const { pathname } = useLocation();
   useAppliedTheme();
+  useScrollToTopOnNavigate(pathname);
   return (
     <div className="app">
       <a className="skip-link" href={`#${MAIN_ID}`} onClick={focusMain}>

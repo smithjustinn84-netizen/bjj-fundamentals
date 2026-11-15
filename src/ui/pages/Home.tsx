@@ -288,9 +288,7 @@ export default function Home() {
           )}
         </section>
 
-        <section className="card">
-          <LibrarySearch lib={lib} />
-        </section>
+        <LibrarySearch lib={lib} />
 
         <section className="card">
           <h2>Suggested path</h2>
@@ -320,7 +318,7 @@ export default function Home() {
           <div className="section-head">
             <h2>Concepts to learn next</h2>
             <Link className="button small" to={ROUTES.concepts}>
-              All {lib.concepts.length} concepts
+              All {lib.concepts.length}
             </Link>
           </div>
           {nextConcepts.length === 0 ? (

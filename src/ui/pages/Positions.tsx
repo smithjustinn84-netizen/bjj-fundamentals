@@ -104,9 +104,7 @@ export default function Positions() {
           </Link>
         </div>
       </div>
-      <div className="card">
-        <LibrarySearch lib={lib} />
-      </div>
+      <LibrarySearch lib={lib} />
       {lib.positions.length === 0 ? (
         <div className="card">
           <EmptyState

@@ -22,16 +22,14 @@ export default function BlueBelt() {
     <div className="stack">
       <LearnTabs />
       <div className="page-head">
-        <div>
-          <h1>Blue belt test</h1>
-          <p className="muted">
-            The techniques you will be asked to show. Every gym tests differently, so edit a technique to add it to this
-            list or take it off.
-          </p>
-        </div>
+        <h1>Blue belt test</h1>
         <Link className="button" to={newItemPath('transition')}>
           + Technique
         </Link>
+        <p className="muted">
+          The techniques you will be asked to show. Every gym tests differently, so edit a technique to add it to this
+          list or take it off.
+        </p>
       </div>
       <StarterOffer
         noun="technique"

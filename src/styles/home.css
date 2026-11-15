@@ -164,6 +164,12 @@
 .today-drill .eyebrow {
   margin: 0;
 }
+/* The name, why it was picked and what to do are three things, so each gets a little air. */
+.today-drill > .grow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
 .today-drill > .icon {
   color: var(--text);
 }

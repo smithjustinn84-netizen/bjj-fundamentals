@@ -27,7 +27,7 @@ export function LibrarySearch({ lib }: { lib: Library }) {
       </p>
       {searching && hits.length === 0 && <p className="muted">Nothing matches “{query.trim()}”.</p>}
       {hits.length > 0 && (
-        <ul className="transition-list">
+        <ul className="transition-list card search-results">
           {hits.map((hit) => (
             <li key={`${hit.kind}:${hit.id}`}>
               <Link className="row-link" to={itemPath(hit.kind, hit.id)}>
