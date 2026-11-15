@@ -6,8 +6,9 @@ import { reviewOf } from '../../core/library';
 import { endsTheRoll } from '../../core/models';
 import { Bullets, Loading, Missing, NotesBlock, ProgressDot, Section } from '../components/common';
 import { confirmDelete } from '../components/confirmDelete';
-import { TechniquePicture } from '../components/TechniquePicture';
+import { ItemPicture } from '../components/ItemPicture';
 import { LinkedVideos } from '../components/VideoList';
+import { TransitionArtwork } from '../graphics/Artwork';
 import { editPath, itemPath, ROUTES } from '../routes';
 
 export default function TransitionDetail() {
@@ -67,7 +68,9 @@ export default function TransitionDetail() {
         </div>
       </div>
       <div className="card">
-        <TechniquePicture transition={transition} positionById={lib.positionById} />
+        <ItemPicture kind="transition" id={transition.id}>
+          <TransitionArtwork transition={transition} positionById={lib.positionById} />
+        </ItemPicture>
         <Section title="Steps">
           <Bullets items={transition.steps} ordered />
         </Section>

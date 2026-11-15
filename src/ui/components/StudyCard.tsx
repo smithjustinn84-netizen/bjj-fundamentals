@@ -2,10 +2,11 @@ import { assertNever } from '../../core/assertNever';
 import { ROLE_LABELS, TRANSITION_LABELS } from '../../core/labels';
 import type { Library } from '../../core/library';
 import type { StudyItem } from '../../core/study';
+import { TransitionArtwork } from '../graphics/Artwork';
 import { ConceptArtwork } from '../graphics/ConceptSvg';
 import { PositionArtwork } from '../graphics/PositionSvg';
 import { Bullets } from './common';
-import { TechniquePicture } from './TechniquePicture';
+import { ItemPicture } from './ItemPicture';
 
 const ARTWORK_CLASS = 'review-artwork';
 
@@ -44,7 +45,9 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
       if (!concept) return null;
       return (
         <>
-          <ConceptArtwork id={concept.id} name={concept.name} className={ARTWORK_CLASS} />
+          <ItemPicture kind="concept" id={concept.id} className={ARTWORK_CLASS}>
+            <ConceptArtwork id={concept.id} name={concept.name} className={ARTWORK_CLASS} />
+          </ItemPicture>
           <p className="lead">{concept.summary}</p>
           <Bullets items={concept.keyPoints} />
           {concept.drill && (
@@ -82,7 +85,9 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
       const to = transition.toId ? lib.positionById.get(transition.toId)?.name : null;
       return (
         <>
-          <TechniquePicture transition={transition} positionById={lib.positionById} className={ARTWORK_CLASS} />
+          <ItemPicture kind="transition" id={transition.id} className={ARTWORK_CLASS}>
+            <TransitionArtwork transition={transition} positionById={lib.positionById} className={ARTWORK_CLASS} />
+          </ItemPicture>
           {to && (
             <p className="lead">
               Ends in: <strong>{to}</strong>

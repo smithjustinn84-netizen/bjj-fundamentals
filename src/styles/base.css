@@ -453,7 +453,7 @@ legend {
   text-decoration: none;
   color: var(--text);
 }
-/* YouTube's player, in place of a technique's drawing. */
+/* YouTube's player, in place of a concept's or technique's drawing. */
 .video-player {
   max-width: 36rem;
   margin: 0 0 var(--space-4);

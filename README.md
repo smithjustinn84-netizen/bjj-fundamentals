@@ -2,11 +2,11 @@
 
 A small, fully client-side app for learning beginner Brazilian Jiu-Jitsu concepts, positions, and the techniques that connect them.
 
-- **No backend, no accounts, no API calls.** The one thing loaded from elsewhere is YouTube's player on techniques you have a video for. Everything is stored in your browser's IndexedDB (via Dexie.js).
+- **No backend, no accounts, no API calls.** The one thing loaded from elsewhere is YouTube's player on concepts and techniques you have a video for. Everything is stored in your browser's IndexedDB (via Dexie.js).
 - **Concepts** – posture, base, frames, shrimping, bridging, underhooks, grips, pressure, and tapping safely.
 - **Position map** – 8 core positions, with goals for each person and 20 starter sweeps, passes, escapes, takedowns, and submissions.
 - **Spaced-repetition review** – every concept, position, and technique is a flashcard (simplified SM-2). Keyboard: <kbd>Space</kbd> to reveal, <kbd>1</kbd>–<kbd>4</kbd> to grade.
-- **YouTube timestamp bookmarks** – paste a link (with `?t=` if you like) and attach it to any item. A technique's video plays on its page and on its review card; other bookmarks open on YouTube in a new tab.
+- **YouTube timestamp bookmarks** – paste a link (with `?t=` if you like) and attach it to any item. A concept's or technique's video plays on its page and on its review card; other bookmarks open on YouTube in a new tab.
 - **Backup** – one-click JSON export of everything, and import that replaces all data in a single transaction.
 - Everything is editable: add your own positions, techniques, concepts, and class notes.
 
