@@ -1,5 +1,5 @@
 import { assertNever } from './assertNever';
-import type { Concept, ItemKind, Position, ReviewState, Transition } from './models';
+import type { CardKind, Concept, ItemKind, Position, ReviewState, Transition } from './models';
 import { cardId } from './srs';
 
 /** An in-memory snapshot of everything the UI needs to render lists and look items up. */
@@ -40,7 +40,7 @@ export function buildLibrary(
 }
 
 /** The study card for an item, or undefined if it has never been reviewed. */
-export function reviewOf(lib: Library, kind: ItemKind, id: string): ReviewState | undefined {
+export function reviewOf(lib: Library, kind: CardKind, id: string): ReviewState | undefined {
   return lib.reviews.get(cardId(kind, id));
 }
 

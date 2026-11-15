@@ -1,8 +1,7 @@
 import { assertNever } from '../../core/assertNever';
 import { ROLE_LABELS, TRANSITION_LABELS } from '../../core/labels';
 import type { Library } from '../../core/library';
-import type { Transition } from '../../core/models';
-import { positionOptions } from '../../core/roles';
+import { findSituation, situationName } from '../../core/situations';
 import type { StudyItem } from '../../core/study';
 import { techniqueDrill } from '../../core/techniqueDrill';
 import { TransitionArtwork } from '../graphics/Artwork';
@@ -10,6 +9,7 @@ import { ConceptArtwork } from '../graphics/ConceptSvg';
 import { PositionArtwork } from '../graphics/PositionSvg';
 import { Bullets } from './common';
 import { ItemPicture } from './ItemPicture';
+import { TransitionList } from './TransitionLink';
 
 const ARTWORK_CLASS = 'review-artwork';
 
@@ -26,7 +26,7 @@ export function cardPrompt(item: StudyItem, lib: Library): { eyebrow: string; qu
       if (!position) return null;
       return {
         eyebrow: 'Position',
-        question: `${position.name}: what does each person want, and what can they do from here?`,
+        question: `${position.name}: what are the goals for each person?`,
       };
     }
     case 'transition': {
@@ -38,19 +38,14 @@ export function cardPrompt(item: StudyItem, lib: Library): { eyebrow: string; qu
         question: `How do you do the ${transition.name}?`,
       };
     }
+    case 'situation': {
+      const situation = findSituation(lib, item.id);
+      if (!situation) return null;
+      return { eyebrow: 'Situation', question: `${situationName(situation)}: what are your options?` };
+    }
     default:
       return assertNever(item.kind);
   }
-}
-
-/** What one person can do from a position, as a line of technique names under their goals. */
-function OptionNames({ techniques }: { techniques: Transition[] }) {
-  if (techniques.length === 0) return null;
-  return (
-    <p className="small">
-      <strong>Options:</strong> {techniques.map((t) => t.name).join(', ')}
-    </p>
-  );
 }
 
 /** The answer side of a review card: the item's picture, then what the student should have recalled. */
@@ -78,7 +73,6 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
       const position = lib.positionById.get(item.id);
       if (!position) return null;
       const [top, bottom] = ROLE_LABELS[position.category];
-      const options = positionOptions(lib, position.id);
       return (
         <>
           <PositionArtwork id={position.id} name={position.name} className={ARTWORK_CLASS} />
@@ -87,12 +81,10 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
             <div>
               <h3>{top}</h3>
               <Bullets items={position.topGoals} />
-              <OptionNames techniques={options.top} />
             </div>
             <div>
               <h3>{bottom}</h3>
               <Bullets items={position.bottomGoals} />
-              <OptionNames techniques={options.bottom} />
             </div>
           </div>
         </>
@@ -125,6 +117,21 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
               <strong>Drill:</strong> {drill}
             </p>
           )}
+        </>
+      );
+    }
+    case 'situation': {
+      const situation = findSituation(lib, item.id);
+      if (!situation) return null;
+      const { position, role, options } = situation;
+      const goals = role === 'top' ? position.topGoals : position.bottomGoals;
+      return (
+        <>
+          <PositionArtwork id={position.id} name={position.name} className={ARTWORK_CLASS} />
+          <h3>What you want</h3>
+          <Bullets items={goals} />
+          <h3>What you can do</h3>
+          <TransitionList transitions={options} positionById={lib.positionById} direction="out" />
         </>
       );
     }

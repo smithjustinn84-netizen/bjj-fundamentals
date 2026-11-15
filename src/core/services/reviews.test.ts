@@ -48,3 +48,26 @@ describe('resetProgress', () => {
     expect(await storage.concepts.get('base')).toBeDefined();
   });
 });
+
+describe('situation cards', () => {
+  const underMount = { kind: 'situation', id: 'mount:bottom' } as const;
+
+  it('are reviewed like any other card', async () => {
+    const { core, storage } = testCore();
+    await core.reviews.recordReview(underMount, 'again');
+    expect(await storage.reviews.get('situation:mount:bottom')).toMatchObject({ kind: 'situation', lapses: 1 });
+  });
+
+  it('stop counting as due once their side has no techniques left, and go when the position goes', async () => {
+    const { core, storage, clock } = testCore();
+    await core.reviews.recordReview(underMount, 'good');
+    clock.now += 2 * DAY_MS;
+    expect(await core.queries.dueCount()).toBe(1);
+
+    for (const id of ['upa-escape', 'elbow-knee-escape']) await core.items.deleteItem('transition', id);
+    expect(await core.queries.dueCount()).toBe(0);
+
+    await core.items.deleteItem('position', 'mount');
+    expect(await storage.reviews.get('situation:mount:bottom')).toBeUndefined();
+  });
+});

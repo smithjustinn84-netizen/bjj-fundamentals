@@ -13,10 +13,15 @@ import { EmptyState } from '../graphics/EmptyState';
 import { Icon } from '../graphics/icons';
 import { prefersReducedMotion } from '../graphics/motion';
 import { ProgressBar } from '../graphics/ProgressBar';
-import { DECK_PARAM, itemPath, ROUTES } from '../routes';
+import { DECK_PARAM, ROUTES, studyItemPath } from '../routes';
 import { type GradeTally, useReviewSession } from './useReviewSession';
 
-const DECK_LABELS: Record<Deck, string> = { all: 'Everything', ...KIND_GROUP_LABELS, blueBelt: 'Blue belt test' };
+const DECK_LABELS: Record<Deck, string> = {
+  all: 'Everything',
+  ...KIND_GROUP_LABELS,
+  situation: 'Situations',
+  blueBelt: 'Blue belt test',
+};
 /** Keyboard shortcut for each grade: its place in the row, starting from 1. */
 const GRADE_BUTTONS = GRADES.map((grade, index) => ({ grade, label: GRADE_LABELS[grade], key: String(index + 1) }));
 const DECK_LABEL_ID = 'review-deck-label';
@@ -265,7 +270,7 @@ export default function Review() {
               <div className="answer">
                 <CardAnswer item={current} lib={lib} />
                 <p className="small">
-                  <Link to={itemPath(current.kind, current.id)} target="_blank">
+                  <Link to={studyItemPath(current)} target="_blank">
                     Open full page ↗
                   </Link>
                 </p>

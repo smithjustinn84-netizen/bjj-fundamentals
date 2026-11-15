@@ -1,22 +1,44 @@
 import { assertNever } from './assertNever';
 import { isOnBlueBeltTest } from './beltTest';
-import { type Library, reviewOf } from './library';
-import type { Deck, ItemKind } from './models';
+import { itemName, type Library, reviewOf } from './library';
+import type { CardKind, Deck } from './models';
+import { allSituations, findSituation, situationId, situationName } from './situations';
 import { cardId, isLearned } from './srs';
 
 /** One thing that can be studied as a flashcard. */
 export interface StudyItem {
-  kind: ItemKind;
+  kind: CardKind;
+  /** The item's id, or for a situation its `situationId`. */
   id: string;
 }
 
-/** Every card, in learning order: concepts, then positions, then the techniques that connect them. */
+/**
+ * Every card, in learning order: concepts, then positions, then the techniques that connect them, then the
+ * situations that ask which of those techniques you have from each side of each position.
+ */
 function allStudyItems(lib: Library): StudyItem[] {
   return [
     ...lib.concepts.map((c) => ({ kind: 'concept' as const, id: c.id })),
     ...lib.positions.map((p) => ({ kind: 'position' as const, id: p.id })),
     ...lib.transitions.map((t) => ({ kind: 'transition' as const, id: t.id })),
+    ...allSituations(lib).map((s) => ({ kind: 'situation' as const, id: situationId(s.position.id, s.role) })),
   ];
+}
+
+/** What a card is called in a list, or null if what it was about no longer exists. */
+export function cardName(lib: Library, item: StudyItem): string | null {
+  switch (item.kind) {
+    case 'concept':
+    case 'position':
+    case 'transition':
+      return itemName(lib, item.kind, item.id);
+    case 'situation': {
+      const situation = findSituation(lib, item.id);
+      return situation ? situationName(situation) : null;
+    }
+    default:
+      return assertNever(item.kind);
+  }
 }
 
 export interface StudyQueue {
@@ -37,6 +59,7 @@ function isInDeck(lib: Library, deck: Deck, item: StudyItem): boolean {
     case 'concept':
     case 'position':
     case 'transition':
+    case 'situation':
       return item.kind === deck;
     case 'blueBelt': {
       const technique = item.kind === 'transition' ? lib.transitionById.get(item.id) : undefined;

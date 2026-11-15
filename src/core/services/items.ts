@@ -1,7 +1,8 @@
 import { assertNever } from '../assertNever';
 import type { CoreEnv } from '../core';
-import { type Concept, endsTheRoll, type ItemKind, type Position, type Transition } from '../models';
+import { type Concept, endsTheRoll, type ItemKind, POSITION_ROLES, type Position, type Transition } from '../models';
 import { starterContent } from '../seed';
+import { situationId } from '../situations';
 import { cardId } from '../srs';
 import { findMissingStarterConcepts, findMissingStarterTechniques, linkAddedConcepts } from '../starter';
 import type { Repository } from '../storage';
@@ -56,6 +57,7 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
     const touchingIds = touching.map((t) => t.id);
     await unlinkVideos('transition', touchingIds);
     await unlinkFromTrainingLog(touchingIds);
+    for (const role of POSITION_ROLES) await storage.reviews.remove(cardId('situation', situationId(id, role)));
     await storage.positions.remove(id);
   }
 

@@ -1,4 +1,5 @@
 import {
+  CARD_KINDS,
   type Concept,
   GRADES,
   ITEM_KINDS,
@@ -24,7 +25,7 @@ import { isYouTubeId } from './youtube';
 
 export const BACKUP_APP = 'bjj-fundamentals';
 /** Bump when the shape of any table changes, and teach `validateBackup` to accept the older shape. */
-export const BACKUP_SCHEMA_VERSION = 6;
+export const BACKUP_SCHEMA_VERSION = 7;
 
 export interface BackupData {
   positions: Position[];
@@ -132,7 +133,8 @@ const SCHEMAS: { [T in BackupTable]: Schema<BackupData[T][number]> } = {
   },
   reviews: {
     id,
-    kind: oneOf(ITEM_KINDS),
+    // 'situation' cards arrived with schema 7.
+    kind: oneOf(CARD_KINDS),
     itemId: id,
     ease: num,
     intervalDays: num,

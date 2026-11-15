@@ -2,10 +2,10 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useLibrary, useStudyStats, useTrainingLog, useVideos } from '../../bindings';
 import { BELT_LABELS } from '../../core/labels';
-import { itemName, reviewOf } from '../../core/library';
+import { reviewOf } from '../../core/library';
 import { beltRank } from '../../core/rank';
 import { cardId } from '../../core/srs';
-import { progressSummary, STICKING_POINT_LIMIT, stickingPoints } from '../../core/study';
+import { cardName, progressSummary, STICKING_POINT_LIMIT, stickingPoints } from '../../core/study';
 import { formatClassCount, formatMatTime, trainingSummary } from '../../core/trainingLog';
 import { Loading, ProgressDot } from '../components/common';
 import { LibrarySearch } from '../components/LibrarySearch';
@@ -14,7 +14,7 @@ import { Belt } from '../graphics/Belt';
 import { Icon, type IconName } from '../graphics/icons';
 import { ProgressRing } from '../graphics/ProgressRing';
 import { useCountUp } from '../graphics/useCountUp';
-import { itemPath, ROUTES } from '../routes';
+import { itemPath, ROUTES, studyItemPath } from '../routes';
 
 function reviewButtonLabel(dueCount: number, started: number): string {
   if (dueCount > 0) return `Review ${dueCount} card${dueCount === 1 ? '' : 's'}`;
@@ -243,8 +243,8 @@ export default function Home() {
           <ul className="chip-list">
             {sticking.map((item) => (
               <li key={`${item.kind}:${item.id}`}>
-                <Link to={itemPath(item.kind, item.id)} className="chip">
-                  <ProgressDot state={reviewOf(lib, item.kind, item.id)} /> {itemName(lib, item.kind, item.id)}
+                <Link to={studyItemPath(item)} className="chip">
+                  <ProgressDot state={reviewOf(lib, item.kind, item.id)} /> {cardName(lib, item)}
                 </Link>
               </li>
             ))}

@@ -110,8 +110,15 @@ export interface TrainingEntry {
 export const ITEM_KINDS = ['concept', 'position', 'transition'] as const;
 export type ItemKind = (typeof ITEM_KINDS)[number];
 
-/** What a review session can draw from: everything, one kind, or the techniques on the blue belt test. */
-export const DECKS = ['all', ...ITEM_KINDS, 'blueBelt'] as const;
+/**
+ * What a study card can be about: one item, or a situation (one side of one position, see `core/situations.ts`).
+ * A situation is not an item: it has no page, form or row of its own, only a card.
+ */
+export const CARD_KINDS = [...ITEM_KINDS, 'situation'] as const;
+export type CardKind = (typeof CARD_KINDS)[number];
+
+/** What a review session can draw from: everything, one kind of card, or the techniques on the blue belt test. */
+export const DECKS = ['all', ...CARD_KINDS, 'blueBelt'] as const;
 export type Deck = (typeof DECKS)[number];
 
 export function isItemKind(value: unknown): value is ItemKind {
@@ -134,7 +141,7 @@ export interface VideoBookmark {
 /** Spaced-repetition state for one study card. id = `${kind}:${itemId}`. */
 export interface ReviewState {
   id: string;
-  kind: ItemKind;
+  kind: CardKind;
   itemId: string;
   ease: number;
   intervalDays: number;

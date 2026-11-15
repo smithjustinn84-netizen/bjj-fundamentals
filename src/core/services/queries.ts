@@ -4,6 +4,7 @@ import type { Concept, ItemKind, TrainingEntry, Transition, VideoBookmark } from
 import { starterContent } from '../seed';
 import { DAY_MS, streakDays } from '../srs';
 import { findMissingStarterConcepts, findMissingStarterTechniques } from '../starter';
+import { buildQueue } from '../study';
 import { newestFirst } from '../trainingLog';
 
 /** How far back to look when computing the streak. Streaks longer than this are capped. */
@@ -16,21 +17,26 @@ export interface StudyStats {
 
 /** Read-only views of the stored data, shaped for display. */
 export function createQueries({ storage, now }: CoreEnv) {
+  async function library(): Promise<Library> {
+    const [concepts, positions, transitions, reviews] = await Promise.all([
+      storage.concepts.all(),
+      storage.positions.all(),
+      storage.transitions.all(),
+      storage.reviews.all(),
+    ]);
+    return buildLibrary(concepts, positions, transitions, reviews);
+  }
+
+  /**
+   * Counted from the queue a review would show, not from the stored cards: a situation card whose side
+   * has lost its last technique stays stored but can no longer be studied, and must not be counted as due.
+   */
   async function dueCount(): Promise<number> {
-    const timestamp = now();
-    return (await storage.reviews.all()).filter((review) => review.due <= timestamp).length;
+    return buildQueue(await library(), 'all', 0, now()).due.length;
   }
 
   return {
-    async library(): Promise<Library> {
-      const [concepts, positions, transitions, reviews] = await Promise.all([
-        storage.concepts.all(),
-        storage.positions.all(),
-        storage.transitions.all(),
-        storage.reviews.all(),
-      ]);
-      return buildLibrary(concepts, positions, transitions, reviews);
-    },
+    library,
 
     dueCount,
 

@@ -1,5 +1,7 @@
 import { assertNever } from '../core/assertNever';
 import type { Deck, ItemKind } from '../core/models';
+import { situationPositionId } from '../core/situations';
+import type { StudyItem } from '../core/study';
 
 /** Every path in the app is built here, so a route can be renamed in one place. */
 export const ROUTES = {
@@ -45,6 +47,20 @@ export function itemPath(kind: ItemKind, id: string): string {
       return `${ROUTES.transitions}/${id}`;
     default:
       return assertNever(kind);
+  }
+}
+
+/** The page that says the most about a study card: the item's own, or for a situation its position's. */
+export function studyItemPath(item: StudyItem): string {
+  switch (item.kind) {
+    case 'concept':
+    case 'position':
+    case 'transition':
+      return itemPath(item.kind, item.id);
+    case 'situation':
+      return itemPath('position', situationPositionId(item.id));
+    default:
+      return assertNever(item.kind);
   }
 }
 

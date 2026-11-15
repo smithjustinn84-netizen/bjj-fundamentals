@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { reviews } from '../../bindings';
-import { itemName, type Library } from '../../core/library';
+import type { Library } from '../../core/library';
 import { GRADES, type Grade } from '../../core/models';
-import type { StudyItem } from '../../core/study';
+import { cardName, type StudyItem } from '../../core/study';
 
 type SessionStatus = 'idle' | 'active' | 'finished';
 
@@ -27,7 +27,7 @@ export function useReviewSession(lib: Library | undefined) {
   const status: SessionStatus = queue === null ? 'idle' : current ? 'active' : 'finished';
 
   // If the current card's item was deleted mid-session (e.g. in another tab), drop it.
-  const currentIsGone = !!lib && !!current && itemName(lib, current.kind, current.id) === null;
+  const currentIsGone = !!lib && !!current && cardName(lib, current) === null;
   useEffect(() => {
     if (currentIsGone && current) setQueue((q) => (q ? q.filter((item) => item !== current) : q));
   }, [currentIsGone, current]);

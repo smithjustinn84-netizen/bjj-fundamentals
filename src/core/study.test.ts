@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildLibrary } from './library';
 import type { ReviewState } from './models';
 import { DAY_MS } from './srs';
-import { buildQueue, progressSummary, stickingPoints } from './study';
+import { buildQueue, cardName, progressSummary, stickingPoints } from './study';
 import { concept, position, review, transition } from './testing/testFixtures';
 
 const NOW = 1_000_000_000_000;
@@ -24,7 +24,8 @@ describe('buildQueue', () => {
     ]);
     const { queue, due, fresh } = buildQueue(lib, 'all', 1, NOW);
     expect(due.map((i) => i.id)).toEqual(['c3', 'p1']);
-    expect(fresh.map((i) => i.id)).toEqual(['c2', 't1']);
+    // The one technique is a sweep, so the bottom side of its position has a situation card too.
+    expect(fresh.map((i) => i.id)).toEqual(['c2', 't1', 'p1:bottom']);
     expect(queue.map((i) => i.id)).toEqual(['c3', 'p1', 'c2']);
   });
 
@@ -53,8 +54,14 @@ describe('buildQueue', () => {
     const result = buildQueue(lib, 'all', 2, NOW, ['t3', 't2', 't1']);
     expect(result.queue.map((i) => i.id)).toEqual(['t3', 't1']);
     expect(result.fromClass).toBe(2);
-    expect(result.fresh.map((i) => i.id)).toEqual(['t3', 't1', 'c1', 'c2', 'c3', 'p1']);
+    expect(result.fresh.map((i) => i.id)).toEqual(['t3', 't1', 'c1', 'c2', 'c3', 'p1', 'p1:bottom']);
     expect(buildQueue(lib, 'concept', 2, NOW, ['t3']).fromClass).toBe(0);
+  });
+
+  it('has a situations deck with one card per side of a position that has options, after the techniques', () => {
+    const lib = buildLibrary(concepts, positions, transitions, []);
+    expect(buildQueue(lib, 'situation', 10, NOW).queue).toEqual([{ kind: 'situation', id: 'p1:bottom' }]);
+    expect(buildQueue(lib, 'all', 10, NOW).queue.at(-1)).toEqual({ kind: 'situation', id: 'p1:bottom' });
   });
 
   it('adds no new cards when the limit is zero', () => {
@@ -69,7 +76,7 @@ describe('progressSummary', () => {
       card('concept', 'c1', { intervalDays: 8 }),
       card('concept', 'c2', { intervalDays: 1 }),
     ]);
-    expect(progressSummary(lib)).toEqual({ total: 5, started: 2, learned: 1, percentLearned: 20 });
+    expect(progressSummary(lib)).toEqual({ total: 6, started: 2, learned: 1, percentLearned: 17 });
   });
 
   it('is zero for an empty library', () => {
@@ -92,5 +99,15 @@ describe('stickingPoints', () => {
 
   it('is empty before anything has been forgotten', () => {
     expect(stickingPoints(buildLibrary(concepts, positions, transitions, []), 5)).toEqual([]);
+  });
+});
+
+describe('cardName', () => {
+  it('names an item by its name and a situation by its position and side, or null once it is gone', () => {
+    const lib = buildLibrary(concepts, positions, transitions, []);
+    expect(cardName(lib, { kind: 'transition', id: 't1' })).toBe('Transition');
+    expect(cardName(lib, { kind: 'situation', id: 'p1:bottom' })).toBe('Position, Bottom (guard player) side');
+    expect(cardName(lib, { kind: 'situation', id: 'p1:top' })).toBeNull();
+    expect(cardName(lib, { kind: 'concept', id: 'gone' })).toBeNull();
   });
 });

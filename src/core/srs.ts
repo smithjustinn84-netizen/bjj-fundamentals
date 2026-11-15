@@ -1,5 +1,5 @@
 import { assertNever } from './assertNever';
-import type { Grade, ItemKind, ReviewState } from './models';
+import type { CardKind, Grade, ReviewState } from './models';
 
 /** A simplified SM-2 scheduler. Pure functions so they are easy to test. */
 
@@ -30,11 +30,11 @@ const LEARNED_INTERVAL_DAYS = 3;
 const DAYS_PER_MONTH = 30;
 const DAYS_PER_YEAR = 365;
 
-export function cardId(kind: ItemKind, itemId: string): string {
+export function cardId(kind: CardKind, itemId: string): string {
   return `${kind}:${itemId}`;
 }
 
-export function newReviewState(kind: ItemKind, itemId: string, now: number): ReviewState {
+export function newReviewState(kind: CardKind, itemId: string, now: number): ReviewState {
   return {
     id: cardId(kind, itemId),
     kind,
