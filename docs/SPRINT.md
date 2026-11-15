@@ -13,7 +13,7 @@ Small, independent fixes. Each can ship alone. The first five were done on 2026-
 - [x] **"Session complete" counts the wrong deck.** The "more waiting" count always uses the `all` deck, whatever deck was studied (`ui/pages/Review.tsx:55`).
 - [x] **"Keep going" does not keep going.** It returns to the options screen instead of starting another round (`Review.tsx`).
 - [x] **The safety concept is linked to no position.** "Tap early, tap often" is the only concept no position lists. Link it where submissions happen (closed guard, mount, back control, side control).
-- [ ] **Tighten the tripod sweep step.** The step is loose about which foot goes on the hip; confirm against how it is taught and fix the wording in `core/seed.ts`.
+- [x] **Tighten the tripod sweep step.** Done 2026-11-15 from written instructions (the video was not watched): the hip foot goes on the same side as the gripped ankle, the other foot hooks the far leg, and the push goes back, not up. The step is loose about which foot goes on the hip; confirm against how it is taught and fix the wording in `core/seed.ts`.
 - [ ] **Skim the new starter videos.** 19 were added on 2026-11-14 and 15 (17 techniques, 2 concepts). Their ids were checked as real and embeddable, but matched by title only. Swap any that teach a different variation from the written steps.
 
 ## 2. "What do I do here?" cards (M)

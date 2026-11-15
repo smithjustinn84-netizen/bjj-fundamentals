@@ -1005,13 +1005,15 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     endRole: 'top',
     steps: [
       'With them standing over your open guard, grip one of their ankles behind the heel',
-      'Put one foot on their hip and hook your other foot behind the knee of their free leg',
-      'Push with the foot on the hip while you pull the hook and the ankle toward you, so they sit down backward',
+      'Put your foot on their hip on the same side as the ankle you are holding, with your knee slightly bent',
+      'Hook your other foot behind their far leg, at the ankle or just behind the knee',
+      'Push the hip away from you, back and not straight up, while you pull the hook and the ankle toward you, so they sit down backward',
       'Keep hold of the ankle and do a technical stand-up to come up over their legs',
       'Stay on top and start passing: you are now the top person in their open guard',
     ],
     commonMistakes: [
       'Letting go of the ankle, so they just step back',
+      'Pushing the hip straight up, so they step over your foot',
       'Staying on your back after they fall instead of coming up straight away',
     ],
     drill:
