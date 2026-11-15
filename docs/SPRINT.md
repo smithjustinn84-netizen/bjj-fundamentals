@@ -66,6 +66,6 @@ No serious defects. Fixed on 2026-11-15:
 
 Left as they are:
 
-- [ ] **Check the americana defence, step 3.** "Turn onto your side toward the trapped arm" turns you away from the person on top, which the side control escape lists as a mistake; the drill says "turn in". Needs an instructor's eye, like the tripod sweep.
+- [x] **Check the americana defence, step 3.** Checked 2026-11-15 against written instructions (the video was not watched): turning toward the trapped arm is how it is taught. The step now says to turn only far enough to free the elbow and then face them again, and the drill no longer says "turn in". "Turn onto your side toward the trapped arm" turns you away from the person on top, which the side control escape lists as a mistake; the drill says "turn in". Needs an instructor's eye, like the tripod sweep.
 - Situation cards count toward overall progress, so an existing library's belt on Home drops a little after updating. Intended.
 - Saving a log entry that another tab deleted brings it back. Items behave the same way.

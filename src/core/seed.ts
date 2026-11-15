@@ -1234,17 +1234,18 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     steps: [
       'Under side control, keep your elbows in and your hands near your face: never leave an arm flat on the mat above your shoulder',
       'If they pin your wrist to the mat, grab that wrist or hand with your free hand straight away',
-      'Turn onto your side toward the trapped arm and bring that elbow down to your ribs',
-      'With the elbow back at your side, rebuild your frames and start your side control escape',
+      'Turn toward the trapped arm, only as far as it takes to slide that elbow down to your ribs, and keep it glued there',
+      'With the elbow back at your side, turn back to face them, rebuild your frames and start your side control escape',
       'If your elbow is being lifted and your shoulder is tight, tap',
     ],
     commonMistakes: [
       'Pushing on their head or chest with a bent arm, which hands them the wrist',
       'Bridging wildly with the arm still pinned',
       'Waiting until the figure-four grip is locked before defending',
+      'Staying turned away once the elbow is free, which gives up your back',
     ],
     drill:
-      'Your partner pins your wrist from side control and stops before lifting the elbow. Grab your own hand, turn in and bring the elbow to your ribs. 5 reps on each side.',
+      'Your partner pins your wrist from side control and stops before lifting the elbow. Grab your own hand, turn toward the pinned arm and bring the elbow to your ribs, then turn back to face them. 5 reps on each side.',
   },
   // Mount
   {
