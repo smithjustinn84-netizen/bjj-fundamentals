@@ -75,7 +75,9 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
       const [top, bottom] = ROLE_LABELS[position.category];
       return (
         <>
-          <PositionArtwork id={position.id} name={position.name} className={ARTWORK_CLASS} />
+          <ItemPicture kind="position" id={position.id} className={ARTWORK_CLASS}>
+            <PositionArtwork id={position.id} name={position.name} className={ARTWORK_CLASS} />
+          </ItemPicture>
           <p className="lead">{position.summary}</p>
           <div className="two-col">
             <div>

@@ -5,7 +5,7 @@ import { useOnline } from '../useOnline';
 import { VideoPlayer } from './VideoPlayer';
 
 /**
- * The picture at the top of a concept or technique: its bookmarked video when it has one and there
+ * The picture at the top of a study item: its bookmarked video when it has one and there
  * is a connection to play it, otherwise the drawing passed as children.
  */
 export function ItemPicture({

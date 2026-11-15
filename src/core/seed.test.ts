@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { endsTheRoll } from './models';
 import { starterContent } from './seed';
+import { isYouTubeId } from './youtube';
 
 describe('starter content', () => {
   const starter = starterContent(0);
@@ -8,6 +9,12 @@ describe('starter content', () => {
   it('uses each id once across concepts, positions and techniques, since dismissals are keyed by id alone', () => {
     const ids = [...starter.concepts, ...starter.positions, ...starter.transitions].map((row) => row.id);
     expect(ids.length).toBe(new Set(ids).size);
+  });
+
+  it('gives every starter video a unique id and a valid YouTube id', () => {
+    const ids = starter.videos.map((v) => v.id);
+    expect(ids.length).toBe(new Set(ids).size);
+    expect(starter.videos.filter((v) => !isYouTubeId(v.youtubeId)).map((v) => v.id)).toEqual([]);
   });
 
   it('only links positions to starter concepts', () => {

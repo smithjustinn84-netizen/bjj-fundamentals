@@ -35,4 +35,25 @@ describe('Dexie schema upgrades', () => {
     const storage = createDexieStorage({ name, initialData });
     expect((await storage.videos.all()).length).toBe(initialData.videos.length);
   });
+
+  it('adds newly seeded starter videos when upgrading a version 5 database', async () => {
+    const name = 'upgrade-v5-to-v6';
+    const v5 = new Dexie(name);
+    v5.version(5).stores({
+      positions: 'id, category, order, name',
+      transitions: 'id, type, fromId, toId, name',
+      concepts: 'id, order, name',
+      videos: 'id, youtubeId, [linkedKind+linkedId], createdAt',
+      reviews: 'id, kind, itemId, due',
+      reviewLog: '++id, cardId, reviewedAt',
+      starterDismissals: 'id',
+      trainingLog: 'id, day',
+    });
+    await v5.open();
+    v5.close();
+
+    const initialData = starterContent(1000);
+    const storage = createDexieStorage({ name, initialData });
+    expect((await storage.videos.all()).length).toBe(initialData.videos.length);
+  });
 });

@@ -6,6 +6,7 @@ import { POSITION_ROLES } from '../../core/models';
 import { positionOptions } from '../../core/roles';
 import { positionProgress } from '../../core/todaysDrill';
 import { Bullets, Loading, Missing, NotesBlock, Pager, Section, StudyStatusPill } from '../components/common';
+import { ItemPicture } from '../components/ItemPicture';
 import { NO_TECHNIQUES_FROM_HERE, TransitionList } from '../components/TransitionLink';
 import { LinkedVideos } from '../components/VideoList';
 import { PositionArtwork } from '../graphics/PositionSvg';
@@ -45,7 +46,9 @@ export default function PositionDetail() {
         </Link>
       </div>
       <div className="card">
-        <PositionArtwork id={position.id} name={position.name} />
+        <ItemPicture kind="position" id={position.id}>
+          <PositionArtwork id={position.id} name={position.name} />
+        </ItemPicture>
         <div className="two-col">
           <Section title={top}>
             <Bullets items={position.topGoals} />
