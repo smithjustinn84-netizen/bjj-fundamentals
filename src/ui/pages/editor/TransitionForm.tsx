@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { items } from '../../../bindings';
+import { isOnBlueBeltTest } from '../../../core/beltTest';
 import { TRANSITION_LABELS } from '../../../core/labels';
 import { TRANSITION_TYPES, type Transition, type TransitionType } from '../../../core/models';
 import type { TransitionInput } from '../../../core/services/items';
@@ -13,6 +14,7 @@ interface Draft {
   toId: string;
   steps: string;
   commonMistakes: string;
+  blueBeltTest: boolean;
   notes: string;
 }
 
@@ -24,6 +26,7 @@ function toDraft(transition: Transition | undefined, defaultFromId: string): Dra
     toId: transition?.toId ?? '',
     steps: fromLines(transition?.steps ?? []),
     commonMistakes: fromLines(transition?.commonMistakes ?? []),
+    blueBeltTest: transition ? isOnBlueBeltTest(transition) : false,
     notes: transition?.notes ?? '',
   };
 }
@@ -37,6 +40,7 @@ function fromDraft(draft: Draft): TransitionInput {
     toId: draft.type === 'submission' ? '' : draft.toId,
     steps: toLines(draft.steps),
     commonMistakes: toLines(draft.commonMistakes),
+    blueBeltTest: draft.blueBeltTest,
     notes: draft.notes.trim(),
   };
 }
@@ -99,6 +103,10 @@ export function TransitionForm({ itemId, library, cancelTo, onSaved, onDelete }:
       <Field label="Common mistakes" hint="One per line.">
         <textarea rows={3} value={draft.commonMistakes} onChange={(e) => set('commonMistakes', e.target.value)} />
       </Field>
+      <label className="check">
+        <input type="checkbox" checked={draft.blueBeltTest} onChange={(e) => set('blueBeltTest', e.target.checked)} />
+        On the blue belt test
+      </label>
       <NotesField value={draft.notes} onChange={(v) => set('notes', v)} />
     </FormShell>
   );

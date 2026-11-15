@@ -417,6 +417,11 @@ legend {
 .type-transition {
   --type-color: var(--type-transition);
 }
+/* Marks a technique that is on the blue belt test; links to that list. */
+.tag-blue-belt {
+  --type-color: var(--belt-blue);
+  text-decoration: none;
+}
 .dot {
   display: inline-block;
   width: 0.65rem;

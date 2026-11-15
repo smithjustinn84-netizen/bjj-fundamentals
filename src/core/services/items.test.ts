@@ -62,3 +62,51 @@ describe('deleting items', () => {
     expect(await storage.positions.count()).toBe(positionsBefore);
   });
 });
+
+describe('adding missing starter techniques', () => {
+  it('adds back what is missing without touching stored techniques, and only once', async () => {
+    const { core, storage, clock } = testCore();
+    const before = await storage.transitions.count();
+    expect(await core.queries.missingStarterTechniques()).toEqual([]);
+
+    await core.items.deleteItem('transition', 'triangle-choke');
+    await core.items.deleteItem('transition', 'kimura-guard');
+    const edited = await storage.transitions.get('scissor-sweep');
+    if (!edited) throw new Error('starter content has no scissor sweep');
+    await storage.transitions.put({ ...edited, notes: 'mine' });
+    expect((await core.queries.missingStarterTechniques()).map((t) => t.id)).toEqual([
+      'triangle-choke',
+      'kimura-guard',
+    ]);
+
+    clock.now += 5000;
+    expect(await core.items.addMissingStarterTechniques()).toBe(2);
+    expect(await storage.transitions.count()).toBe(before);
+    expect(await storage.transitions.get('triangle-choke')).toMatchObject({ blueBeltTest: true, createdAt: clock.now });
+    expect(await storage.transitions.get('scissor-sweep')).toMatchObject({ notes: 'mine' });
+    // Deleting a technique keeps its bookmark, unlinked, so only that one is not re-added.
+    expect(await storage.videos.get('video-triangle-choke')).toMatchObject({ linkedId: '' });
+
+    expect(await core.items.addMissingStarterTechniques()).toBe(0);
+  });
+
+  it('brings the starter video for a technique the library never had', async () => {
+    const { core, storage } = testCore();
+    // A library set up before the armbar from mount was added to the starter content.
+    await storage.transitions.remove('armbar-mount');
+    await storage.videos.remove('video-armbar-mount');
+
+    expect(await core.items.addMissingStarterTechniques()).toBe(1);
+    expect(await storage.videos.get('video-armbar-mount')).toMatchObject({
+      linkedKind: 'transition',
+      linkedId: 'armbar-mount',
+    });
+  });
+
+  it('skips techniques whose position was deleted', async () => {
+    const { core, storage } = testCore();
+    await core.items.deleteItem('position', 'mount');
+    expect(await core.items.addMissingStarterTechniques()).toBe(0);
+    expect((await storage.transitions.all()).some((t) => t.fromId === 'mount' || t.toId === 'mount')).toBe(false);
+  });
+});

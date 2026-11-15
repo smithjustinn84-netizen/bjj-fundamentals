@@ -38,6 +38,11 @@ export interface Transition {
   toId: string;
   steps: string[];
   commonMistakes: string[];
+  /**
+   * Whether the technique is on the blue belt test list. Rows saved before this field existed do not
+   * have it, so read it through `isOnBlueBeltTest`, which supplies the default.
+   */
+  blueBeltTest?: boolean;
   notes: string;
   createdAt: number;
   updatedAt: number;

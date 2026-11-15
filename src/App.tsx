@@ -5,6 +5,7 @@ import { ErrorBoundary } from './ui/components/ErrorBoundary';
 import { BrandMark } from './ui/graphics/BrandMark';
 import { Icon } from './ui/graphics/icons';
 import Backup from './ui/pages/Backup';
+import BlueBelt from './ui/pages/BlueBelt';
 import ConceptDetail from './ui/pages/ConceptDetail';
 import Concepts from './ui/pages/Concepts';
 import EditorPage from './ui/pages/editor/EditorPage';
@@ -61,6 +62,10 @@ export default function App() {
             <Icon name="map" />
             Positions
           </NavLink>
+          <NavLink to={ROUTES.blueBelt}>
+            <Icon name="belt" />
+            Blue belt
+          </NavLink>
           <ErrorBoundary>
             <ReviewNavLink />
           </ErrorBoundary>
@@ -84,6 +89,7 @@ export default function App() {
             <Route path={ROUTES.positions} element={<Positions />} />
             <Route path={`${ROUTES.positions}/:id`} element={<PositionDetail />} />
             <Route path="/transitions/:id" element={<TransitionDetail />} />
+            <Route path={ROUTES.blueBelt} element={<BlueBelt />} />
             <Route path={ROUTES.review} element={<Review />} />
             <Route path={ROUTES.videos} element={<Videos />} />
             <Route path={ROUTES.backup} element={<Backup />} />

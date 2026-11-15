@@ -6,6 +6,7 @@ export const ROUTES = {
   home: '/',
   concepts: '/learn',
   positions: '/positions',
+  blueBelt: '/blue-belt',
   review: '/review',
   videos: '/videos',
   backup: '/backup',

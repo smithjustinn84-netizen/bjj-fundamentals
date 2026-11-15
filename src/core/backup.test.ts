@@ -34,6 +34,11 @@ describe('validateBackup', () => {
     expect(backup.data.reviewLog[0]?.grade).toBe('good');
   });
 
+  it('accepts techniques with or without the blue belt flag, which older backups lack', () => {
+    const backup = validateBackup(file({ transitions: [transition(), transition({ id: 't2', blueBeltTest: true })] }));
+    expect(backup.data.transitions.map((t) => t.blueBeltTest)).toEqual([undefined, true]);
+  });
+
   it('treats missing tables as empty', () => {
     const backup = validateBackup(file({ concepts: [concept()] }));
     expect(backup.data.videos).toEqual([]);
@@ -51,6 +56,11 @@ describe('validateBackup', () => {
     ['a missing id', file({ positions: [{ ...position(), id: '' }] }), /"positions" entry 1: "id"/],
     ['a missing list field', file({ concepts: [{ ...concept(), keyPoints: undefined }] }), /"keyPoints"/],
     ['a list with non-strings', file({ transitions: [{ ...transition(), steps: [1] }] }), /"steps"/],
+    [
+      'a belt test flag that is not true or false',
+      file({ transitions: [{ ...transition(), blueBeltTest: 'yes' }] }),
+      /"blueBeltTest"/,
+    ],
     ['an unknown category', file({ positions: [{ ...position(), category: 'flying' }] }), /"category"/],
     ['a non-YouTube id', file({ videos: [{ ...validVideo, youtubeId: 'javascript:1' }] }), /"youtubeId"/],
     ['a negative start time', file({ videos: [{ ...validVideo, startSeconds: -1 }] }), /"startSeconds"/],

@@ -8,7 +8,7 @@ import { useCallback } from 'react';
 import type { BackupTable } from '../core/backup';
 import { createCore } from '../core/core';
 import type { Library } from '../core/library';
-import type { ItemKind, VideoBookmark } from '../core/models';
+import type { ItemKind, Transition, VideoBookmark } from '../core/models';
 import { starterContent } from '../core/seed';
 import type { StudyStats } from '../core/services/queries';
 import { createDexieStorage } from '../storage/dexieStorage';
@@ -37,6 +37,10 @@ export function useDueCount(): number {
 
 export function useStudyStats(): StudyStats | undefined {
   return useQuery(subscribe, queries.studyStats);
+}
+
+export function useMissingStarterTechniques(): Transition[] | undefined {
+  return useQuery(subscribe, queries.missingStarterTechniques);
 }
 
 export function useVideos(): VideoBookmark[] | undefined {

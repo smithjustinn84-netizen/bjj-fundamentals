@@ -17,6 +17,8 @@ The day-to-day rules are in [AGENTS.md](../AGENTS.md). This page explains why th
    src/core   ┌──────────────────────────────────────────────────────────┐
               │ models · srs · study · library · backup · youtube · seed │  plain TypeScript
               │ rank · mapLayout · figure  ← numbers behind the graphics │
+              │ beltTest  ← which techniques are on the blue belt test   │
+              │ starter   ← starter techniques an older library lacks    │
               │ storage.ts   ← the AppStorage interface                  │  no DOM, no browser,
               │ services/    ← all app logic, written against AppStorage │  no React, no Dexie
               │ core.ts      ← createCore({ storage, newId, now })       │
@@ -54,6 +56,7 @@ The interface is deliberately small. Filtering, sorting, cascading deletes and b
 | --- | --- | --- |
 | Narrow CRUD interface, logic in core | Maximum portability, minimum per-engine code. Data is tens to hundreds of rows. | Tables reach tens of thousands of rows; then add specific indexed reads to the interface, as `reviewLog.since` already is. |
 | Engines insert `initialData` on first creation | Every engine has a natural "database created" hook (Dexie `populate`, SQLite `user_version`), so no startup step or seeding flag is needed. Core still owns the content. | An engine has no such hook. |
+| Starter techniques added to the app later are offered to existing libraries (`core/starter.ts`, `items.addMissingStarterTechniques`), not inserted automatically | `initialData` is only inserted once, and there is nowhere to record that an update has run, so an automatic insert would bring back techniques the user deleted on purpose. A button leaves that choice with the user. | Starter content changes often enough to need real versioning. |
 | Change notification is one coarse `subscribe` | One event re-runs the few visible queries; simple to implement on any engine. Dexie's version also reports other tabs. | Re-running queries shows up in profiling. |
 | `useQuery` instead of `dexie-react-hooks` | UI reactivity no longer depends on the engine. | A data library (TanStack Query etc.) is adopted. |
 | The in-memory storage ships in core | It makes core tests need no database and is the reference implementation for new engines. | Never, unless it stops matching the contract. |

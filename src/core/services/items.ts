@@ -1,7 +1,9 @@
 import { assertNever } from '../assertNever';
 import type { CoreEnv } from '../core';
 import type { Concept, ItemKind, Position, Transition } from '../models';
+import { starterContent } from '../seed';
 import { cardId } from '../srs';
+import { missingStarterTechniques } from '../starter';
 import type { Repository } from '../storage';
 
 /** Fields the service fills in, so callers cannot get ids or timestamps wrong. */
@@ -57,6 +59,29 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
     saveConcept: (id: string | null, input: ConceptInput) => save(storage.concepts, id, input),
     savePosition: (id: string | null, input: PositionInput) => save(storage.positions, id, input),
     saveTransition: (id: string | null, input: TransitionInput) => save(storage.transitions, id, input),
+
+    /**
+     * Add the starter techniques the library is missing, each with its starter video bookmark, leaving
+     * everything already stored untouched. Resolves to how many techniques were added.
+     */
+    addMissingStarterTechniques(): Promise<number> {
+      const starter = starterContent(now());
+      return storage.transaction(async () => {
+        const missing = missingStarterTechniques(
+          starter.transitions,
+          await storage.transitions.all(),
+          await storage.positions.all(),
+        );
+        const addedIds = new Set(missing.map((t) => t.id));
+        const storedVideoIds = new Set((await storage.videos.all()).map((v) => v.id));
+        const videos = starter.videos.filter(
+          (v) => v.linkedKind === 'transition' && addedIds.has(v.linkedId) && !storedVideoIds.has(v.id),
+        );
+        await storage.transitions.putMany(missing);
+        await storage.videos.putMany(videos);
+        return missing.length;
+      });
+    },
 
     /**
      * Delete an item and everything that only makes sense alongside it: its review card,

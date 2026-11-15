@@ -1,0 +1,24 @@
+/* Blue belt test list. */
+
+.belt-test-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.belt-test-summary .belt-art {
+  flex: 0 0 7rem;
+  width: 7rem;
+}
+.belt-test-summary p {
+  margin: 0 0 var(--space-2);
+}
+.belt-test-summary .progress {
+  margin-bottom: 0;
+}
+/* `.transition-list` clears list padding, which would also remove the card's own. */
+.belt-test-list {
+  padding: var(--space-3) var(--space-4);
+}
+.belt-test-list .transition-row {
+  align-items: center;
+}

@@ -1,5 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { items, useLibrary } from '../../bindings';
+import { isOnBlueBeltTest } from '../../core/beltTest';
 import { TRANSITION_LABELS } from '../../core/labels';
 import { cardId } from '../../core/srs';
 import { Bullets, Loading, Missing, NotesBlock, ProgressDot, Section } from '../components/common';
@@ -34,6 +35,13 @@ export default function TransitionDetail() {
         <div>
           <p className="eyebrow">
             <span className={`tag tag-${transition.type}`}>{TRANSITION_LABELS[transition.type]}</span>{' '}
+            {isOnBlueBeltTest(transition) && (
+              <>
+                <Link className="tag tag-blue-belt" to={ROUTES.blueBelt}>
+                  Blue belt test
+                </Link>{' '}
+              </>
+            )}
             <ProgressDot state={lib.reviews.get(cardId('transition', transition.id))} />
           </p>
           <h1>{transition.name}</h1>

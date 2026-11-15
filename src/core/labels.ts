@@ -27,6 +27,16 @@ export const TRANSITION_LABELS: Record<TransitionType, string> = {
   transition: 'Transition',
 };
 
+/** Headings for a list of techniques grouped by type. */
+export const TRANSITION_GROUP_LABELS: Record<TransitionType, string> = {
+  sweep: 'Sweeps',
+  pass: 'Guard passes',
+  escape: 'Escapes',
+  submission: 'Submissions',
+  takedown: 'Takedowns',
+  transition: 'Transitions',
+};
+
 export const KIND_LABELS: Record<ItemKind, string> = {
   concept: 'Concept',
   position: 'Position',

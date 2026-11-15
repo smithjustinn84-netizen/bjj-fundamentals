@@ -10,6 +10,7 @@ import './styles/graphics.css';
 import './styles/home.css';
 import './styles/review.css';
 import './styles/map.css';
+import './styles/belt-test.css';
 
 const root = document.getElementById('root');
 if (!root) throw new Error('index.html is missing the #root element.');

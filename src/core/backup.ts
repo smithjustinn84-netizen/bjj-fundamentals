@@ -19,7 +19,7 @@ import { isYouTubeId } from './youtube';
 
 export const BACKUP_APP = 'bjj-fundamentals';
 /** Bump when the shape of any table changes, and teach `validateBackup` to accept the older shape. */
-export const BACKUP_SCHEMA_VERSION = 1;
+export const BACKUP_SCHEMA_VERSION = 2;
 
 export interface BackupData {
   positions: Position[];
@@ -56,6 +56,7 @@ type Schema<T> = { [K in keyof T]-?: Check };
 const text: Check = (v) => typeof v === 'string';
 const id: Check = (v) => typeof v === 'string' && v !== '';
 const num: Check = (v) => typeof v === 'number' && Number.isFinite(v);
+const bool: Check = (v) => typeof v === 'boolean';
 const textList: Check = (v) => Array.isArray(v) && v.every(text);
 const oneOf =
   (allowed: readonly string[]): Check =>
@@ -88,6 +89,8 @@ const SCHEMAS: { [T in BackupTable]: Schema<BackupData[T][number]> } = {
     toId: text,
     steps: textList,
     commonMistakes: textList,
+    // Absent in schema 1 backups, which predate the blue belt list.
+    blueBeltTest: optional(bool),
     notes: text,
     createdAt: num,
     updatedAt: num,

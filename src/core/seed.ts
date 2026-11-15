@@ -6,7 +6,7 @@ import type { Concept, Position, Transition, VideoBookmark } from './models';
  * the goal is to give a new student a map, not an encyclopedia.
  */
 
-type Stamped<T> = Omit<T, 'createdAt' | 'updatedAt' | 'notes'>;
+type Stamped<T> = Omit<T, 'createdAt' | 'updatedAt' | 'notes' | 'blueBeltTest'>;
 
 const concepts: Stamped<Concept>[] = [
   {
@@ -259,6 +259,91 @@ const transitions: Stamped<Transition>[] = [
       'Head in front of their chest',
     ],
   },
+  {
+    id: 'hip-throw',
+    name: 'Hip throw',
+    type: 'takedown',
+    fromId: 'standing',
+    toId: 'side-control',
+    steps: [
+      'Grip their sleeve and reach your other arm around their waist',
+      'Step across in front of them and pivot so your back is to their chest, knees bent',
+      'Get your hips lower than theirs and all the way across their body',
+      'Straighten your legs and pull their arm across to load them onto your hip',
+      'Turn your shoulders to tip them over, keeping hold of the arm as they land',
+    ],
+    commonMistakes: [
+      'Hips only halfway across, so they step around',
+      'Standing tall instead of getting under their hips',
+      'Letting go of the arm as they fall',
+    ],
+  },
+  {
+    id: 'wrist-grab-release',
+    name: 'Wrist grab release',
+    type: 'escape',
+    fromId: 'standing',
+    toId: 'standing',
+    steps: [
+      'Drop into base with your knees bent',
+      'Turn the thin edge of your wrist toward the gap between their thumb and fingers',
+      'Step in and bend your arm, bringing your elbow toward their forearm',
+      'Lever your hand out through the thumb side of their grip',
+      'Step back with your hands up',
+    ],
+    commonMistakes: [
+      'Pulling straight back against their four fingers',
+      'Using arm strength instead of stepping in and using the elbow',
+    ],
+  },
+  {
+    id: 'front-choke-defence',
+    name: 'Standing front choke defence',
+    type: 'escape',
+    fromId: 'standing',
+    toId: 'standing',
+    steps: [
+      'Tuck your chin and step one foot back into base',
+      'Reach one arm straight up beside your ear',
+      'Turn your whole body away, bringing the raised arm down across their wrists',
+      'Their hands strip off your neck as you turn',
+      'Step back out of range with your hands up',
+    ],
+    commonMistakes: ['Trying to pry their fingers off your neck', 'Swinging the arm without turning the body'],
+  },
+  {
+    id: 'bear-hug-escape',
+    name: 'Rear bear hug escape',
+    type: 'escape',
+    fromId: 'standing',
+    toId: 'standing',
+    steps: [
+      'Drop your weight into base straight away: knees bent, hips back',
+      'Push your elbows out and forward to make a little space',
+      'Step one foot out to the side, then the other behind their leg, so your hip is behind theirs',
+      'Hug behind both of their knees',
+      'Straighten your legs to lift and tip them backward off their feet',
+    ],
+    commonMistakes: ['Staying upright, which lets them lift you', 'Trying to peel their hands apart'],
+  },
+  {
+    id: 'standing-headlock-escape',
+    name: 'Standing headlock escape',
+    type: 'escape',
+    fromId: 'standing',
+    toId: 'side-control',
+    steps: [
+      'Bend your knees into base and turn your chin toward their ribs so you can breathe',
+      'Reach your far hand over their shoulder and push on their face, under the nose',
+      'Hook the back of their near knee with your other hand',
+      'Push the head back and lift the knee to sit them down behind you',
+      'Follow them down, stay on top and pull your head free',
+    ],
+    commonMistakes: [
+      'Bending over with straight legs, so they can drag you down',
+      'Pulling your head straight out against the squeeze',
+    ],
+  },
   // Closed guard
   {
     id: 'break-closed-guard',
@@ -320,6 +405,65 @@ const transitions: Stamped<Transition>[] = [
       'Not turning to an angle',
       'Letting your knees open so they pull the arm out',
       'Applying it fast — go slowly in training',
+    ],
+  },
+  {
+    id: 'triangle-choke',
+    name: 'Triangle choke from closed guard',
+    type: 'submission',
+    fromId: 'closed-guard',
+    toId: '',
+    steps: [
+      'Control both of their wrists',
+      'Push one arm back to their belly and shoot that leg over their shoulder: one arm in, one arm out',
+      'Lock your ankles behind their back and pull their head down',
+      'Pull the trapped arm across your body',
+      'Turn to an angle and lock the back of your knee over your other ankle, behind their neck',
+      'Squeeze your knees together and pull their head down',
+    ],
+    commonMistakes: [
+      'Staying square in front of them instead of cutting an angle',
+      'Locking over your toes instead of your ankle',
+      'Letting them posture up before the legs are locked',
+    ],
+  },
+  {
+    id: 'kimura-guard',
+    name: 'Kimura from closed guard',
+    type: 'submission',
+    fromId: 'closed-guard',
+    toId: '',
+    steps: [
+      'When their hand is on the mat, grip that wrist',
+      'Open your guard and sit up toward that arm',
+      'Reach your other arm over their shoulder and under their elbow, and grab your own wrist',
+      'Fall back, move your hips out to that side and put your leg across their back',
+      'Keep their elbow bent and tight to your chest',
+      'Turn their hand up behind their back, slowly',
+    ],
+    commonMistakes: [
+      'Staying flat instead of moving your hips out to the side',
+      'Letting their elbow drift away from your chest',
+      'No leg across their back, so they roll forward and escape',
+    ],
+  },
+  {
+    id: 'guillotine-guard',
+    name: 'Guillotine choke from closed guard',
+    type: 'submission',
+    fromId: 'closed-guard',
+    toId: '',
+    steps: [
+      'When their head comes down, sit up and wrap one arm around their neck, forearm under the chin',
+      'Grab that wrist with your other hand',
+      'Fall back and close your guard around their waist',
+      'Pull your hands up toward your chest',
+      'Stretch them away with your legs as you arch back',
+    ],
+    commonMistakes: [
+      'Arm around the back of the head instead of the forearm under the throat',
+      'Leaving the guard open, so they pass to the side and the choke is gone',
+      'Squeezing with the arms only',
     ],
   },
   // Open guard
@@ -409,6 +553,25 @@ const transitions: Stamped<Transition>[] = [
     ],
     commonMistakes: ['Letting the wrist come off the mat', 'Cranking quickly — apply slowly'],
   },
+  {
+    id: 'ground-headlock-escape',
+    name: 'Headlock escape on the ground',
+    type: 'escape',
+    fromId: 'side-control',
+    toId: 'side-control',
+    steps: [
+      'Turn onto your side to face them and tuck your bottom elbow in so they cannot flatten you',
+      'Frame your forearm across their jaw, holding that wrist with your other hand',
+      'Push with the frame until their head moves away from yours',
+      'Swing your top leg over their head and hook it in front of their face',
+      'Drive them back with the leg as you sit up, and come up on top',
+    ],
+    commonMistakes: [
+      'Lying flat on your back under the headlock',
+      'Pushing with a bent wrist instead of the forearm',
+      'Trying to pull your head out before making space',
+    ],
+  },
   // Mount
   {
     id: 'upa-escape',
@@ -454,6 +617,25 @@ const transitions: Stamped<Transition>[] = [
       'Pull your elbows out to the sides to close the choke',
     ],
     commonMistakes: ['First grip too shallow', 'Staying upright so the choke has no tension'],
+  },
+  {
+    id: 'armbar-mount',
+    name: 'Armbar from mount',
+    type: 'submission',
+    fromId: 'mount',
+    toId: '',
+    steps: [
+      'When they push on your chest, put both hands on their chest, trapping one of their arms between yours',
+      'Lean your weight onto your hands and slide your knee up beside their head',
+      'Swing your other leg around and over their face',
+      'Sit back close to their shoulder, hugging the arm, thumb pointing up',
+      'Squeeze your knees and raise your hips slowly',
+    ],
+    commonMistakes: [
+      'Sitting back too far from their shoulder',
+      'Knees apart, so they pull the elbow free',
+      'Dropping back quickly instead of with control',
+    ],
   },
   {
     id: 'mount-to-back',
@@ -537,8 +719,20 @@ function seedPositions(now: number): Position[] {
   return positions.map((p) => ({ ...p, notes: '', createdAt: now, updatedAt: now }));
 }
 
+/**
+ * Every starter technique is a fundamental that blue belt tests commonly ask for. Kept as a list of ids
+ * so installations seeded before the blue belt list existed get the same default as new ones.
+ */
+export const STARTER_BLUE_BELT_TEST_IDS: ReadonlySet<string> = new Set(transitions.map((t) => t.id));
+
 function seedTransitions(now: number): Transition[] {
-  return transitions.map((t) => ({ ...t, notes: '', createdAt: now, updatedAt: now }));
+  return transitions.map((t) => ({
+    ...t,
+    blueBeltTest: STARTER_BLUE_BELT_TEST_IDS.has(t.id),
+    notes: '',
+    createdAt: now,
+    updatedAt: now,
+  }));
 }
 
 const videos: Omit<VideoBookmark, 'createdAt' | 'startSeconds'>[] = [
@@ -848,6 +1042,86 @@ const videos: Omit<VideoBookmark, 'createdAt' | 'startSeconds'>[] = [
     linkedKind: 'transition',
     linkedId: 'turtle-recover-guard',
     note: 'Keeping elbows tight to knees and sitting through or rolling over your shoulder to bring your legs back in front.',
+  },
+  {
+    id: 'video-hip-throw',
+    title: 'Jiu Jitsu Hip Throw (O-Goshi) - BJJ Blue Belt Requirements Technique #2',
+    youtubeId: 'uEQpw6HSRDM',
+    linkedKind: 'transition',
+    linkedId: 'hip-throw',
+    note: 'Getting your hips lower than theirs and all the way across before you lift.',
+  },
+  {
+    id: 'video-wrist-grab-release',
+    title: "Escaping From Wrist Grabs & Holds: Women's Self Defense BJJ",
+    youtubeId: 'P6hIW3mZHuk',
+    linkedKind: 'transition',
+    linkedId: 'wrist-grab-release',
+    note: 'Levering out through the thumb side of the grip instead of pulling straight back.',
+  },
+  {
+    id: 'video-front-choke-defence',
+    title: 'Gracie Jiujitsu 101: self defence against double handed choke / throat grab',
+    youtubeId: 'X-uPb8zcztk',
+    linkedKind: 'transition',
+    linkedId: 'front-choke-defence',
+    note: 'Stepping back into base and turning the whole body to strip the hands off your neck.',
+  },
+  {
+    id: 'video-bear-hug-escape',
+    title: 'BJJ - Rear bear hug defense (trapped arms)',
+    youtubeId: 'ebcD6WblXs4',
+    linkedKind: 'transition',
+    linkedId: 'bear-hug-escape',
+    note: 'Dropping into base first so you cannot be lifted, then stepping behind their leg.',
+  },
+  {
+    id: 'video-standing-headlock-escape',
+    title: 'Gracie Jiu Jitsu Self Defense Headlock Defense 1-4',
+    youtubeId: '6U1znsPw0vI',
+    linkedKind: 'transition',
+    linkedId: 'standing-headlock-escape',
+    note: 'Keeping your knees bent and your base under you before you try to free your head.',
+  },
+  {
+    id: 'video-triangle-choke',
+    title: 'BJJ Basics - Triangle Choke from Closed Guard',
+    youtubeId: 'OM9x-NPEPhE',
+    linkedKind: 'transition',
+    linkedId: 'triangle-choke',
+    note: 'One arm in and one arm out, then cutting an angle before you lock the legs.',
+  },
+  {
+    id: 'video-kimura-guard',
+    title: 'BJJ Beginners Tutorial - Kimura from Closed Guard',
+    youtubeId: 'ZLsg4M0lHzA',
+    linkedKind: 'transition',
+    linkedId: 'kimura-guard',
+    note: 'Sitting up to lock the figure-four grip, then moving your hips out to the side to finish.',
+  },
+  {
+    id: 'video-guillotine-guard',
+    title: 'Guillotine from Closed Guard by Pedro Marinho',
+    youtubeId: 'iFEQegETUS8',
+    linkedKind: 'transition',
+    linkedId: 'guillotine-guard',
+    note: 'Getting the forearm under the chin and closing the guard before you squeeze.',
+  },
+  {
+    id: 'video-ground-headlock-escape',
+    title: 'How to escape the Headlock using frames',
+    youtubeId: 'BKTLVBKy2VM',
+    linkedKind: 'transition',
+    linkedId: 'ground-headlock-escape',
+    note: 'Turning onto your side and framing on the jaw to make space before anything else.',
+  },
+  {
+    id: 'video-armbar-mount',
+    title: 'Arm Bar from Mount - Basic BJJ',
+    youtubeId: '6W1pCW0Eh6g',
+    linkedKind: 'transition',
+    linkedId: 'armbar-mount',
+    note: 'Staying tight to their shoulder and keeping your knees squeezed as you sit back.',
   },
 ];
 
