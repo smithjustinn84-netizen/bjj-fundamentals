@@ -6,6 +6,7 @@ import {
   formatMatTime,
   isDayKey,
   newestFirst,
+  quickPicks,
   recentlyPractised,
   recentlyStuck,
   studyFirst,
@@ -109,5 +110,15 @@ describe('where the student got stuck', () => {
       'transition:armbar',
     ]);
     expect(studyFirst(lib, entries, 0)).toEqual([]);
+  });
+});
+
+describe('quickPicks', () => {
+  it('lists what the entry has first, then recent ones, once each', () => {
+    expect(quickPicks(['b', 'a'], ['a', 'c'], () => true)).toEqual(['b', 'a', 'c']);
+  });
+
+  it('leaves out ids that no longer exist', () => {
+    expect(quickPicks(['gone', 'a'], ['also-gone'], (id) => id === 'a')).toEqual(['a']);
   });
 });

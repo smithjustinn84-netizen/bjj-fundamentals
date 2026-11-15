@@ -19,10 +19,11 @@ import { Loading, ProgressDot } from '../components/common';
 import { LibrarySearch } from '../components/LibrarySearch';
 import { ArtworkFrame, HERO_DOJO_ARTWORK } from '../graphics/Artwork';
 import { Belt } from '../graphics/Belt';
-import { Icon, type IconName } from '../graphics/icons';
-import { ProgressRing } from '../graphics/ProgressRing';
+import { Icon } from '../graphics/icons';
+import { PositionArtwork } from '../graphics/PositionSvg';
+import { ProgressBar } from '../graphics/ProgressBar';
 import { useCountUp } from '../graphics/useCountUp';
-import { itemPath, ROUTES, studyItemPath } from '../routes';
+import { itemPath, positionSidePath, ROUTES, studyItemPath } from '../routes';
 
 function reviewButtonLabel(dueCount: number, started: number): string {
   if (dueCount > 0) return `Review ${dueCount} card${dueCount === 1 ? '' : 's'}`;
@@ -40,26 +41,36 @@ const DRILL_REASON_TEXT: Record<DrillReason, string> = {
   next: 'The next technique you have not learned yet.',
 };
 
-function StatTile({ icon, value, label }: { icon: IconName; value: number; label: string }) {
-  const shown = useCountUp(value);
-  return (
-    <div className="stat-tile">
-      <Icon name={icon} />
-      <span className="stat">{shown}</span>
-      <span className="muted small">{label}</span>
-    </div>
-  );
+/** Today's date the way the reader's locale writes it, e.g. "Sunday 15 November". */
+function todayLabel(): string {
+  return new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
 }
 
-function LearnedRing({ percent, learned, total }: { percent: number; learned: number; total: number }) {
-  const shown = useCountUp(percent);
+/** What the review block says under its number. */
+function reviewLine(dueCount: number, started: number): string {
+  if (dueCount > 0) return 'A few minutes now keeps them from slipping.';
+  return started === 0
+    ? 'Start with the first few concepts.'
+    : 'Nothing is due. Learn something new while you are here.';
+}
+
+/** The one thing to do today: how many cards are due, and the button that starts them. */
+function ReviewBlock({ dueCount, started }: { dueCount: number; started: number }) {
+  const shown = useCountUp(dueCount);
   return (
-    <ProgressRing percent={percent} label="Learned">
-      <span className="stat">{shown}%</span>
-      <span className="muted small">
-        {learned}/{total} learned
-      </span>
-    </ProgressRing>
+    <section className="today-review" aria-label="Review">
+      <div className="today-review-count">
+        <span className="stat">{shown}</span>
+        <div>
+          <strong>{dueCount === 1 ? 'card due' : 'cards due'}</strong>
+          <span className="block small">{reviewLine(dueCount, started)}</span>
+        </div>
+      </div>
+      <Link className="button large" to={ROUTES.review}>
+        {reviewButtonLabel(dueCount, started)}
+        <Icon name="arrow" />
+      </Link>
+    </section>
   );
 }
 
@@ -178,106 +189,102 @@ export default function Home() {
 
   return (
     <div className="stack">
-      <section className="hero card">
-        <ArtworkFrame
-          src={HERO_DOJO_ARTWORK}
-          alt="Sunlit tatami mat room with a folded white gi and black belt"
-          className="hero-artwork"
-          eager
-        />
-        <div className="hero-text">
-          <p className="eyebrow">Your training</p>
-          <h1>Learn the fundamentals, one idea at a time</h1>
-          <p className="muted hero-intro">
-            Start with the core concepts, then see how they show up in each position. Short daily reviews will help them
-            stick.
+      <ArtworkFrame
+        src={HERO_DOJO_ARTWORK}
+        alt="Sunlit tatami mat room with a folded white gi and black belt"
+        className="today-artwork"
+        eager
+      />
+      <header className="today-head">
+        <div>
+          <p className="eyebrow">{todayLabel()}</p>
+          <h1>Today</h1>
+        </div>
+        {stats.streakDays > 0 && (
+          <p className="streak-pill">
+            <Icon name="flame" />
+            {stats.streakDays}-day streak
           </p>
-          <div className="row">
-            <Link className="button primary" to={ROUTES.review}>
-              {reviewButtonLabel(stats.dueCount, progress.started)}
-              <Icon name="arrow" />
-            </Link>
-            <Link className="button" to={ROUTES.concepts}>
-              Browse concepts
-            </Link>
-            {/* The phone tab bar has no room for the log, so the hero carries the way in. */}
+        )}
+      </header>
+
+      <ReviewBlock dueCount={stats.dueCount} started={progress.started} />
+
+      {drill && (
+        <Link className="card today-drill" to={itemPath('transition', drill.technique.id)}>
+          <PositionArtwork
+            id={drill.technique.fromId}
+            name={lib.positionById.get(drill.technique.fromId)?.name ?? ''}
+            className="thumb-artwork"
+          />
+          <span className="grow">
+            <span className="eyebrow">Drill for today</span>
+            <strong>{drill.technique.name}</strong>
+            <span className="muted small block">{DRILL_REASON_TEXT[drill.reason]}</span>
+            <span className="small block">{drill.drill}</span>
+          </span>
+          <Icon name="chevron" />
+        </Link>
+      )}
+
+      <section className="card">
+        {training.classes === 0 ? (
+          <>
+            <p className="eyebrow">Training log</p>
+            <p className="muted">
+              Write up each class while it is fresh: what was taught, what worked in rolling, and one thing to work on
+              next time.
+            </p>
             <Link className="button" to={ROUTES.log}>
               Log a class
             </Link>
-          </div>
-        </div>
-        <div className="hero-rank">
-          <LearnedRing percent={progress.percentLearned} learned={progress.learned} total={progress.total} />
-          <Belt rank={rank.belt} stripes={rank.stripes} />
-          <p className="rank-label">
+          </>
+        ) : (
+          <>
+            <p className="eyebrow">{training.focus ? 'Focus for your next class' : 'Training log'}</p>
+            {training.focus && <p className="today-focus">{training.focus}</p>}
+            <p className="muted small">
+              {formatClassCount(training.classes)} logged · {formatMatTime(training.minutes)} on the mat
+            </p>
+            {stuck.length > 0 && (
+              <>
+                <p className="muted small">
+                  Where you got stuck. Cards from here that you have not studied yet come first in review.
+                </p>
+                <ul className="chip-list">
+                  {stuck.map((situation) => (
+                    <li key={`${situation.position.id}:${situation.role}`}>
+                      <Link className="chip" to={positionSidePath(situation.position.id, situation.role)}>
+                        {situationName(situation)}
+                        <Icon name="chevron" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </>
+        )}
+      </section>
+
+      <section className="card today-rank" aria-label="Study rank">
+        <Belt rank={rank.belt} stripes={rank.stripes} />
+        <div className="grow">
+          <p>
             <strong>{BELT_LABELS[rank.belt]}</strong> of the fundamentals
-            <span className="muted small block">
-              {rank.nextBelt
-                ? `Learn ${rank.percentToNextBelt}% more for your ${BELT_LABELS[rank.nextBelt].toLowerCase()}. A study rank, not a real one.`
-                : 'Everything learned. Keep reviewing to stay sharp.'}
-            </span>
+          </p>
+          <ProgressBar value={progress.learned} max={progress.total} label="Learned" />
+          <p className="muted small">
+            {progress.learned} of {progress.total} learned
+            {rank.nextBelt
+              ? ` · ${rank.percentToNextBelt}% more for ${BELT_LABELS[rank.nextBelt].toLowerCase()}. A study rank, not a real one.`
+              : '. Keep reviewing to stay sharp.'}
           </p>
         </div>
-        {/* Before the first review both numbers are zero, which tells a newcomer nothing. */}
-        {progress.started > 0 && (
-          <div className="stat-tiles">
-            <StatTile icon="review" value={stats.dueCount} label="due now" />
-            <StatTile icon="flame" value={stats.streakDays} label="day streak" />
-          </div>
-        )}
       </section>
 
       <section className="card">
         <LibrarySearch lib={lib} />
-      </section>
-
-      {drill && (
-        <section className="card">
-          <h2>Drill for today</h2>
-          <p>
-            <Link to={itemPath('transition', drill.technique.id)}>{drill.technique.name}</Link>
-            <span className="muted"> · {DRILL_REASON_TEXT[drill.reason]}</span>
-          </p>
-          <p className="drill">{drill.drill}</p>
-        </section>
-      )}
-
-      <section className="card">
-        <div className="section-head">
-          <h2>Training log</h2>
-          <Link className="button small" to={ROUTES.log}>
-            {training.classes === 0 ? 'Log a class' : 'Open the log'}
-          </Link>
-        </div>
-        {training.classes === 0 ? (
-          <p className="muted">
-            Write up each class while it is fresh: what was taught, what worked in rolling, and one thing to work on
-            next time.
-          </p>
-        ) : (
-          <>
-            <p className="muted">
-              {formatClassCount(training.classes)} logged · {formatMatTime(training.minutes)} on the mat
-            </p>
-            {training.focus && (
-              <p>
-                <strong>Focus for your next class:</strong> {training.focus}
-              </p>
-            )}
-            {stuck.length > 0 && (
-              <p>
-                <strong>Where you got stuck:</strong>{' '}
-                {stuck.map((situation, index) => (
-                  <span key={`${situation.position.id}:${situation.role}`}>
-                    {index > 0 && '; '}
-                    <Link to={itemPath('position', situation.position.id)}>{situationName(situation)}</Link>
-                  </span>
-                ))}
-                . Cards from here that you have not studied yet come first in review.
-              </p>
-            )}
-          </>
-        )}
       </section>
 
       <section className="card">

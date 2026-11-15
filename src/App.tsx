@@ -10,6 +10,7 @@ import ConceptDetail from './ui/pages/ConceptDetail';
 import Concepts from './ui/pages/Concepts';
 import EditorPage from './ui/pages/editor/EditorPage';
 import Home from './ui/pages/Home';
+import More from './ui/pages/More';
 import NotFound from './ui/pages/NotFound';
 import PositionDetail from './ui/pages/PositionDetail';
 import Positions from './ui/pages/Positions';
@@ -17,7 +18,7 @@ import Review from './ui/pages/Review';
 import TrainingLog from './ui/pages/TrainingLog';
 import TransitionDetail from './ui/pages/TransitionDetail';
 import Videos from './ui/pages/Videos';
-import { ROUTE_PATTERNS, ROUTES } from './ui/routes';
+import { LEARN_ROUTES, MORE_ROUTES, ROUTE_PATTERNS, ROUTES } from './ui/routes';
 
 const MAIN_ID = 'main';
 
@@ -25,6 +26,11 @@ const MAIN_ID = 'main';
 function focusMain(event: MouseEvent<HTMLAnchorElement>) {
   event.preventDefault();
   document.getElementById(MAIN_ID)?.focus();
+}
+
+/** True on any of these pages or a page beneath one, so a tab stays lit on the pages it leads to. */
+function isUnder(pathname: string, routes: readonly string[]): boolean {
+  return routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
 }
 
 function ReviewNavLink() {
@@ -55,41 +61,25 @@ export default function App() {
           BJJ Fundamentals
         </NavLink>
         <nav className="nav" aria-label="Main">
-          {/* On wide screens the brand is the way home; on phones the tab bar needs its own. */}
-          <NavLink to={ROUTES.home} className="nav-home" end>
+          <NavLink to={ROUTES.home} end>
             <Icon name="home" />
-            Home
+            Today
           </NavLink>
-          <NavLink to={ROUTES.concepts}>
+          {/* Concepts, positions, techniques and the belt test are one tab; the switch on each page moves between them. */}
+          <NavLink to={ROUTES.concepts} className={() => (isUnder(pathname, LEARN_ROUTES) ? 'active' : '')}>
             <Icon name="concepts" />
-            Concepts
-          </NavLink>
-          {/* Techniques are reached from positions, so their pages keep this tab lit. */}
-          <NavLink
-            to={ROUTES.positions}
-            className={({ isActive }) => (isActive || pathname.startsWith(ROUTES.transitions) ? 'active' : '')}
-          >
-            <Icon name="map" />
-            Positions
-          </NavLink>
-          <NavLink to={ROUTES.blueBelt}>
-            <Icon name="belt" />
-            Blue belt
+            Learn
           </NavLink>
           <ErrorBoundary>
             <ReviewNavLink />
           </ErrorBoundary>
-          <NavLink to={ROUTES.log} className="nav-log">
+          <NavLink to={ROUTES.log}>
             <Icon name="log" />
             Log
           </NavLink>
-          <NavLink to={ROUTES.videos}>
-            <Icon name="video" />
-            Videos
-          </NavLink>
-          <NavLink to={ROUTES.backup} className="nav-backup">
-            <Icon name="backup" />
-            Backup
+          <NavLink to={ROUTES.more} className={() => (isUnder(pathname, MORE_ROUTES) ? 'active' : '')}>
+            <Icon name="more" />
+            More
           </NavLink>
         </nav>
       </header>
@@ -108,6 +98,7 @@ export default function App() {
             <Route path={ROUTES.log} element={<TrainingLog />} />
             <Route path={ROUTES.videos} element={<Videos />} />
             <Route path={ROUTES.backup} element={<Backup />} />
+            <Route path={ROUTES.more} element={<More />} />
             <Route path={ROUTE_PATTERNS.edit} element={<EditorPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

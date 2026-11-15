@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { items, useLibrary, useMissingStarterConcepts } from '../../bindings';
 import { reviewOf } from '../../core/library';
 import { Loading, ProgressDot, ProgressLegend } from '../components/common';
+import { LearnTabs } from '../components/LearnTabs';
 import { LibrarySearch } from '../components/LibrarySearch';
 import { StarterOffer } from '../components/StarterOffer';
 import { ConceptArtwork } from '../graphics/ConceptSvg';
@@ -13,6 +14,7 @@ export default function Concepts() {
   if (!lib) return <Loading />;
   return (
     <div className="stack">
+      <LearnTabs />
       <div className="page-head">
         <div>
           <h1>Concepts</h1>

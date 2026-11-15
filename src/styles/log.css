@@ -2,22 +2,89 @@
 .log-form {
   display: flex;
   flex-direction: column;
+  gap: var(--space-4);
+}
+.log-form-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--space-3);
 }
-.technique-picker summary {
-  cursor: pointer;
-  font-weight: 600;
+.log-form-head h2 {
+  margin: 0;
 }
-.technique-groups {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-  gap: var(--space-3);
-  margin-top: var(--space-3);
+/* The form's own selector for inputs is more specific than a bare class, so match it. */
+.log-form-head input:not([type="checkbox"]):not([type="range"]) {
+  width: auto;
+  min-height: var(--tap);
 }
-.technique-groups fieldset {
+/* A question answered by tapping pills. No box: the pills are the control. */
+.chip-field {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.chip-field legend {
+  padding: 0;
+  margin-bottom: var(--space-2);
+  font-weight: 600;
+}
+.chip-field .hint {
+  margin: 0;
+}
+.toggle-chip {
+  background: var(--surface);
+  font-weight: 500;
+}
+.toggle-chip[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.chip-more summary,
+.log-notes summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 600;
+}
+.chip-group {
+  margin: var(--space-3) 0 var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.log-notes {
+  border-top: 1px solid var(--border);
+}
+.log-notes[open] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.log-notes label {
+  margin-bottom: var(--space-3);
+}
+/* Pinned just above the tab bar on a phone; the page-coloured band hides the form scrolling underneath. */
+.log-save {
+  position: sticky;
+  bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+  z-index: 5;
+  display: flex;
+  gap: var(--space-2);
+  margin: 0 -1.25rem -1.25rem;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+.log-save button {
+  flex: 1;
 }
 .log-list {
   list-style: none;
@@ -43,4 +110,17 @@
 }
 .log-entry .row {
   margin-top: var(--space-2);
+}
+
+@media (min-width: 600px) {
+  .log-save {
+    position: static;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+  .log-save button {
+    flex: none;
+  }
 }

@@ -1,4 +1,4 @@
-/* Reusable graphics: icons, belt, progress bar and ring, empty-state art. */
+/* Reusable graphics: icons, belt, progress bar, empty-state art. */
 
 /* Line icons. Size follows the surrounding text. */
 .icon {
@@ -82,39 +82,6 @@
   fill: var(--belt);
 }
 
-/* Progress ring */
-.ring {
-  position: relative;
-  width: 9rem;
-  aspect-ratio: 1;
-}
-.ring svg {
-  width: 100%;
-  height: 100%;
-  /* Start the arc at twelve o'clock. */
-  transform: rotate(-90deg);
-}
-.ring circle {
-  fill: none;
-}
-.ring-track {
-  stroke: var(--accent-soft);
-}
-.ring-value {
-  stroke: var(--ok);
-  stroke-linecap: round;
-  transition: stroke-dasharray var(--dur-slow) var(--ease-out);
-}
-.ring-centre {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  line-height: 1.2;
-}
-
 /* Empty state */
 .empty-state {
   display: flex;
@@ -173,11 +140,6 @@
     filter: brightness(0.86) contrast(1.04);
   }
 }
-.hero-artwork {
-  grid-column: 1 / -1;
-  aspect-ratio: 16 / 6;
-  max-height: 15rem;
-}
 .position-artwork {
   aspect-ratio: 4 / 3;
   max-width: 32rem;
@@ -192,21 +154,16 @@
   max-width: 22rem;
   margin-bottom: var(--space-3);
 }
-/* A picture at the top of a card in a list. */
-.card-artwork {
-  max-width: none;
-  margin-bottom: var(--space-3);
-}
 /* A small picture in a list row. */
 .thumb-artwork {
   flex: none;
-  width: 6.5rem;
+  width: 4.5rem;
   margin: 0;
   border-radius: var(--radius-sm);
 }
-@media (max-width: 480px) {
+@media (min-width: 600px) {
   .thumb-artwork {
-    display: none;
+    width: 6.5rem;
   }
 }
 

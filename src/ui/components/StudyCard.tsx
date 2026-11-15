@@ -6,7 +6,7 @@ import type { StudyItem } from '../../core/study';
 import { techniqueDrill } from '../../core/techniqueDrill';
 import { TransitionArtwork } from '../graphics/Artwork';
 import { ConceptArtwork } from '../graphics/ConceptSvg';
-import { PositionArtwork } from '../graphics/PositionSvg';
+import { hasPositionArtwork, PositionArtwork } from '../graphics/PositionSvg';
 import { Bullets } from './common';
 import { ItemPicture } from './ItemPicture';
 import { TransitionList } from './TransitionLink';
@@ -46,6 +46,23 @@ export function cardPrompt(item: StudyItem, lib: Library): { eyebrow: string; qu
     default:
       return assertNever(item.kind);
   }
+}
+
+/**
+ * A picture for the question side that does not give the answer away: where a technique starts.
+ * Other kinds of card show nothing, because their picture is the answer.
+ */
+export function CardCue({ item, lib }: { item: StudyItem; lib: Library }) {
+  if (item.kind !== 'transition') return null;
+  const transition = lib.transitionById.get(item.id);
+  const from = transition && lib.positionById.get(transition.fromId);
+  if (!from || !hasPositionArtwork(from.id)) return null;
+  return (
+    <figure className="card-cue">
+      <PositionArtwork id={from.id} name={from.name} className={ARTWORK_CLASS} />
+      <figcaption className="muted small">You start here: {from.name}.</figcaption>
+    </figure>
+  );
 }
 
 /** The answer side of a review card: the item's picture, then what the student should have recalled. */

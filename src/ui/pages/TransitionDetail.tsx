@@ -17,7 +17,7 @@ export default function TransitionDetail() {
   const lib = useLibrary();
   if (!lib) return <Loading />;
   const transition = lib.transitionById.get(id);
-  if (!transition) return <Missing what="Technique" back={{ to: ROUTES.positions, label: 'Position map' }} />;
+  if (!transition) return <Missing what="Technique" back={{ to: ROUTES.positions, label: 'Positions' }} />;
 
   const from = lib.positionById.get(transition.fromId);
   const to = lib.positionById.get(transition.toId);
@@ -33,7 +33,7 @@ export default function TransitionDetail() {
   return (
     <article className="stack">
       <Link to={backPath} className="small">
-        ← {from ? from.name : 'Position map'}
+        ← {from ? from.name : 'Positions'}
       </Link>
       <div className="page-head">
         <div>

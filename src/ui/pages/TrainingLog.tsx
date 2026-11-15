@@ -1,18 +1,31 @@
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, type ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { trainingLog, useLibrary, useTrainingLog } from '../../bindings';
 import type { Library } from '../../core/library';
 import type { TrainingEntry } from '../../core/models';
 import { allSituations, findSituation, situationId, situationName } from '../../core/situations';
 import { localDayKey } from '../../core/srs';
-import { formatClassCount, formatMatTime, isDayKey, stuckSituationIds, trainingSummary } from '../../core/trainingLog';
+import {
+  formatClassCount,
+  formatMatTime,
+  isDayKey,
+  quickPicks,
+  RECENT_CLASS_COUNT,
+  recentlyPractised,
+  recentlyStuck,
+  stuckSituationIds,
+  trainingSummary,
+} from '../../core/trainingLog';
 import { Loading } from '../components/common';
 import { EmptyState } from '../graphics/EmptyState';
-import { itemPath } from '../routes';
+import { Icon } from '../graphics/icons';
+import { itemPath, positionSidePath } from '../routes';
 import { Field } from './editor/shared';
 
 /** What a new entry starts with: most classes run about an hour. */
 const DEFAULT_CLASS_MINUTES = 60;
+/** The class lengths offered as one tap; anything else is typed in. */
+const MINUTE_PRESETS = [45, 60, 90, 120];
 /** The minutes field moves in steps of this size. */
 const MINUTES_STEP = 5;
 const FORM_ID = 'log-form';
@@ -30,9 +43,33 @@ function formatDay(day: string): string {
   });
 }
 
-function EntryForm({ lib, entry, onDone }: { lib: Library; entry: TrainingEntry | undefined; onDone: () => void }) {
+/** A choice that is on or off, as a pill a thumb can hit. */
+function ToggleChip(props: { pressed: boolean; onToggle: (pressed: boolean) => void; children: ReactNode }) {
+  return (
+    <button
+      type="button"
+      className="chip toggle-chip"
+      aria-pressed={props.pressed}
+      onClick={() => props.onToggle(!props.pressed)}
+    >
+      {props.pressed && <Icon name="check" />}
+      {props.children}
+    </button>
+  );
+}
+
+function EntryForm(props: {
+  lib: Library;
+  /** Every entry so far: recent ones decide which choices are offered up front. */
+  entries: TrainingEntry[];
+  entry: TrainingEntry | undefined;
+  onDone: () => void;
+}) {
+  const { lib, entries, entry, onDone } = props;
   const [day, setDay] = useState(entry?.day ?? localDayKey(Date.now()));
   const [minutes, setMinutes] = useState(String(entry?.minutes ?? DEFAULT_CLASS_MINUTES));
+  /** True while the length is typed in, not picked from the presets. */
+  const [otherMinutes, setOtherMinutes] = useState(() => !MINUTE_PRESETS.includes(Number(minutes)));
   const [taught, setTaught] = useState(entry?.taught ?? '');
   const [worked, setWorked] = useState(entry?.worked ?? '');
   const [struggled, setStruggled] = useState(entry?.struggled ?? '');
@@ -86,16 +123,46 @@ function EntryForm({ lib, entry, onDone }: { lib: Library; entry: TrainingEntry 
   const groups = lib.positions
     .map((position) => ({ position, techniques: lib.transitions.filter((t) => t.fromId === position.id) }))
     .filter((group) => group.techniques.length > 0);
+  // Offered up front; `useState` keeps the row from reshuffling as chips are toggled.
+  const [quickStuck] = useState(() =>
+    quickPicks(stuckIds, recentlyStuck(entries, RECENT_CLASS_COUNT), (id) => findSituation(lib, id) !== null),
+  );
+  const [quickTechniques] = useState(() =>
+    quickPicks(techniqueIds, recentlyPractised(entries, RECENT_CLASS_COUNT), (id) => lib.transitionById.has(id)),
+  );
+  const otherSituations = situations.filter((situation) => !quickStuck.includes(situation.id));
+  const hasNotes = taught !== '' || worked !== '' || struggled !== '';
 
   return (
     <form id={FORM_ID} className="log-form" onSubmit={submit}>
-      <div className="row">
-        <Field label="Day" className="grow">
-          <input type="date" value={day} onChange={(e) => setDay(e.target.value)} required />
-        </Field>
-        <Field label="Minutes on the mat" className="grow">
+      <div className="log-form-head">
+        <h2>{entry ? `Edit ${formatDay(entry.day)}` : 'Log a class'}</h2>
+        <input type="date" aria-label="Day" value={day} onChange={(e) => setDay(e.target.value)} required />
+      </div>
+
+      <fieldset className="chip-field">
+        <legend>Minutes on the mat</legend>
+        <div className="chip-list">
+          {MINUTE_PRESETS.map((preset) => (
+            <ToggleChip
+              key={preset}
+              pressed={!otherMinutes && Number(minutes) === preset}
+              onToggle={() => {
+                setOtherMinutes(false);
+                setMinutes(String(preset));
+              }}
+            >
+              {preset}
+            </ToggleChip>
+          ))}
+          <ToggleChip pressed={otherMinutes} onToggle={() => setOtherMinutes(true)}>
+            Other
+          </ToggleChip>
+        </div>
+        {otherMinutes && (
           <input
             type="number"
+            aria-label="Minutes on the mat"
             min={0}
             step={MINUTES_STEP}
             value={minutes}
@@ -103,73 +170,117 @@ function EntryForm({ lib, entry, onDone }: { lib: Library; entry: TrainingEntry 
             inputMode="numeric"
             required
           />
-        </Field>
-      </div>
-      <Field label="What was taught">
-        <textarea rows={2} value={taught} onChange={(e) => setTaught(e.target.value)} />
-      </Field>
-      <Field label="What worked in rolling">
-        <textarea rows={2} value={worked} onChange={(e) => setWorked(e.target.value)} />
-      </Field>
-      <Field label="Where I got stuck">
-        <textarea rows={2} value={struggled} onChange={(e) => setStruggled(e.target.value)} />
-      </Field>
+        )}
+      </fieldset>
+
       {situations.length > 0 && (
-        <details className="technique-picker">
-          <summary>Positions I got stuck in ({stuckIds.length})</summary>
-          <p className="muted small">
+        <fieldset className="chip-field">
+          <legend>Where I got stuck</legend>
+          <p className="hint">
             Cards you have not studied yet for these, and for your techniques from them, come first in review.
           </p>
-          <div className="technique-groups">
-            {situations.map((situation) => (
-              <label key={situation.id} className="check">
-                <input
-                  type="checkbox"
-                  checked={stuckIds.includes(situation.id)}
-                  onChange={(e) => toggleStuck(situation.id, e.target.checked)}
-                />
-                {situation.name}
-              </label>
-            ))}
-          </div>
-        </details>
+          {quickStuck.length > 0 && (
+            <div className="chip-list">
+              {situations
+                .filter((situation) => quickStuck.includes(situation.id))
+                .map((situation) => (
+                  <ToggleChip
+                    key={situation.id}
+                    pressed={stuckIds.includes(situation.id)}
+                    onToggle={(picked) => toggleStuck(situation.id, picked)}
+                  >
+                    {situation.name}
+                  </ToggleChip>
+                ))}
+            </div>
+          )}
+          {otherSituations.length > 0 && (
+            <details className="chip-more" open={quickStuck.length === 0}>
+              <summary>{quickStuck.length === 0 ? 'Choose positions' : 'Other positions'}</summary>
+              <div className="chip-list">
+                {otherSituations.map((situation) => (
+                  <ToggleChip
+                    key={situation.id}
+                    pressed={stuckIds.includes(situation.id)}
+                    onToggle={(picked) => toggleStuck(situation.id, picked)}
+                  >
+                    {situation.name}
+                  </ToggleChip>
+                ))}
+              </div>
+            </details>
+          )}
+        </fieldset>
       )}
-      <Field label="One thing to work on next time" hint="Shown on the home page until your next entry sets a new one.">
+
+      {groups.length > 0 && (
+        <fieldset className="chip-field">
+          <legend>Techniques practised</legend>
+          {quickTechniques.length > 0 && (
+            <div className="chip-list">
+              {quickTechniques.map((id) => (
+                <ToggleChip
+                  key={id}
+                  pressed={techniqueIds.includes(id)}
+                  onToggle={(picked) => toggleTechnique(id, picked)}
+                >
+                  {lib.transitionById.get(id)?.name}
+                </ToggleChip>
+              ))}
+            </div>
+          )}
+          <details className="chip-more">
+            <summary>{quickTechniques.length === 0 ? 'Choose techniques' : 'All techniques'}</summary>
+            {groups.map(({ position, techniques }) => (
+              <div key={position.id}>
+                <h3 className="chip-group">{position.name}</h3>
+                <div className="chip-list">
+                  {techniques.map((technique) => (
+                    <ToggleChip
+                      key={technique.id}
+                      pressed={techniqueIds.includes(technique.id)}
+                      onToggle={(picked) => toggleTechnique(technique.id, picked)}
+                    >
+                      {technique.name}
+                    </ToggleChip>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </details>
+        </fieldset>
+      )}
+
+      <Field label="One thing to work on next time" hint="Shown on Today until your next entry sets a new one.">
         <input value={focus} onChange={(e) => setFocus(e.target.value)} />
       </Field>
-      {groups.length > 0 && (
-        <details className="technique-picker">
-          <summary>Techniques practised ({techniqueIds.length})</summary>
-          <div className="technique-groups">
-            {groups.map(({ position, techniques }) => (
-              <fieldset key={position.id}>
-                <legend>{position.name}</legend>
-                {techniques.map((technique) => (
-                  <label key={technique.id} className="check">
-                    <input
-                      type="checkbox"
-                      checked={techniqueIds.includes(technique.id)}
-                      onChange={(e) => toggleTechnique(technique.id, e.target.checked)}
-                    />
-                    {technique.name}
-                  </label>
-                ))}
-              </fieldset>
-            ))}
-          </div>
-        </details>
-      )}
+
+      {/* The chips cover a quick entry; writing is there for the days there is more to say. */}
+      <details className="log-notes" open={hasNotes}>
+        <summary>Notes: what was taught, what worked</summary>
+        <Field label="What was taught">
+          <textarea rows={2} value={taught} onChange={(e) => setTaught(e.target.value)} />
+        </Field>
+        <Field label="What worked in rolling">
+          <textarea rows={2} value={worked} onChange={(e) => setWorked(e.target.value)} />
+        </Field>
+        <Field label="Where I got stuck, in my own words">
+          <textarea rows={2} value={struggled} onChange={(e) => setStruggled(e.target.value)} />
+        </Field>
+      </details>
+
       {error && (
         <p className="error" role="alert">
           {error}
         </p>
       )}
-      <div className="row">
-        <button type="submit" className="primary" disabled={saving}>
+      {/* Pinned above the tab bar on a phone, so saving never needs a scroll. */}
+      <div className="log-save">
+        <button type="submit" className="primary large" disabled={saving}>
           {entry ? 'Save changes' : 'Save entry'}
         </button>
         {entry && (
-          <button type="button" onClick={onDone}>
+          <button type="button" className="large" onClick={onDone}>
             Cancel
           </button>
         )}
@@ -204,9 +315,20 @@ function EntryRow({ lib, entry, onEdit }: { lib: Library; entry: TrainingEntry; 
         </p>
       ))}
       {stuck.length > 0 && (
-        <p>
-          <strong>Stuck in:</strong> {stuck.map((situation) => situationName(situation)).join('; ')}
-        </p>
+        <>
+          <p>
+            <strong>Stuck in:</strong>
+          </p>
+          <ul className="chip-list">
+            {stuck.map((situation) => (
+              <li key={`${situation.position.id}:${situation.role}`}>
+                <Link className="chip" to={positionSidePath(situation.position.id, situation.role)}>
+                  {situationName(situation)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
       {techniques.length > 0 && (
         <ul className="chip-list">
@@ -257,12 +379,17 @@ export default function TrainingLog() {
       <div>
         <h1>Training log</h1>
         <p className="muted">
-          Write up each class while it is fresh. The one thing you pick to work on next time shows on the home page.
+          Write up each class while it is fresh. The one thing you pick to work on next time shows on Today.
         </p>
       </div>
       <div className="card">
-        <h2>{editing ? `Edit ${formatDay(editing.day)}` : 'Log a class'}</h2>
-        <EntryForm key={`${editing?.id ?? 'new'}:${formRound}`} lib={lib} entry={editing} onDone={finishForm} />
+        <EntryForm
+          key={`${editing?.id ?? 'new'}:${formRound}`}
+          lib={lib}
+          entries={entries}
+          entry={editing}
+          onDone={finishForm}
+        />
       </div>
       <div className="card">
         <div className="section-head">

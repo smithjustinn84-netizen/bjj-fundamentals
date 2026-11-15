@@ -1,57 +1,101 @@
-/* Home */
-.hero {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--space-5) var(--space-6);
-  align-items: center;
-  /* A belt-red seam down the leading edge, like the border tape on a mat. */
-  border-left: 4px solid var(--belt);
+/* Today: what to do now first, then what is behind it. One column at every width. */
+.today-artwork {
+  aspect-ratio: 4 / 1;
+  max-height: 11rem;
 }
-.hero h1 {
-  font-size: var(--text-display);
-  max-width: 18ch;
-}
-.hero-text .row {
-  margin-top: var(--space-4);
-  align-items: center;
-}
-.hero-rank {
+.today-head {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-  text-align: center;
-  max-width: 15rem;
-}
-.rank-label {
-  margin: 0;
-}
-.stat-tiles {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
   gap: var(--space-3);
 }
-.stat-tile {
-  flex: 1 1 9rem;
+.today-head h1,
+.today-head .eyebrow {
+  margin: 0;
+}
+.streak-pill {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-lg);
-  background: var(--bg);
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: var(--text-sm);
+  font-weight: 600;
 }
-.stat-tile .icon {
-  width: 1.5rem;
-  height: 1.5rem;
+.streak-pill .icon {
   color: var(--belt);
 }
+/* The one filled block on the page, so the eye lands on the thing to do. */
+.today-review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: 1.1rem;
+  border-radius: var(--radius-lg);
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: var(--shadow-lift);
+}
+.today-review-count {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.today-review-count strong {
+  font-size: var(--text-lg);
+}
+.today-review .button {
+  background: var(--on-accent);
+  border-color: var(--on-accent);
+  color: var(--accent);
+}
 .stat {
-  font-size: 1.8rem;
+  font-size: 3.25rem;
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
+}
+.today-rank {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding-block: var(--space-3);
+}
+.today-rank .belt-art {
+  flex: 0 0 6rem;
+  width: 6rem;
+}
+.today-rank p {
+  margin: 0;
+}
+.today-rank .progress {
+  margin: var(--space-2) 0;
+}
+.today-drill {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  color: var(--text);
+  text-decoration: none;
+}
+.today-drill:hover {
+  border-color: var(--accent);
+}
+.today-drill .eyebrow {
+  margin: 0;
+}
+.today-drill > .icon {
+  color: var(--muted);
+}
+.today-focus {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  margin-bottom: var(--space-2);
 }
 
 /* Suggested path: a vertical stepper joined by a line. */
@@ -103,32 +147,4 @@ ol.path {
   border-color: var(--accent);
   color: var(--accent);
   box-shadow: 0 0 0 4px var(--accent-soft);
-}
-
-@media (max-width: 700px) {
-  .hero {
-    grid-template-columns: 1fr;
-  }
-  .hero h1 {
-    font-size: var(--text-xl);
-  }
-  /* On a phone the hero must leave room for today's work below it: no intro line, and the rank beside its ring. */
-  .hero-intro {
-    display: none;
-  }
-  .hero-rank {
-    max-width: none;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    justify-items: start;
-    gap: var(--space-2) var(--space-4);
-    text-align: left;
-  }
-  .hero-rank .ring {
-    grid-row: span 2;
-    width: 7rem;
-  }
-  .hero-rank .stat {
-    font-size: 1.4rem;
-  }
 }

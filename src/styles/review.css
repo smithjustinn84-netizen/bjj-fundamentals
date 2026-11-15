@@ -1,8 +1,56 @@
 /* Review */
+/*
+ * A session in progress. On a phone it owns the screen (shell.css hides the tab bar): the card
+ * scrolls, and the dock with the next action stays pinned at the bottom under the thumb.
+ */
+.review-session {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  /* Fill the screen so the dock sits at the bottom even under a short card. */
+  min-height: calc(100dvh - var(--space-4));
+}
 .review-head {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: var(--space-3);
+}
+.review-head .progress {
+  flex: 1;
+  margin: 0;
+}
+.icon-button {
+  flex: none;
+  width: var(--tap);
+  padding: 0;
+}
+.icon-button .icon {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+.card-cue {
+  margin: auto 0 0;
+  text-align: center;
+}
+.card-cue .review-artwork {
+  margin-inline: auto;
+}
+.review-dock {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  margin: auto calc(-1 * var(--space-2)) 0;
+  padding: var(--space-2) var(--space-2) calc(var(--space-3) + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  /* Page-coloured, so the card's text does not show through as it scrolls underneath. */
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.review-dock p {
+  margin: 0;
 }
 
 /* Before a session: what is waiting and the button to begin, then the settings that change it. */
@@ -33,10 +81,7 @@
   font-weight: 500;
   font-size: 0.9rem;
 }
-/* Four across where they fit, two by two on a phone; never a ragged wrap. */
 .option .segmented {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
   width: 100%;
 }
 
@@ -103,8 +148,8 @@
   margin-bottom: 1.25rem;
 }
 .reveal {
-  align-self: center;
-  margin-top: auto;
+  width: 100%;
+  min-height: 3.5rem;
 }
 .answer {
   border-top: 1px dashed var(--border);
@@ -126,7 +171,8 @@
 .grade {
   flex-direction: column;
   gap: 0.1rem;
-  padding: 0.6rem;
+  min-height: 4rem;
+  padding: 0.45rem 0.25rem;
   border-color: color-mix(in srgb, var(--grade-color) 55%, var(--border));
   border-bottom-width: 3px;
 }
@@ -210,29 +256,38 @@
   color: var(--belt);
 }
 
-@media (max-width: 600px) {
-  .session-ready .primary {
-    width: 100%;
+/* No keyboard on a phone, so the shortcut hints only take room. */
+.grade kbd,
+.reveal kbd {
+  display: none;
+}
+.session-ready .primary {
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .review-session {
+    min-height: 0;
   }
-  /*
-   * A long answer would push the grades below the fold, so on phones they stay pinned just above
-   * the tab bar. The page-coloured band keeps the card's text from showing through between them.
-   */
-  .grades {
-    position: sticky;
-    bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
-    z-index: 5;
-    margin-inline: calc(-1 * var(--space-2));
-    padding: var(--space-2);
-    background: var(--bg);
-    border-top: 1px solid var(--border);
+  .review-dock {
+    position: static;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+  }
+  .reveal {
+    width: auto;
+    align-self: center;
   }
   .grade {
-    padding: 0.45rem 0.25rem;
+    padding: 0.6rem;
   }
-  /* No keyboard on a phone, so the shortcut hints only take room. */
   .grade kbd,
   .reveal kbd {
-    display: none;
+    display: inline;
+  }
+  .session-ready .primary {
+    width: auto;
   }
 }

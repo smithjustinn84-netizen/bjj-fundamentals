@@ -66,6 +66,14 @@ export function recentlyPractised(entries: TrainingEntry[], classCount: number):
 }
 
 /**
+ * The choices a class write-up offers up front, before the full list: what the entry already has,
+ * then what recent classes had, each id once and only ids that still exist.
+ */
+export function quickPicks(picked: string[], recent: string[], known: (id: string) => boolean): string[] {
+  return [...new Set([...picked, ...recent])].filter(known);
+}
+
+/**
  * Where the student got stuck in the most recent of the latest classes that named anywhere, as situation ids.
  * An older class is left out: its sticking points no longer come first in review.
  */

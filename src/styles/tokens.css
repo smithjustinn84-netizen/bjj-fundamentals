@@ -71,6 +71,8 @@
 
   /* Height of the phone tab bar, before the safe-area inset. Things pinned above it use the same number. */
   --tabbar-height: 3.75rem;
+  /* The smallest height of anything meant to be tapped on a phone. */
+  --tap: 2.75rem;
 
   --radius-sm: 4px;
   --radius-md: 8px;

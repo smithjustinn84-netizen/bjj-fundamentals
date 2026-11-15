@@ -1,5 +1,5 @@
 import { assertNever } from '../core/assertNever';
-import type { Deck, ItemKind } from '../core/models';
+import type { Deck, ItemKind, PositionRole } from '../core/models';
 import { situationPositionId } from '../core/situations';
 import type { StudyItem } from '../core/study';
 
@@ -14,6 +14,7 @@ export const ROUTES = {
   log: '/log',
   videos: '/videos',
   backup: '/backup',
+  more: '/more',
   edit: '/edit',
 } as const;
 
@@ -27,6 +28,20 @@ export const ROUTE_PATTERNS = {
 
 /** Query parameter on the new-technique page naming the position it should start from. */
 export const FROM_POSITION_PARAM = 'from';
+
+/** Query parameter on a position's page naming the side it should open on. */
+export const SIDE_PARAM = 'side';
+
+/** A position's page, opened on one side of it. */
+export function positionSidePath(positionId: string, role: PositionRole): string {
+  return `${itemPath('position', positionId)}?${SIDE_PARAM}=${role}`;
+}
+
+/** The pages behind the Learn tab, so the shell can keep it lit on all of them. */
+export const LEARN_ROUTES = [ROUTES.concepts, ROUTES.positions, ROUTES.transitions, ROUTES.blueBelt] as const;
+
+/** The pages reached from More, so the shell can keep that tab lit on all of them. */
+export const MORE_ROUTES = [ROUTES.more, ROUTES.videos, ROUTES.backup, ROUTES.edit] as const;
 
 /** Query parameter on the review page naming the deck to open with. */
 export const DECK_PARAM = 'deck';

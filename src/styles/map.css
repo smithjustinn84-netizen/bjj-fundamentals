@@ -1,29 +1,13 @@
 /* Position map */
-.segmented {
-  display: inline-flex;
-  padding: 0;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-}
-.segmented button {
-  border: 0;
-  border-radius: 0;
-  color: var(--muted);
-}
-.segmented button[aria-pressed="true"] {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
 /* Across the page on wide screens with the details underneath; down the page otherwise, with the details alongside. */
 .map {
   display: grid;
   gap: var(--space-4);
   align-items: start;
 }
+/* One column on a phone; from 700px the details sit beside the map. */
 .map-vertical {
-  grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
+  grid-template-columns: 1fr;
 }
 .map-canvas {
   padding: var(--space-3);
@@ -163,10 +147,6 @@
   background: var(--type-color);
 }
 
-.map-vertical .map-panel {
-  position: sticky;
-  top: 4.5rem;
-}
 .map-panel-body {
   animation: rise-in var(--dur-base) var(--ease-out) both;
 }
@@ -181,25 +161,22 @@
   letter-spacing: 0.06em;
 }
 
-@media (max-width: 700px) {
+@media (min-width: 700px) {
   .map-vertical {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
   }
   .map-vertical .map-panel {
-    position: static;
+    position: sticky;
+    top: 4.5rem;
   }
 }
 
-/* Position list view */
-.position-card h3 {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+/* Position list view: the chevron says the row opens a page. */
+.position-tiles .tile > .icon {
+  color: var(--muted);
 }
-.position-card h3 a {
-  color: var(--text);
-  text-decoration: none;
-}
-.position-card h3 a:hover {
-  color: var(--accent);
+
+/* Position page: which side of the position the goals and techniques below are for. */
+.side-switch {
+  margin-bottom: var(--space-4);
 }

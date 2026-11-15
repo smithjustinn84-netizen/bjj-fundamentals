@@ -1,4 +1,4 @@
-/* App frame: top bar, navigation (a bottom tab bar on phones), content column, footer. */
+/* App frame: navigation (a bottom tab bar on phones, a top bar from 600px), content column, footer. */
 .app {
   min-height: 100vh;
   display: flex;
@@ -22,21 +22,58 @@
 .skip-link:focus {
   transform: none;
 }
-.topbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+/* More: what has no tab of its own, as rows a thumb can hit. */
+.more-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.more-list li + li {
+  border-top: 1px solid var(--border);
+}
+.more-row {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2) var(--space-5);
-  padding: var(--space-3) 1.25rem;
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
+  gap: var(--space-3);
+  min-height: 4rem;
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
+  color: var(--text);
+  text-decoration: none;
+}
+.more-row:hover {
+  background: var(--accent-soft);
+}
+.more-row > .icon {
+  color: var(--muted);
+}
+.more-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.more-icon .icon {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+.more-note {
+  margin: var(--space-3) var(--space-1) 0;
+}
+
+/*
+ * Phone first: no top bar, and the navigation is a thumb-reachable tab bar pinned to the bottom.
+ * From `min-width: 600px` the bar returns to the top with the brand beside the links.
+ */
+.topbar {
+  display: contents;
 }
 .brand {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 0.6rem;
   font-weight: 800;
@@ -54,34 +91,45 @@
   transform: rotate(-6deg) scale(1.08);
 }
 .nav {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 10;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
+  justify-content: space-around;
+  height: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+  padding: var(--space-1) var(--space-1) calc(var(--space-1) + env(safe-area-inset-bottom));
+  background: var(--surface);
+  border-top: 1px solid var(--border);
 }
 .nav a {
   position: relative;
+  flex: 1 1 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.7rem;
+  justify-content: center;
+  gap: 0.1rem;
   border-radius: var(--radius-md);
   color: var(--muted);
   text-decoration: none;
+  font-size: var(--text-xs);
   font-weight: 500;
+}
+.nav a .icon {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 .nav a:hover {
   color: var(--text);
-  background: var(--accent-soft);
 }
 .nav a.active {
   color: var(--accent);
-  background: var(--accent-soft);
-}
-/* The brand is the home link on wide screens; the tab bar below swaps this in for Backup. */
-.nav .nav-home {
-  display: none;
+  font-weight: 700;
 }
 .badge {
+  position: absolute;
+  top: 0;
+  left: calc(50% + 0.4rem);
   background: var(--belt);
   color: var(--on-belt);
   border-radius: var(--radius-pill);
@@ -90,15 +138,25 @@
   font-weight: 700;
   animation: pop-in var(--dur-base) var(--ease-spring) both;
 }
+/* A review session takes the whole screen on a phone: the tab bar would only invite leaving by accident. */
+.app:has(.review-session) .nav {
+  display: none;
+}
 
 .content {
   flex: 1;
   width: 100%;
   max-width: 1000px;
   margin: 0 auto;
-  padding: var(--space-5) 1.25rem 3rem;
+  /* Clear of the fixed tab bar. */
+  padding: var(--space-4) 0.85rem calc(var(--space-5) + var(--tabbar-height) + env(safe-area-inset-bottom));
 }
+.app:has(.review-session) .content {
+  padding-bottom: 0;
+}
+/* The More page carries the same reminder on a phone. */
 .footer {
+  display: none;
   text-align: center;
   font-size: 0.8rem;
   color: var(--muted);
@@ -106,59 +164,61 @@
   border-top: 1px solid var(--border);
 }
 
-@media (max-width: 600px) {
-  .content {
-    padding: var(--space-4) 0.85rem var(--space-6);
-  }
+@media (min-width: 600px) {
   .topbar {
-    padding: 0.6rem 0.85rem;
-    /* A backdrop filter would make the top bar the anchor for the fixed tab bar below, pinning it to the top. */
-    backdrop-filter: none;
-    background: var(--surface);
-  }
-  /* On phones the nav leaves the top bar and becomes a thumb-reachable tab bar. */
-  .nav {
-    position: fixed;
-    inset: auto 0 0 0;
-    z-index: 10;
-    flex-wrap: nowrap;
-    justify-content: space-around;
-    gap: 0;
-    height: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
-    padding: var(--space-1) var(--space-1) calc(var(--space-1) + env(safe-area-inset-bottom));
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-  }
-  .nav a {
-    flex: 1 1 0;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.1rem;
-    padding: var(--space-1) 0;
-    font-size: 0.7rem;
-  }
-  .nav a .icon {
-    width: 1.4rem;
-    height: 1.4rem;
-  }
-  .nav .badge {
-    position: absolute;
+    position: sticky;
     top: 0;
-    left: calc(50% + 0.4rem);
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-5);
+    padding: var(--space-3) 1.25rem;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
   }
-  /*
-   * Six tabs is the most that fit: Home takes Backup's place, and the footer links to Backup on every page.
-   * The training log has no tab either; Home's hero and its training log card lead to it.
-   */
-  .nav .nav-home {
+  .brand {
     display: flex;
   }
-  .nav .nav-backup,
-  .nav .nav-log {
-    display: none;
+  .nav,
+  .app:has(.review-session) .nav {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: var(--space-1);
+    height: auto;
+    padding: 0;
+    background: none;
+    border: 0;
   }
-  /* Keep the footer clear of the fixed tab bar. */
+  .nav a {
+    flex: none;
+    flex-direction: row;
+    gap: 0.4rem;
+    padding: 0.35rem 0.7rem;
+    font-size: var(--text-md);
+  }
+  .nav a .icon {
+    width: 1.15em;
+    height: 1.15em;
+  }
+  .nav a:hover,
+  .nav a.active {
+    background: var(--accent-soft);
+  }
+  .nav a.active {
+    font-weight: 500;
+  }
+  .badge {
+    position: static;
+  }
+  .content,
+  .app:has(.review-session) .content {
+    padding: var(--space-5) 1.25rem 3rem;
+  }
   .footer {
-    padding-bottom: calc(var(--space-4) + var(--tabbar-height) + env(safe-area-inset-bottom));
+    display: block;
   }
 }

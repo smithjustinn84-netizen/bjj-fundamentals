@@ -106,8 +106,13 @@ kbd {
   justify-content: space-between;
   align-items: flex-start;
 }
+/* On a phone a lone button stays beside the title; a row of controls takes its own line. */
 .page-head > div:first-child {
-  flex: 1 1 20rem;
+  flex: 1 1 0;
+  min-width: 0;
+}
+.page-head > .row {
+  flex: 1 1 100%;
 }
 .section + .section {
   margin-top: 1.25rem;
@@ -140,11 +145,6 @@ kbd {
   font-size: var(--text-sm);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
 }
 .notes {
   white-space: pre-wrap;
@@ -191,6 +191,8 @@ button,
   background: var(--surface);
   color: var(--text);
   text-decoration: none;
+  /* A thumb needs this much; from 600px, where a pointer is likely, buttons shrink to their text. */
+  min-height: var(--tap);
 }
 button:hover,
 .button:hover {
@@ -226,12 +228,45 @@ button.large,
 button.link {
   background: none;
   border: 0;
-  padding: 0;
+  padding: 0 var(--space-1);
   color: var(--accent);
   text-decoration: underline;
 }
 button.link.danger {
   color: var(--danger);
+}
+/* A switch between a few views: buttons with `aria-pressed`, or links when each view is its own page. */
+.segmented {
+  display: flex;
+  gap: 2px;
+  margin: 0;
+  padding: 3px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--border);
+}
+.segmented button,
+.segmented a {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  min-height: var(--tap);
+  padding: 0.25rem 0.75rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--muted);
+  font-weight: 500;
+  text-decoration: none;
+}
+.segmented button[aria-pressed="true"],
+.segmented a.active {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 700;
+  box-shadow: var(--shadow);
 }
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -324,6 +359,7 @@ legend {
   text-decoration: none;
   color: var(--text);
   font-size: 0.9rem;
+  min-height: var(--tap);
 }
 .chip:hover {
   border-color: var(--accent);
@@ -339,8 +375,9 @@ legend {
 .tile {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.9rem 1.1rem;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
+  min-height: 4.25rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -350,12 +387,13 @@ legend {
 .tile:hover {
   border-color: var(--accent);
 }
+/* The number is the first thing to go on a phone: the picture and the name need the room. */
 .tile-num {
+  display: none;
   width: 2rem;
   height: 2rem;
   flex: 0 0 2rem;
   border-radius: 50%;
-  display: grid;
   place-items: center;
   background: var(--accent-soft);
   color: var(--accent);
@@ -372,8 +410,13 @@ legend {
 .transition-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.4rem;
+  align-items: center;
+  gap: 0.1rem 0.4rem;
+  min-height: var(--tap);
+}
+/* The whole height of the row takes the tap, not just the words. */
+.transition-row a {
+  padding: 0.5rem 0;
 }
 .tag {
   --type-color: var(--type-transition);
@@ -564,4 +607,40 @@ input[type="range"] {
 }
 .library-search p {
   margin: 0;
+}
+
+@media (min-width: 600px) {
+  button,
+  .button,
+  .chip,
+  .transition-row {
+    min-height: 0;
+  }
+  .transition-row {
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+  .transition-row a {
+    padding: 0;
+  }
+  .segmented {
+    display: inline-flex;
+  }
+  .segmented button,
+  .segmented a {
+    min-height: 2.25rem;
+  }
+  .tile-num {
+    display: grid;
+  }
+  .page-head > div:first-child {
+    flex: 1 1 20rem;
+  }
+  .page-head > .row {
+    flex: 0 1 auto;
+  }
+  .tile {
+    gap: 1rem;
+    padding: 0.9rem 1.1rem;
+  }
 }

@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLibrary } from '../../bindings';
 import { CATEGORY_LABELS } from '../../core/labels';
-import { connections, type Library, reviewOf } from '../../core/library';
+import { type Library, reviewOf } from '../../core/library';
 import { POSITION_CATEGORIES } from '../../core/models';
 import { positionProgress } from '../../core/todaysDrill';
-import { Loading, ProgressDot } from '../components/common';
+import { Loading, ProgressDot, ProgressLegend } from '../components/common';
+import { LearnTabs } from '../components/LearnTabs';
 import { LibrarySearch } from '../components/LibrarySearch';
 import { PositionMap } from '../components/PositionMap';
 import { NO_TECHNIQUES_FROM_HERE, TransitionList } from '../components/TransitionLink';
@@ -21,14 +22,17 @@ import { useMediaQuery } from '../useMediaQuery';
  */
 const NARROW_SCREEN = '(max-width: 999px)';
 
-const VIEWS = ['map', 'list'] as const;
+/** The phone breakpoint in shell.css. The map is hard to read that narrow, so a phone opens on the list. */
+const PHONE_SCREEN = '(max-width: 599px)';
+
+const VIEWS = ['list', 'map'] as const;
 type View = (typeof VIEWS)[number];
 const VIEW_LABELS: Record<View, { label: string; icon: IconName }> = {
   map: { label: 'Map', icon: 'map' },
   list: { label: 'List', icon: 'list' },
 };
 
-/** Every position as a card, grouped by category, with the techniques that leave it. */
+/** Every position as a row, grouped by category: its picture, its name and how much of it is learned. */
 function PositionList({ lib }: { lib: Library }) {
   return (
     <>
@@ -38,32 +42,28 @@ function PositionList({ lib }: { lib: Library }) {
         return (
           <section key={category}>
             <h2 className="group-title">{CATEGORY_LABELS[category]}</h2>
-            <div className="grid stagger">
+            <ul className="tile-list position-tiles stagger">
               {inCategory.map((p) => {
-                const { outgoing } = connections(lib, p.id);
                 const progress = positionProgress(lib, p.id);
                 return (
-                  <article key={p.id} className="card position-card">
-                    <PositionArtwork id={p.id} name={p.name} className="card-artwork" />
-                    <h3>
-                      <ProgressDot state={reviewOf(lib, 'position', p.id)} />{' '}
-                      <Link to={itemPath('position', p.id)}>{p.name}</Link>
-                    </h3>
-                    <p className="muted small">{p.summary}</p>
-                    {progress.total > 0 && (
-                      <p className="muted small">
-                        {progress.learned} of {progress.total} techniques learned
-                      </p>
-                    )}
-                    {outgoing.length > 0 ? (
-                      <TransitionList transitions={outgoing} positionById={lib.positionById} direction="out" />
-                    ) : (
-                      <p className="muted small">{NO_TECHNIQUES_FROM_HERE}</p>
-                    )}
-                  </article>
+                  <li key={p.id}>
+                    <Link to={itemPath('position', p.id)} className="tile">
+                      <PositionArtwork id={p.id} name={p.name} className="thumb-artwork" />
+                      <span className="grow">
+                        <strong>{p.name}</strong>
+                        <span className="muted small block">
+                          {progress.total > 0
+                            ? `${progress.learned} of ${progress.total} techniques learned`
+                            : NO_TECHNIQUES_FROM_HERE}
+                        </span>
+                      </span>
+                      <ProgressDot state={reviewOf(lib, 'position', p.id)} />
+                      <Icon name="chevron" />
+                    </Link>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           </section>
         );
       })}
@@ -73,16 +73,20 @@ function PositionList({ lib }: { lib: Library }) {
 
 export default function Positions() {
   const lib = useLibrary();
-  const [view, setView] = useState<View>('map');
+  const onPhone = useMediaQuery(PHONE_SCREEN);
+  /** Null until the user picks a view; until then the screen decides. */
+  const [chosenView, setView] = useState<View | null>(null);
+  const view = chosenView ?? (onPhone ? 'list' : 'map');
   const narrow = useMediaQuery(NARROW_SCREEN);
   if (!lib) return <Loading />;
   const orphans = lib.transitions.filter((t) => !lib.positionById.has(t.fromId));
 
   return (
     <div className="stack">
+      <LearnTabs />
       <div className="page-head">
         <div>
-          <h1>Position map</h1>
+          <h1>Positions</h1>
           <p className="muted">Each position, and the techniques that move you between them.</p>
         </div>
         <div className="row">
@@ -122,7 +126,10 @@ export default function Positions() {
       ) : view === 'map' ? (
         <PositionMap lib={lib} orientation={narrow ? 'vertical' : 'horizontal'} />
       ) : (
-        <PositionList lib={lib} />
+        <>
+          <ProgressLegend />
+          <PositionList lib={lib} />
+        </>
       )}
       {orphans.length > 0 && (
         <section>

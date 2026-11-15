@@ -4,6 +4,7 @@ import { blueBeltTestList } from '../../core/beltTest';
 import { TRANSITION_GROUP_LABELS } from '../../core/labels';
 import { reviewOf } from '../../core/library';
 import { Loading, ProgressDot, ProgressLegend } from '../components/common';
+import { LearnTabs } from '../components/LearnTabs';
 import { StarterOffer } from '../components/StarterOffer';
 import { Belt } from '../graphics/Belt';
 import { EmptyState } from '../graphics/EmptyState';
@@ -18,6 +19,7 @@ export default function BlueBelt() {
 
   return (
     <div className="stack">
+      <LearnTabs />
       <div className="page-head">
         <div>
           <h1>Blue belt test</h1>

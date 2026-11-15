@@ -1,25 +1,34 @@
-import { Link, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useLibrary } from '../../bindings';
-import { CATEGORY_LABELS, ROLE_LABELS, roleLabel } from '../../core/labels';
+import { CATEGORY_LABELS, roleLabel } from '../../core/labels';
 import { connections, reviewOf } from '../../core/library';
-import { POSITION_ROLES } from '../../core/models';
+import { POSITION_ROLES, type PositionRole } from '../../core/models';
 import { positionOptions } from '../../core/roles';
+import { roleGoals } from '../../core/situations';
 import { positionProgress } from '../../core/todaysDrill';
 import { Bullets, Loading, Missing, NotesBlock, Pager, Section, StudyStatusPill } from '../components/common';
 import { ItemPicture } from '../components/ItemPicture';
 import { NO_TECHNIQUES_FROM_HERE, TransitionList } from '../components/TransitionLink';
 import { LinkedVideos } from '../components/VideoList';
 import { PositionArtwork } from '../graphics/PositionSvg';
-import { editPath, itemPath, newItemPath, ROUTES } from '../routes';
+import { editPath, itemPath, newItemPath, ROUTES, SIDE_PARAM } from '../routes';
+
+/** The side a position's page opens on when the link does not say. */
+const DEFAULT_SIDE: PositionRole = 'top';
 
 export default function PositionDetail() {
   const { id = '' } = useParams();
+  const [params] = useSearchParams();
   const lib = useLibrary();
+  // A link from the log or Today can open the page on the side the student was stuck on.
+  const [side, setSide] = useState<PositionRole>(
+    () => POSITION_ROLES.find((role) => role === params.get(SIDE_PARAM)) ?? DEFAULT_SIDE,
+  );
   if (!lib) return <Loading />;
   const position = lib.positionById.get(id);
-  if (!position) return <Missing what="Position" back={{ to: ROUTES.positions, label: 'Position map' }} />;
+  if (!position) return <Missing what="Position" back={{ to: ROUTES.positions, label: 'Positions' }} />;
 
-  const [top, bottom] = ROLE_LABELS[position.category];
   const { outgoing, incoming } = connections(lib, position.id);
   const options = positionOptions(lib, position.id);
   const progress = positionProgress(lib, position.id);
@@ -31,7 +40,7 @@ export default function PositionDetail() {
   return (
     <article className="stack">
       <Link to={ROUTES.positions} className="small">
-        ← Position map
+        ← Positions
       </Link>
       <div className="page-head">
         <div>
@@ -49,14 +58,38 @@ export default function PositionDetail() {
         <ItemPicture kind="position" id={position.id}>
           <PositionArtwork id={position.id} name={position.name} />
         </ItemPicture>
-        <div className="two-col">
-          <Section title={top}>
-            <Bullets items={position.topGoals} />
-          </Section>
-          <Section title={bottom}>
-            <Bullets items={position.bottomGoals} />
-          </Section>
-        </div>
+        {/* One side at a time: in a roll you are only ever on one of them. */}
+        <fieldset className="segmented side-switch" aria-label="Which side you are on">
+          {POSITION_ROLES.map((role) => (
+            <button key={role} type="button" aria-pressed={side === role} onClick={() => setSide(role)}>
+              {roleLabel(position.category, role)}
+            </button>
+          ))}
+        </fieldset>
+        <Section title="What you want">
+          <Bullets items={roleGoals(position, side)} />
+        </Section>
+        <Section
+          title="What you can do"
+          action={
+            <Link className="button small" to={newItemPath('transition', position.id)}>
+              + Technique
+            </Link>
+          }
+        >
+          {progress.total > 0 && (
+            <p className="muted small">
+              {progress.learned} of {progress.total} learned from this position
+            </p>
+          )}
+          {outgoing.length === 0 ? (
+            <p className="muted">{NO_TECHNIQUES_FROM_HERE}</p>
+          ) : options[side].length > 0 ? (
+            <TransitionList transitions={options[side]} positionById={lib.positionById} direction="out" />
+          ) : (
+            <p className="muted">Nothing for this side yet. Add a technique so you have an answer here.</p>
+          )}
+        </Section>
         {concepts.length > 0 && (
           <Section title="Concepts to remember">
             <ul className="chip-list">
@@ -70,34 +103,6 @@ export default function PositionDetail() {
             </ul>
           </Section>
         )}
-        <Section
-          title="From here"
-          action={
-            <Link className="button small" to={newItemPath('transition', position.id)}>
-              + Technique
-            </Link>
-          }
-        >
-          {progress.total > 0 && (
-            <p className="muted small">
-              {progress.learned} of {progress.total} learned
-            </p>
-          )}
-          {outgoing.length > 0 ? (
-            POSITION_ROLES.map((role) => (
-              <div key={role}>
-                <h3>{roleLabel(position.category, role)}</h3>
-                {options[role].length > 0 ? (
-                  <TransitionList transitions={options[role]} positionById={lib.positionById} direction="out" />
-                ) : (
-                  <p className="muted">Nothing for this side yet. Add a technique so you have an answer here.</p>
-                )}
-              </div>
-            ))
-          ) : (
-            <p className="muted">{NO_TECHNIQUES_FROM_HERE}</p>
-          )}
-        </Section>
         {incoming.length > 0 && (
           <Section title="Ways to get here">
             <TransitionList transitions={incoming} positionById={lib.positionById} direction="in" />

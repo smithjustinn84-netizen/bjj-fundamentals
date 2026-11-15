@@ -52,6 +52,8 @@ Where does new code go?
 ## Look and motion
 
 - Styles are plain CSS in `src/styles/`, one file per area (`tokens`, `base`, `motion`, `shell`, `graphics`, then one per screen), imported in that order from `src/main.tsx`.
+- Styles are phone first. A rule outside a media query is the phone layout; wider layouts are added with `min-width` queries (600px is where the bottom tab bar becomes a top bar), never `max-width`. Anything tapped is at least `--tap` tall on a phone.
+- The shell has five destinations (Today, Learn, Review, Log, More), the same on every screen size. A new screen goes behind one of them, not into the bar: add it to `LEARN_ROUTES` or `MORE_ROUTES` in `ui/routes.ts` so its tab stays lit, and link it from the Learn switch (`LearnTabs`) or the More page.
 - Colours, radii, durations and easings come from `tokens.css`. No hex colours anywhere else; a new colour is a new token with a light and a dark value.
 - Graphics are hand-written inline SVG components in `src/ui/graphics/` coloured through tokens. The only image files are the painted home-page hero and the touch icon in `public/artwork/`; every other picture is SVG, so do not add more paintings. No font files, no icon or animation library.
 - The hero and the diagrams share one sheet of paper: diagrams use only the `--art-*` tokens, which have a single value for both themes; the dark theme dims the whole `.artwork-frame` instead. This is the one exception to "a light and a dark value".

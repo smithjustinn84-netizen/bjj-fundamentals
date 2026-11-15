@@ -8,7 +8,7 @@ import { describeInterval, newReviewState } from '../../core/srs';
 import { buildQueue, type StudyItem } from '../../core/study';
 import { RECENT_CLASS_COUNT, studyFirst } from '../../core/trainingLog';
 import { Loading } from '../components/common';
-import { CardAnswer, cardPrompt } from '../components/StudyCard';
+import { CardAnswer, CardCue, cardPrompt } from '../components/StudyCard';
 import { EmptyState } from '../graphics/EmptyState';
 import { Icon } from '../graphics/icons';
 import { prefersReducedMotion } from '../graphics/motion';
@@ -26,8 +26,9 @@ const DECK_LABELS: Record<Deck, string> = {
 /** Keyboard shortcut for each grade: its place in the row, starting from 1. */
 const GRADE_BUTTONS = GRADES.map((grade, index) => ({ grade, label: GRADE_LABELS[grade], key: String(index + 1) }));
 const DECK_LABEL_ID = 'review-deck-label';
+const GRADES_LABEL_ID = 'review-grades-label';
 /** The phone breakpoint in shell.css. Six deck buttons wrap badly at that width, so a menu replaces them. */
-const PHONE_SCREEN = '(max-width: 600px)';
+const PHONE_SCREEN = '(max-width: 599px)';
 const DEFAULT_NEW_CARDS = 5;
 const MAX_NEW_CARDS = 20;
 /** How long a graded card takes to slide away: `--dur-base`, which the `card-leave` animation in review.css uses. */
@@ -104,7 +105,7 @@ function SessionComplete(props: {
                 Done
               </Link>
               <Link className="button" to={ROUTES.positions}>
-                Position map
+                Positions
               </Link>
             </>
           )}
@@ -262,17 +263,18 @@ export default function Review() {
   const now = Date.now();
   const state = reviewOf(lib, current.kind, current.id) ?? newReviewState(current.kind, current.id, now);
 
+  const total = session.doneCount + session.remaining;
   return (
-    <div className="stack narrow-page">
+    <div className="narrow-page review-session">
       <div className="review-head">
-        <button type="button" className="link small" onClick={session.end}>
-          ← End session
+        <button type="button" className="icon-button" aria-label="End session" onClick={session.end}>
+          <Icon name="close" />
         </button>
+        <ProgressBar value={session.doneCount} max={total} label="Session progress" />
         <span className="muted small">
-          {session.remaining} left · {session.doneCount} done
+          {session.doneCount + 1} of {total}
         </span>
       </div>
-      <ProgressBar value={session.doneCount} max={session.doneCount + session.remaining} label="Session progress" />
       <div className="card-stage">
         {/* Keyed per card and per answer given, so each new card (or a repeated one) slides in afresh. */}
         <div
@@ -296,9 +298,7 @@ export default function Review() {
                 </p>
               </div>
             ) : (
-              <button type="button" className="primary reveal" onClick={reveal}>
-                Show answer <kbd>Space</kbd>
-              </button>
+              <CardCue item={current} lib={lib} />
             )}
           </div>
         </div>
@@ -306,23 +306,38 @@ export default function Review() {
       <p className="visually-hidden" role="status">
         {revealed ? 'Answer shown. Rate how well you knew it.' : ''}
       </p>
-      {revealed && (
-        <fieldset className="grades" aria-label="How well did you know it?">
-          {GRADE_BUTTONS.map((b) => (
-            <button
-              key={b.grade}
-              type="button"
-              className={`grade grade-${b.grade}`}
-              disabled={session.saving || leaving !== null}
-              onClick={() => void gradeWithFeedback(b.grade)}
-            >
-              <span>{b.label}</span>
-              <span className="small">{describeInterval(state, b.grade, now)}</span>
-              <kbd>{b.key}</kbd>
+      {/* Pinned to the bottom of the screen, under the thumb, however long the card is. */}
+      <div className="review-dock">
+        {revealed ? (
+          <>
+            <p className="muted small" id={GRADES_LABEL_ID}>
+              How well did you know it?
+            </p>
+            <fieldset className="grades" aria-labelledby={GRADES_LABEL_ID}>
+              {GRADE_BUTTONS.map((b) => (
+                <button
+                  key={b.grade}
+                  type="button"
+                  className={`grade grade-${b.grade}`}
+                  disabled={session.saving || leaving !== null}
+                  onClick={() => void gradeWithFeedback(b.grade)}
+                >
+                  <span>{b.label}</span>
+                  <span className="small">{describeInterval(state, b.grade, now)}</span>
+                  <kbd>{b.key}</kbd>
+                </button>
+              ))}
+            </fieldset>
+          </>
+        ) : (
+          <>
+            <p className="muted small">Answer in your head or out loud, then check.</p>
+            <button type="button" className="primary large reveal" onClick={reveal}>
+              Show answer <kbd>Space</kbd>
             </button>
-          ))}
-        </fieldset>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
