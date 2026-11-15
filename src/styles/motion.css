@@ -33,7 +33,6 @@
 
 /* Children of a .stagger list arrive one after another. */
 .stagger > * {
-  --stagger-step: 40ms;
   animation: rise-in var(--dur-base) var(--ease-out) both;
 }
 .stagger > :nth-child(2) {

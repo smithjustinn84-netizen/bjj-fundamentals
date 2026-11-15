@@ -77,16 +77,6 @@
   color: var(--accent);
   background: var(--accent-soft);
 }
-.icon {
-  width: 1.15em;
-  height: 1.15em;
-  flex: 0 0 auto;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.75;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
 .badge {
   background: var(--belt);
   color: var(--on-belt);

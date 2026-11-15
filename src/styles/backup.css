@@ -1,0 +1,16 @@
+/* Backup page */
+.counts {
+  width: 100%;
+  border-collapse: collapse;
+}
+.counts td {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.counts td:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.danger-zone {
+  border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+}

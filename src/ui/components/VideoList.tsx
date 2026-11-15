@@ -5,6 +5,7 @@ import { KIND_LABELS } from '../../core/labels';
 import type { ItemKind, VideoBookmark } from '../../core/models';
 import { formatTime, watchUrl } from '../../core/youtube';
 import { itemPath } from '../routes';
+import { Section } from './common';
 import { VideoForm } from './VideoForm';
 
 interface RowProps {
@@ -52,15 +53,16 @@ export function LinkedVideos({ kind, id }: { kind: ItemKind; id: string }) {
   const linked = useLinkedVideos(kind, id);
   const [adding, setAdding] = useState(false);
   return (
-    <section className="section">
-      <div className="section-head">
-        <h2>Video bookmarks</h2>
-        {!adding && (
+    <Section
+      title="Video bookmarks"
+      action={
+        !adding && (
           <button type="button" onClick={() => setAdding(true)}>
             + Add
           </button>
-        )}
-      </div>
+        )
+      }
+    >
       {adding && <VideoForm linkedTo={{ kind, id }} onDone={() => setAdding(false)} />}
       {linked?.length === 0 && !adding && (
         <p className="muted">Save a YouTube link at the exact moment that explains this well.</p>
@@ -72,6 +74,6 @@ export function LinkedVideos({ kind, id }: { kind: ItemKind; id: string }) {
           ))}
         </ul>
       )}
-    </section>
+    </Section>
   );
 }

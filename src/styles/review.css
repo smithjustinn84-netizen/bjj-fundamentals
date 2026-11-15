@@ -46,7 +46,7 @@
   animation: card-enter var(--dur-base) var(--ease-out) both;
 }
 .card-slot.card-leaving {
-  animation: card-leave 220ms ease-in forwards;
+  animation: card-leave var(--dur-base) var(--ease-in) forwards;
 }
 .flashcard {
   min-height: 220px;

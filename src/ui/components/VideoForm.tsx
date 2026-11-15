@@ -54,7 +54,7 @@ export function VideoForm({ linkedTo, onDone }: Props) {
     }
     const link = linkedTo ?? decodeRef(picked);
     await videos.add({
-      title: title.trim() || 'Untitled clip',
+      title,
       youtubeId,
       startSeconds,
       linkedKind: link?.kind ?? '',

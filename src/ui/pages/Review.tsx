@@ -20,7 +20,7 @@ const DECK_LABELS: Record<Deck, string> = { all: 'Everything', ...KIND_GROUP_LAB
 const GRADE_BUTTONS = GRADES.map((grade, index) => ({ grade, label: GRADE_LABELS[grade], key: String(index + 1) }));
 const DEFAULT_NEW_CARDS = 5;
 const MAX_NEW_CARDS = 20;
-/** How long a graded card takes to slide away. Must match the `card-leave` animation in review.css. */
+/** How long a graded card takes to slide away: `--dur-base`, which the `card-leave` animation in review.css uses. */
 const CARD_LEAVE_MS = 220;
 
 const isTyping = (target: EventTarget | null) =>

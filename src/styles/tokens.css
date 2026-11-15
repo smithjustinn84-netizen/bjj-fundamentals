@@ -45,9 +45,9 @@
   --art-highlight: #d08a1c;
 
   /* Technique types */
-  --type-sweep: #a35f00;
-  --type-pass: #1f4e8c;
-  --type-escape: #2e7d32;
+  --type-sweep: var(--warn);
+  --type-pass: var(--accent);
+  --type-escape: var(--ok);
   --type-submission: #b8322a;
   --type-takedown: #6b3fa0;
   --type-transition: #5c6670;
@@ -84,8 +84,20 @@
   --dur-fast: 120ms;
   --dur-base: 220ms;
   --dur-slow: 480ms;
+  /* Drawing a line in: map arrows, then the slower brush stroke of the ensō. */
+  --dur-draw: 700ms;
+  --dur-draw-slow: 900ms;
+  /* Map arrows wait for their boxes to land before drawing. */
+  --delay-draw: 250ms;
+  /* One loop of the dashes flowing along a highlighted map arrow. */
+  --dur-flow: 600ms;
+  /* Gap between items of a .stagger list arriving. */
+  --stagger-step: 40ms;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in: cubic-bezier(0.42, 0, 1, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Constant speed, for motion that loops. */
+  --ease-steady: linear;
 
   --shadow: 0 1px 2px rgb(60 45 20 / 0.06), 0 2px 8px rgb(60 45 20 / 0.05);
   --shadow-lift: 0 2px 4px rgb(60 45 20 / 0.08), 0 8px 20px rgb(60 45 20 / 0.1);
@@ -120,9 +132,6 @@
     --belt-black: #0b0b0d;
     --belt-outline: #8a8a94;
 
-    --type-sweep: #f0b94a;
-    --type-pass: #8ab4f8;
-    --type-escape: #81c995;
     --type-submission: #f28b82;
     --type-takedown: #c5a3f0;
     --type-transition: #a8b3bd;

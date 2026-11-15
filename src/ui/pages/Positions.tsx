@@ -9,13 +9,13 @@ import { PositionMap } from '../components/PositionMap';
 import { NO_TECHNIQUES_FROM_HERE, TransitionList } from '../components/TransitionLink';
 import { EmptyState } from '../graphics/EmptyState';
 import { Icon, type IconName } from '../graphics/icons';
-import { useMediaQuery } from '../graphics/motion';
 import { PositionArtwork } from '../graphics/PositionSvg';
 import { itemPath, newItemPath } from '../routes';
+import { useMediaQuery } from '../useMediaQuery';
 
 /**
- * The across-the-page map needs about the full content column to stay readable.
- * On anything narrower it runs down the page instead. Matches the breakpoint in map.css.
+ * The across-the-page map needs about the full content column to stay readable, so below the
+ * column's `max-width` in shell.css (1000px) it runs down the page instead.
  */
 const NARROW_SCREEN = '(max-width: 999px)';
 

@@ -55,7 +55,7 @@
   /* With pathLength="1", a dash of 1 is the whole arrow; sliding the offset to 0 draws it in. */
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: draw 700ms var(--ease-out) 250ms forwards;
+  animation: draw var(--dur-draw) var(--ease-out) var(--delay-draw) forwards;
   transition:
     opacity var(--dur-base) var(--ease-out),
     stroke-width var(--dur-base) var(--ease-out);
@@ -80,7 +80,7 @@
   stroke-width: 1.5;
   stroke-linecap: round;
   stroke-dasharray: 2 14;
-  animation: map-flow 600ms linear infinite;
+  animation: map-flow var(--dur-flow) var(--ease-steady) infinite;
   pointer-events: none;
 }
 
@@ -188,4 +188,18 @@
   .map-vertical .map-panel {
     position: static;
   }
+}
+
+/* Position list view */
+.position-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.position-card h3 a {
+  color: var(--text);
+  text-decoration: none;
+}
+.position-card h3 a:hover {
+  color: var(--accent);
 }

@@ -1,4 +1,30 @@
-/* Reusable graphics: belt, progress ring, empty-state art. */
+/* Reusable graphics: icons, belt, progress bar and ring, empty-state art. */
+
+/* Line icons. Size follows the surrounding text. */
+.icon {
+  width: 1.15em;
+  height: 1.15em;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Progress bar */
+.progress {
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.progress > div {
+  height: 100%;
+  background: var(--ok);
+  transition: width var(--dur-slow) var(--ease-out);
+}
 
 /* Belt. Each rank sets the cloth colour; the rank bar is black except on the black belt, where it is red. */
 .belt-art {
@@ -124,7 +150,7 @@
   opacity: 0.8;
   stroke-dasharray: 260;
   stroke-dashoffset: 260;
-  animation: draw 900ms var(--ease-out) forwards;
+  animation: draw var(--dur-draw-slow) var(--ease-out) forwards;
 }
 
 /* Framed illustrations: the hero painting and the diagrams share one sheet of paper. */
