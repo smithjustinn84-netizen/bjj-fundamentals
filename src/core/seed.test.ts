@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { endsTheRoll } from './models';
 import { starterContent } from './seed';
 
 describe('starter content', () => {
@@ -13,6 +14,24 @@ describe('starter content', () => {
     const conceptIds = new Set(starter.concepts.map((c) => c.id));
     const unknown = starter.positions.flatMap((p) => p.conceptIds.filter((id) => !conceptIds.has(id)));
     expect(unknown).toEqual([]);
+  });
+
+  it('starts and ends every technique at a starter position, or an existing library is never offered it', () => {
+    const positionIds = new Set(starter.positions.map((p) => p.id));
+    const broken = starter.transitions.filter(
+      (t) => !positionIds.has(t.fromId) || (!endsTheRoll(t.type) && !positionIds.has(t.toId)),
+    );
+    expect(broken.map((t) => t.id)).toEqual([]);
+  });
+
+  it('links every starter video to a starter item', () => {
+    const itemIds = {
+      concept: new Set(starter.concepts.map((c) => c.id)),
+      position: new Set(starter.positions.map((p) => p.id)),
+      transition: new Set(starter.transitions.map((t) => t.id)),
+    };
+    const unlinked = starter.videos.filter((v) => v.linkedKind === '' || !itemIds[v.linkedKind].has(v.linkedId));
+    expect(unlinked.map((v) => v.id)).toEqual([]);
   });
 
   it('bookmarks a video for every starter concept', () => {
