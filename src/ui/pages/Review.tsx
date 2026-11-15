@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { useLibrary, useStudyStats } from '../../bindings';
+import { useLibrary, useStudyStats, useTrainingLog } from '../../bindings';
 import { GRADE_LABELS, KIND_GROUP_LABELS, plural } from '../../core/labels';
 import { reviewOf } from '../../core/library';
 import { DECKS, type Deck, GRADES, type Grade } from '../../core/models';
 import { describeInterval, newReviewState } from '../../core/srs';
 import { buildQueue, type StudyItem } from '../../core/study';
+import { RECENT_CLASS_COUNT, recentlyPractised } from '../../core/trainingLog';
 import { Loading } from '../components/common';
 import { CardAnswer, cardPrompt } from '../components/StudyCard';
 import { EmptyState } from '../graphics/EmptyState';
@@ -107,6 +108,8 @@ function SessionComplete(props: {
 
 export default function Review() {
   const lib = useLibrary();
+  // While the log is still loading the queue is built without it; it only changes the order of new cards.
+  const practised = recentlyPractised(useTrainingLog() ?? [], RECENT_CLASS_COUNT);
   const session = useReviewSession(lib);
   const [params] = useSearchParams();
   // A list page can open the review on its own deck; anything unrecognised falls back to everything.
@@ -150,7 +153,7 @@ export default function Review() {
   if (!lib) return <Loading />;
 
   if (status === 'idle') {
-    const preview = buildQueue(lib, deck, newLimit, Date.now());
+    const preview = buildQueue(lib, deck, newLimit, Date.now(), practised);
     const newCount = Math.min(newLimit, preview.fresh.length);
     return (
       <div className="stack narrow-page">
@@ -170,6 +173,12 @@ export default function Review() {
                   {preview.due.length} due · {newCount} new
                   {preview.fresh.length > newCount && ` · ${preview.fresh.length - newCount} more not started`}
                 </p>
+                {preview.fromClass > 0 && (
+                  <p className="muted small">
+                    {preview.fromClass} of the new {preview.fromClass === 1 ? 'card is' : 'cards are'} from your recent
+                    classes, so {preview.fromClass === 1 ? 'it comes' : 'they come'} first.
+                  </p>
+                )}
               </div>
               <button type="button" className="primary large" onClick={() => session.start(preview.queue)}>
                 Start session
@@ -211,7 +220,7 @@ export default function Review() {
   }
 
   if (status === 'finished') {
-    const nextRound = buildQueue(lib, deck, newLimit, Date.now()).queue;
+    const nextRound = buildQueue(lib, deck, newLimit, Date.now(), practised).queue;
     return (
       <SessionComplete
         doneCount={session.doneCount}

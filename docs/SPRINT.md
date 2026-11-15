@@ -32,7 +32,7 @@ The app tracks flashcard reviews but not mat time, and mat time is what makes th
 - [x] **Log a class.** Done 2026-11-15. Date, minutes on the mat, what was taught, what worked and what failed in rolling, and one thing to focus on next time, with techniques linked.
 - [x] **New table.** Done 2026-11-15 as `trainingLog` (Dexie version 5, backup schema 5). Deleting a technique or position removes it from entries and keeps the entry. Follow the "Add a table" recipe in `AGENTS.md`: model, backup schema and labels, `AppStorage`, both storage engines with a new Dexie `version(5)`, a service, the storage contract and service tests.
 - [x] **A Log screen**, plus the latest "focus for next time" on Home. Done 2026-11-15. On phones the tab bar is full, so the log is reached from Home's training log card.
-- [ ] **Use the log in study.** Techniques logged as "failed in rolling" or drilled in class come up first in the next review.
+- [x] **Use the log in study.** Partly done 2026-11-15: new cards for techniques practised in the last three classes come first in review (`recentlyPractised`, `buildQueue`). Not done: reordering cards already being studied, or treating "got stuck" differently from "practised". The original idea: Techniques logged as "failed in rolling" or drilled in class come up first in the next review.
 
 Open question: should mat time feed the belt and streak display, or stay separate from study progress?
 
@@ -40,5 +40,5 @@ Open question: should mat time feed the belt and streak display, or stay separat
 
 - [ ] **More curriculum.** Still missing: knee-on-belly and north-south (new starter positions do not reach existing libraries, so decide how to offer them first), a single-leg takedown, a straight ankle lock with leg-lock safety, kimura and americana defences, attacks from turtle top other than taking the back.
 - [x] **Drills on techniques.** Done 2026-11-15: `Transition.drill`, read through `techniqueDrill`, with a drill written for all 43 starter techniques (backup schema 6). Only concepts have a drill. A solo or partner drill per technique would give a white belt something to do between classes.
-- [ ] **Training etiquette and safety.** One or two concepts on rolling intensity, hygiene, and what to tell a partner about an injury.
+- [x] **Training etiquette and safety.** Done 2026-11-15 as two starter concepts, "Be a good training partner" and "Roll to learn, not to win", each with a video and a drawing. One or two concepts on rolling intensity, hygiene, and what to tell a partner about an injury.
 - [x] **Search.** Done 2026-11-15: one box on Home finds concepts, positions and techniques by name or text (`core/search.ts`). Only the Videos page has a search box; there is none for concepts, positions or techniques.

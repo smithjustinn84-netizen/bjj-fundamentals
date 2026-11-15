@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { trainingEntry } from './testing/testFixtures';
-import { formatClassCount, formatMatTime, isDayKey, newestFirst, trainingSummary } from './trainingLog';
+import {
+  formatClassCount,
+  formatMatTime,
+  isDayKey,
+  newestFirst,
+  recentlyPractised,
+  trainingSummary,
+} from './trainingLog';
 
 describe('isDayKey', () => {
   it('accepts a calendar day and rejects anything else', () => {
@@ -52,5 +59,17 @@ describe('formatClassCount', () => {
   it('uses the right plural', () => {
     expect(formatClassCount(1)).toBe('1 class');
     expect(formatClassCount(3)).toBe('3 classes');
+  });
+});
+
+describe('recentlyPractised', () => {
+  it('lists techniques from the latest classes, most recent first, each once', () => {
+    const entries = [
+      trainingEntry({ id: 'a', day: '2026-11-01', techniqueIds: ['old-move'] }),
+      trainingEntry({ id: 'b', day: '2026-11-08', techniqueIds: ['sweep', 'pass'] }),
+      trainingEntry({ id: 'c', day: '2026-11-14', techniqueIds: ['escape', 'sweep'] }),
+    ];
+    expect(recentlyPractised(entries, 2)).toEqual(['escape', 'sweep', 'pass']);
+    expect(recentlyPractised(entries, 0)).toEqual([]);
   });
 });

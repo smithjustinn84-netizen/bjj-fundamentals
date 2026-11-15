@@ -321,6 +321,36 @@ const concepts: StarterRow<Concept>[] = [
       'Your partner lies in open guard. Grip their knees, push them to one side and step around to the other side, then pin their hip with your hand. Alternate sides.',
     order: 23,
   },
+  {
+    id: 'training-partner',
+    name: 'Be a good training partner',
+    summary:
+      'Jiu-jitsu only works if people want to train with you. Turn up clean, look after your partners, and they will look after you.',
+    keyPoints: [
+      'Wear clean kit to every class, keep your nails short, and keep shoes off the mat and bare feet off the floor.',
+      'Stay home when you are ill or have a skin infection such as ringworm.',
+      'Tell your partner about an injury before you start, and ask about theirs.',
+      'When drilling, give the resistance your partner asks for. Leave the coaching to the coach.',
+    ],
+    drill:
+      'Before your next class, run the check: clean kit, trimmed nails, jewellery off, water bottle. At the start of each roll, tell your partner one thing: an injury to avoid, or how hard you want to go.',
+    order: 24,
+  },
+  {
+    id: 'roll-to-learn',
+    name: 'Roll to learn, not to win',
+    summary:
+      'Sparring in the gym is practice, not a match. Go at a pace where you can think, try what you were taught, and both walk away uninjured.',
+    keyPoints: [
+      'Match the smaller, newer or older partner, not the other way round.',
+      'If you cannot breathe steadily or get a few words out, you are going too hard to learn.',
+      'Use the technique from class even if it fails. Winning with strength teaches you nothing.',
+      'Nobody remembers who tapped in training. Everyone remembers who hurt them.',
+    ],
+    drill:
+      'Flow roll for 3 minutes at about half speed: hold no position for more than a few seconds and finish no submission. Catch one, let it go, and keep moving.',
+    order: 25,
+  },
 ];
 
 const positions: StarterRow<Position>[] = [
@@ -1519,6 +1549,22 @@ const videos: Omit<VideoBookmark, 'createdAt' | 'startSeconds'>[] = [
     linkedKind: 'concept',
     linkedId: 'hip-control',
     note: 'Controlling the hips, and what moves them, to pass the guard.',
+  },
+  {
+    id: 'video-training-partner',
+    title: 'Gym etiquette for beginners (Way of BJJ)',
+    youtubeId: 'K2BKExTGLNk',
+    linkedKind: 'concept',
+    linkedId: 'training-partner',
+    note: 'The habits that make people glad to train with you, and the ones that do the opposite.',
+  },
+  {
+    id: 'video-roll-to-learn',
+    title: 'How hard should you roll with new partners? (Semper Fortis Jiu Jitsu)',
+    youtubeId: 'K9a6qbMg2EM',
+    linkedKind: 'concept',
+    linkedId: 'roll-to-learn',
+    note: 'Choosing a pace for a partner you have not trained with before.',
   },
   // Positions
   {

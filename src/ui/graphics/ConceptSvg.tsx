@@ -729,6 +729,25 @@ const CONCEPT_SCENES: Record<string, Scene> = {
       </>
     ),
   },
+  'training-partner': {
+    draw: () => (
+      <>
+        <StillPosition id="standing" />
+        {/* Two people who both get to train again tomorrow. */}
+        <path className="dgm-good" d="M188 34 l9 10 l17 -21" />
+      </>
+    ),
+  },
+  'roll-to-learn': {
+    draw: () => (
+      <>
+        <StillPosition id="open-guard" />
+        {/* Give and take: each person moves, and lets the other move. */}
+        <Arrow from={[150, 60]} to={[250, 60]} bend={-18} />
+        <Arrow from={[250, 78]} to={[150, 78]} bend={-18} />
+      </>
+    ),
+  },
 };
 
 /** A built-in position's still picture, for a concept best shown inside that position. */

@@ -47,3 +47,12 @@ export function formatMatTime(minutes: number): string {
 export function formatClassCount(count: number): string {
   return `${count} ${count === 1 ? 'class' : 'classes'}`;
 }
+
+/** How many of the latest classes count as recent when deciding what to study first. */
+export const RECENT_CLASS_COUNT = 3;
+
+/** Ids of the techniques practised in the latest classes, most recent class first, each id once. */
+export function recentlyPractised(entries: TrainingEntry[], classCount: number): string[] {
+  const recent = newestFirst(entries).slice(0, Math.max(0, classCount));
+  return [...new Set(recent.flatMap((entry) => entry.techniqueIds))];
+}

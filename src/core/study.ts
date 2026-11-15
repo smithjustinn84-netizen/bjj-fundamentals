@@ -22,10 +22,12 @@ function allStudyItems(lib: Library): StudyItem[] {
 export interface StudyQueue {
   /** Cards already studied whose due time has passed, most overdue first. */
   due: StudyItem[];
-  /** Cards never studied, in learning order. */
+  /** Cards never studied: techniques from recent classes first, then the rest in learning order. */
   fresh: StudyItem[];
   /** What a session will show: all due cards, then up to `newLimit` fresh ones. */
   queue: StudyItem[];
+  /** How many of the queue's fresh cards are techniques practised in a recent class. */
+  fromClass: number;
 }
 
 function isInDeck(lib: Library, deck: Deck, item: StudyItem): boolean {
@@ -45,7 +47,17 @@ function isInDeck(lib: Library, deck: Deck, item: StudyItem): boolean {
   }
 }
 
-export function buildQueue(lib: Library, deck: Deck, newLimit: number, now: number): StudyQueue {
+/**
+ * `practisedIds` are techniques from recent classes, most recent first (see `recentlyPractised`). Their
+ * fresh cards jump the queue of new cards: what was drilled on the mat this week is learned while it is fresh.
+ */
+export function buildQueue(
+  lib: Library,
+  deck: Deck,
+  newLimit: number,
+  now: number,
+  practisedIds: readonly string[] = [],
+): StudyQueue {
   const items = allStudyItems(lib).filter((item) => isInDeck(lib, deck, item));
   const due: { item: StudyItem; dueAt: number }[] = [];
   const fresh: StudyItem[] = [];
@@ -56,7 +68,16 @@ export function buildQueue(lib: Library, deck: Deck, newLimit: number, now: numb
   }
   due.sort((a, b) => a.dueAt - b.dueAt);
   const dueItems = due.map((d) => d.item);
-  return { due: dueItems, fresh, queue: [...dueItems, ...fresh.slice(0, Math.max(0, newLimit))] };
+  const wasPractised = (item: StudyItem) => item.kind === 'transition' && practisedIds.includes(item.id);
+  const fromClass = fresh.filter(wasPractised).sort((a, b) => practisedIds.indexOf(a.id) - practisedIds.indexOf(b.id));
+  const ordered = [...fromClass, ...fresh.filter((item) => !wasPractised(item))];
+  const newCards = ordered.slice(0, Math.max(0, newLimit));
+  return {
+    due: dueItems,
+    fresh: ordered,
+    queue: [...dueItems, ...newCards],
+    fromClass: newCards.filter(wasPractised).length,
+  };
 }
 
 export interface ProgressSummary {
