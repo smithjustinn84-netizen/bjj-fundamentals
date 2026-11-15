@@ -10,9 +10,16 @@
   --text: #1c1a17;
   --muted: #6b655c;
   --border: #e0d9ca;
+  /* Raised above a surface (the picked segment of a switch) and sunk below it (the switch's track). */
+  --raised: #fffdf8;
+  --well: #e0d9ca;
+  /* The edge of something you press or type in. */
+  --border-control: #e0d9ca;
+  /* Accent is for text, icons and outlines; fill is for areas painted in the accent, with on-fill text. */
   --accent: #1f4e8c;
   --accent-soft: #e4ebf5;
-  --on-accent: #ffffff;
+  --fill: #1f4e8c;
+  --on-fill: #ffffff;
   --danger: #b3261e;
   --ok: #2e7d32;
   --warn: #a35f00;
@@ -115,33 +122,36 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #131417;
-    --weave: rgb(255 255 255 / 0.025);
-    --surface: #1c1d21;
-    --text: #ececef;
-    --muted: #a0a0aa;
-    --border: #2e3036;
-    --accent: #8ab4f8;
-    --accent-soft: #1f2a3d;
-    --on-accent: #10141c;
-    --danger: #f28b82;
-    --ok: #81c995;
-    --warn: #f0b94a;
-    --belt: #e5645b;
-    --on-belt: #1c1010;
+    /* Warm ink, not grey: the night version of the paper, with layers that get lighter as they rise. */
+    --bg: #110f0c;
+    --weave: rgb(255 236 200 / 0.035);
+    --surface: #201d19;
+    --raised: #322d27;
+    --well: #0a0908;
+    --text: #f1ebdf;
+    --muted: #aaa192;
+    --border: #3a352e;
+    --border-control: #736b5e;
+    --accent: #8fb3ea;
+    --accent-soft: #1f2c42;
+    --fill: #3468b0;
+    --danger: #f08b7f;
+    --ok: #8ac793;
+    --warn: #e9b450;
+    --belt: #c8443c;
 
-    --belt-white: #ececef;
-    --belt-blue: #4a8be8;
-    --belt-purple: #9a6fd0;
-    --belt-brown: #a36a3c;
-    --belt-black: #0b0b0d;
-    --belt-outline: #8a8a94;
+    --belt-white: #f1ebdf;
+    --belt-blue: #4f8fe6;
+    --belt-purple: #9d74d6;
+    --belt-brown: #a8703f;
+    --belt-black: #0a0908;
+    --belt-outline: #8f877b;
 
-    --type-submission: #f28b82;
-    --type-takedown: #c5a3f0;
-    --type-transition: #a8b3bd;
+    --type-submission: #f08b7f;
+    --type-takedown: #c3a4ef;
+    --type-transition: #b4aea3;
 
-    --shadow: none;
-    --shadow-lift: 0 0 0 1px var(--border);
+    --shadow: inset 0 1px 0 rgb(255 240 215 / 0.05), 0 1px 3px rgb(0 0 0 / 0.5);
+    --shadow-lift: inset 0 1px 0 rgb(255 240 215 / 0.08), 0 6px 20px rgb(0 0 0 / 0.55);
   }
 }

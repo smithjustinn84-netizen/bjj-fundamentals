@@ -41,9 +41,9 @@
   font-weight: 500;
 }
 .toggle-chip[aria-pressed="true"] {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--on-accent);
+  background: var(--fill);
+  border-color: var(--fill);
+  color: var(--on-fill);
 }
 .chip-more summary,
 .log-notes summary {

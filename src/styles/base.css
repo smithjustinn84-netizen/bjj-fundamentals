@@ -213,7 +213,7 @@ button,
   gap: 0.3rem;
   padding: 0.5rem 1rem;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-control);
   background: var(--surface);
   color: var(--text);
   text-decoration: none;
@@ -230,9 +230,9 @@ button:disabled {
 }
 button.primary,
 .button.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--on-accent);
+  background: var(--fill);
+  border-color: var(--fill);
+  color: var(--on-fill);
 }
 button.danger {
   color: var(--danger);
@@ -271,7 +271,7 @@ button.link.danger {
   /* A fieldset is as wide as its content unless told otherwise, and would push out of its card. */
   min-width: 0;
   border-radius: var(--radius-lg);
-  background: var(--border);
+  background: var(--well);
 }
 .segmented button,
 .segmented a {
@@ -291,7 +291,7 @@ button.link.danger {
 }
 .segmented button[aria-pressed="true"],
 .segmented a.active {
-  background: var(--surface);
+  background: var(--raised);
   color: var(--text);
   font-weight: 700;
   box-shadow: var(--shadow);
@@ -322,7 +322,7 @@ textarea {
   font-size: var(--text-md);
   padding: 0.5rem 0.65rem;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-control);
   background: var(--bg);
   color: var(--text);
   width: 100%;
@@ -419,7 +419,7 @@ legend {
   gap: 0.4rem;
   padding: 0.3rem 0.75rem;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-control);
   text-decoration: none;
   color: var(--text);
   font-size: 0.9rem;
@@ -601,7 +601,7 @@ legend {
   flex-direction: column;
   gap: 0.1rem;
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-control);
   border-radius: var(--radius-lg);
   background: var(--surface);
   color: var(--text);

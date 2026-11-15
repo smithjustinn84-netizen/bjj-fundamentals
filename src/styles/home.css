@@ -35,8 +35,8 @@
   gap: var(--space-4);
   padding: 1.1rem;
   border-radius: var(--radius-lg);
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--fill);
+  color: var(--on-fill);
   box-shadow: var(--shadow-lift);
 }
 .today-review-count {
@@ -48,9 +48,9 @@
   font-size: var(--text-lg);
 }
 .today-review .button {
-  background: var(--on-accent);
-  border-color: var(--on-accent);
-  color: var(--accent);
+  background: var(--on-fill);
+  border-color: var(--on-fill);
+  color: var(--fill);
 }
 .stat {
   font-size: 3.25rem;

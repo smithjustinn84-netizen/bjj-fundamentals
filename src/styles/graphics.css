@@ -137,7 +137,7 @@
 @media (prefers-color-scheme: dark) {
   /* Cream paper glares on a dark page, so take the whole sheet down a little. */
   .artwork-frame {
-    filter: brightness(0.86) contrast(1.04);
+    filter: brightness(0.8) contrast(1.06) saturate(0.94);
   }
 }
 .position-artwork {
