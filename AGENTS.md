@@ -61,7 +61,7 @@ Where does new code go?
 
 ## Recipes
 
-**Add a field to an item.** (1) Add it to the model in `core/models.ts`. (2) The compiler now fails in `core/backup.ts` until you add its check, and in the seed and form until you supply it. (3) Decide what old rows and old backups without the field should do: make the check `optional(...)` and default it on read (through one function, like `isOnBlueBeltTest` or `performerRole`, never `row.field ?? ...` at each use), or add a Dexie `upgrade`. (4) Bump `BACKUP_SCHEMA_VERSION` in `core/backup.ts`. (5) Add a test.
+**Add a field to an item.** (1) Add it to the model in `core/models.ts`. (2) The compiler now fails in `core/backup.ts` until you add its check, and in the seed and form until you supply it. (3) Decide what old rows and old backups without the field should do: make the check `optional(...)` and default it on read (through one function, like `isOnBlueBeltTest`, `performerRole` or `endRole`, never `row.field ?? ...` at each use), or add a Dexie `upgrade`. (4) Bump `BACKUP_SCHEMA_VERSION` in `core/backup.ts`. (5) Add a test.
 
 **Add starter content.** Edit `core/seed.ts`. New libraries get it on first run; existing libraries only see new starter *concepts* and *techniques*, offered on the Concepts and Blue belt pages (`core/starter.ts`) unless the user dismissed them (`starterDismissals`, keyed by id alone, so starter ids must be unique across kinds; `core/seed.test.ts` checks this). An added concept brings its starter video and is linked to the starter positions that list it. Every starter technique starts on the blue belt test list. New starter positions, or videos for items a library already has, do not reach an existing library.
 

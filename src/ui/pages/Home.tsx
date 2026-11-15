@@ -4,6 +4,7 @@ import { useLibrary, useStudyStats, useTrainingLog, useVideos } from '../../bind
 import { BELT_LABELS } from '../../core/labels';
 import { reviewOf } from '../../core/library';
 import { beltRank } from '../../core/rank';
+import { findSituation, situationName } from '../../core/situations';
 import { cardId } from '../../core/srs';
 import { cardName, progressSummary, STICKING_POINT_LIMIT, stickingPoints } from '../../core/study';
 import { formatClassCount, formatMatTime, trainingSummary } from '../../core/trainingLog';
@@ -93,6 +94,7 @@ export default function Home() {
 
   const sticking = stickingPoints(lib, STICKING_POINT_LIMIT);
   const training = trainingSummary(log);
+  const stuck = training.stuckIds.map((id) => findSituation(lib, id)).filter((situation) => situation !== null);
 
   const steps: PathStep[] = [
     {
@@ -223,6 +225,18 @@ export default function Home() {
             {training.focus && (
               <p>
                 <strong>Focus for your next class:</strong> {training.focus}
+              </p>
+            )}
+            {stuck.length > 0 && (
+              <p>
+                <strong>Where you got stuck:</strong>{' '}
+                {stuck.map((situation, index) => (
+                  <span key={`${situation.position.id}:${situation.role}`}>
+                    {index > 0 && '; '}
+                    <Link to={itemPath('position', situation.position.id)}>{situationName(situation)}</Link>
+                  </span>
+                ))}
+                . These come first in your next review.
               </p>
             )}
           </>

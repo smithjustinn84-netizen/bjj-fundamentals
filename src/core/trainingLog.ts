@@ -1,4 +1,7 @@
+import type { Library } from './library';
 import type { TrainingEntry } from './models';
+import { findSituation } from './situations';
+import { cardId } from './srs';
 
 const DAY_KEY = /^(\d{4})-(\d{2})-(\d{2})$/;
 const MONTHS_PER_YEAR = 12;
@@ -20,11 +23,18 @@ export function newestFirst(entries: TrainingEntry[]): TrainingEntry[] {
   return [...entries].sort((a, b) => b.day.localeCompare(a.day) || b.createdAt - a.createdAt);
 }
 
+/** The situations an entry says the student got stuck in. Entries stored before the field existed have none. */
+export function stuckSituationIds(entry: TrainingEntry): string[] {
+  return entry.stuckIds ?? [];
+}
+
 export interface TrainingSummary {
   classes: number;
   minutes: number;
   /** The focus set after the most recent class that set one, or '' if none has. */
   focus: string;
+  /** Where the student got stuck in the most recent class that named anywhere, as situation ids. */
+  stuckIds: string[];
 }
 
 export function trainingSummary(entries: TrainingEntry[]): TrainingSummary {
@@ -32,6 +42,10 @@ export function trainingSummary(entries: TrainingEntry[]): TrainingSummary {
     classes: entries.length,
     minutes: entries.reduce((total, entry) => total + entry.minutes, 0),
     focus: newestFirst(entries).find((entry) => entry.focus !== '')?.focus ?? '',
+    stuckIds:
+      newestFirst(entries)
+        .map(stuckSituationIds)
+        .find((ids) => ids.length > 0) ?? [],
   };
 }
 
@@ -55,4 +69,20 @@ export const RECENT_CLASS_COUNT = 3;
 export function recentlyPractised(entries: TrainingEntry[], classCount: number): string[] {
   const recent = newestFirst(entries).slice(0, Math.max(0, classCount));
   return [...new Set(recent.flatMap((entry) => entry.techniqueIds))];
+}
+
+/**
+ * The cards to study before any other new card, as card ids, from the latest classes. Where the student got
+ * stuck comes first: that situation's card, then each technique they have from there. Then come the
+ * techniques they practised. Each id appears once.
+ */
+export function studyFirst(lib: Library, entries: TrainingEntry[], classCount: number): string[] {
+  const recent = newestFirst(entries).slice(0, Math.max(0, classCount));
+  const stuck = recent.flatMap(stuckSituationIds).flatMap((id) => {
+    const situation = findSituation(lib, id);
+    if (!situation) return [];
+    return [cardId('situation', id), ...situation.options.map((technique) => cardId('transition', technique.id))];
+  });
+  const practised = recentlyPractised(entries, classCount).map((id) => cardId('transition', id));
+  return [...new Set([...stuck, ...practised])];
 }

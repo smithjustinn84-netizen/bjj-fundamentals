@@ -56,6 +56,11 @@ export interface Transition {
    * techniques stored before the field existed have none.
    */
   role?: PositionRole;
+  /**
+   * Which side of the destination position the person who did the technique ends up on. Read it through
+   * `endRole`: techniques stored before the field existed have none, and one that `endsTheRoll` never has.
+   */
+  endRole?: PositionRole;
   steps: string[];
   commonMistakes: string[];
   /**
@@ -103,6 +108,11 @@ export interface TrainingEntry {
   focus: string;
   /** Techniques drilled or used, by id. */
   techniqueIds: string[];
+  /**
+   * Situations (see `situationId`) the student could not get out of or make progress from. Read it through
+   * `stuckSituationIds`: entries stored before the field existed have none.
+   */
+  stuckIds?: string[];
   createdAt: number;
   updatedAt: number;
 }

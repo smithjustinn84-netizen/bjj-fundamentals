@@ -10,6 +10,7 @@ const input: TrainingEntryInput = {
   struggled: '',
   focus: '',
   techniqueIds: [],
+  stuckIds: [],
 };
 
 describe('writing up a class', () => {
@@ -20,11 +21,13 @@ describe('writing up a class', () => {
       minutes: 59.6,
       focus: '  Get to my side  ',
       techniqueIds: ['scissor-sweep', 'not-a-technique', 'scissor-sweep'],
+      stuckIds: ['mount:bottom', 'no-such-position:bottom', 'mount', 'mount:bottom'],
     });
     expect(await storage.trainingLog.get(id)).toMatchObject({
       minutes: 60,
       focus: 'Get to my side',
       techniqueIds: ['scissor-sweep'],
+      stuckIds: ['mount:bottom'],
     });
     const negative = await core.trainingLog.save(null, { ...input, minutes: -5 });
     expect((await storage.trainingLog.get(negative))?.minutes).toBe(0);
@@ -66,6 +69,7 @@ describe('deleting what a class mentions', () => {
     const id = await core.trainingLog.save(null, {
       ...input,
       techniqueIds: ['scissor-sweep', 'upa-escape', 'elbow-knee-escape', 'rear-naked-choke'],
+      stuckIds: ['mount:bottom', 'half-guard:bottom'],
     });
     await core.items.deleteItem('transition', 'scissor-sweep');
     expect((await storage.trainingLog.get(id))?.techniqueIds).toEqual([
@@ -75,5 +79,6 @@ describe('deleting what a class mentions', () => {
     ]);
     await core.items.deleteItem('position', 'mount');
     expect((await storage.trainingLog.get(id))?.techniqueIds).toEqual(['rear-naked-choke']);
+    expect((await storage.trainingLog.get(id))?.stuckIds).toEqual(['half-guard:bottom']);
   });
 });

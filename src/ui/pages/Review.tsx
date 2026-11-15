@@ -6,7 +6,7 @@ import { reviewOf } from '../../core/library';
 import { DECKS, type Deck, GRADES, type Grade } from '../../core/models';
 import { describeInterval, newReviewState } from '../../core/srs';
 import { buildQueue, type StudyItem } from '../../core/study';
-import { RECENT_CLASS_COUNT, recentlyPractised } from '../../core/trainingLog';
+import { RECENT_CLASS_COUNT, studyFirst } from '../../core/trainingLog';
 import { Loading } from '../components/common';
 import { CardAnswer, cardPrompt } from '../components/StudyCard';
 import { EmptyState } from '../graphics/EmptyState';
@@ -113,8 +113,7 @@ function SessionComplete(props: {
 
 export default function Review() {
   const lib = useLibrary();
-  // While the log is still loading the queue is built without it; it only changes the order of new cards.
-  const practised = recentlyPractised(useTrainingLog() ?? [], RECENT_CLASS_COUNT);
+  const log = useTrainingLog();
   const session = useReviewSession(lib);
   const [params] = useSearchParams();
   // A list page can open the review on its own deck; anything unrecognised falls back to everything.
@@ -156,6 +155,8 @@ export default function Review() {
   }, [status, revealed, reveal, gradeWithFeedback]);
 
   if (!lib) return <Loading />;
+  // While the log is still loading the queue is built without it; it only changes the order of new cards.
+  const practised = studyFirst(lib, log ?? [], RECENT_CLASS_COUNT);
 
   if (status === 'idle') {
     const preview = buildQueue(lib, deck, newLimit, Date.now(), practised);

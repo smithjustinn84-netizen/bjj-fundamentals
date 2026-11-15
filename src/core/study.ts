@@ -44,11 +44,11 @@ export function cardName(lib: Library, item: StudyItem): string | null {
 export interface StudyQueue {
   /** Cards already studied whose due time has passed, most overdue first. */
   due: StudyItem[];
-  /** Cards never studied: techniques from recent classes first, then the rest in learning order. */
+  /** Cards never studied: the ones the training log puts first, then the rest in learning order. */
   fresh: StudyItem[];
   /** What a session will show: all due cards, then up to `newLimit` fresh ones. */
   queue: StudyItem[];
-  /** How many of the queue's fresh cards are techniques practised in a recent class. */
+  /** How many of the queue's fresh cards the training log put first. */
   fromClass: number;
 }
 
@@ -71,15 +71,15 @@ function isInDeck(lib: Library, deck: Deck, item: StudyItem): boolean {
 }
 
 /**
- * `practisedIds` are techniques from recent classes, most recent first (see `recentlyPractised`). Their
- * fresh cards jump the queue of new cards: what was drilled on the mat this week is learned while it is fresh.
+ * `firstCardIds` are the cards the training log says to study first, in order (see `studyFirst`). Their fresh
+ * cards jump the queue of new cards: what happened on the mat this week is learned while it is fresh.
  */
 export function buildQueue(
   lib: Library,
   deck: Deck,
   newLimit: number,
   now: number,
-  practisedIds: readonly string[] = [],
+  firstCardIds: readonly string[] = [],
 ): StudyQueue {
   const items = allStudyItems(lib).filter((item) => isInDeck(lib, deck, item));
   const due: { item: StudyItem; dueAt: number }[] = [];
@@ -91,8 +91,9 @@ export function buildQueue(
   }
   due.sort((a, b) => a.dueAt - b.dueAt);
   const dueItems = due.map((d) => d.item);
-  const wasPractised = (item: StudyItem) => item.kind === 'transition' && practisedIds.includes(item.id);
-  const fromClass = fresh.filter(wasPractised).sort((a, b) => practisedIds.indexOf(a.id) - practisedIds.indexOf(b.id));
+  const place = (item: StudyItem) => firstCardIds.indexOf(cardId(item.kind, item.id));
+  const wasPractised = (item: StudyItem) => place(item) >= 0;
+  const fromClass = fresh.filter(wasPractised).sort((a, b) => place(a) - place(b));
   const ordered = [...fromClass, ...fresh.filter((item) => !wasPractised(item))];
   const newCards = ordered.slice(0, Math.max(0, newLimit));
   return {

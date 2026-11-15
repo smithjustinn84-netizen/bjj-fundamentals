@@ -1,10 +1,10 @@
 import { Link, useParams } from 'react-router-dom';
 import { useLibrary } from '../../bindings';
 import { isOnBlueBeltTest } from '../../core/beltTest';
-import { roleLabel, TRANSITION_LABELS } from '../../core/labels';
+import { endSideLabel, roleLabel, TRANSITION_LABELS } from '../../core/labels';
 import { connections, reviewOf } from '../../core/library';
 import { endsTheRoll } from '../../core/models';
-import { performerRole } from '../../core/roles';
+import { endRole, performerRole } from '../../core/roles';
 import { techniqueDrill } from '../../core/techniqueDrill';
 import { Bullets, Loading, Missing, NotesBlock, Pager, Section, StudyStatusPill } from '../components/common';
 import { ItemPicture } from '../components/ItemPicture';
@@ -22,6 +22,7 @@ export default function TransitionDetail() {
   const from = lib.positionById.get(transition.fromId);
   const to = lib.positionById.get(transition.toId);
   const drill = techniqueDrill(transition);
+  const endSide = endRole(lib, transition);
   const backPath = from ? itemPath('position', from.id) : ROUTES.positions;
   // Paging stays among the techniques that start where this one does, the way the position page lists them.
   const siblings = from ? connections(lib, from.id).outgoing : [];
@@ -62,6 +63,11 @@ export default function TransitionDetail() {
           {from && (
             <p className="muted small">
               Who does it: <strong>{roleLabel(from.category, performerRole(lib, transition))}</strong>
+              {to && endSide && (
+                <>
+                  {' · '}You end up: <strong>{endSideLabel(to.category, endSide)}</strong>
+                </>
+              )}
             </p>
           )}
         </div>

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { TRANSITION_LABELS } from '../../core/labels';
+import { endSideLabel, TRANSITION_LABELS } from '../../core/labels';
 import { endsTheRoll, type Position, type Transition } from '../../core/models';
+import { endRole } from '../../core/roles';
 import { itemPath } from '../routes';
 
 interface Props {
@@ -17,7 +18,9 @@ function describeOtherEnd({ transition, positionById, direction }: Props): strin
   }
   if (endsTheRoll(transition.type)) return ' → tap';
   const to = positionById.get(transition.toId);
-  return to ? ` → ${to.name}` : '';
+  if (!to) return '';
+  const side = endRole({ positionById }, transition);
+  return side ? ` → ${to.name}, ${endSideLabel(to.category, side)}` : ` → ${to.name}`;
 }
 
 function TransitionLink(props: Props) {

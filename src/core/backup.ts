@@ -25,7 +25,7 @@ import { isYouTubeId } from './youtube';
 
 export const BACKUP_APP = 'bjj-fundamentals';
 /** Bump when the shape of any table changes, and teach `validateBackup` to accept the older shape. */
-export const BACKUP_SCHEMA_VERSION = 7;
+export const BACKUP_SCHEMA_VERSION = 8;
 
 export interface BackupData {
   positions: Position[];
@@ -100,6 +100,8 @@ const SCHEMAS: { [T in BackupTable]: Schema<BackupData[T][number]> } = {
     toId: text,
     // Absent before schema 4; `performerRole` fills the gap on read.
     role: optional(oneOf(POSITION_ROLES)),
+    // Absent before schema 8; `endRole` fills the gap on read.
+    endRole: optional(oneOf(POSITION_ROLES)),
     steps: textList,
     commonMistakes: textList,
     // Absent before schema 6; `techniqueDrill` fills the gap on read.
@@ -164,6 +166,8 @@ const SCHEMAS: { [T in BackupTable]: Schema<BackupData[T][number]> } = {
     struggled: text,
     focus: text,
     techniqueIds: textList,
+    // Absent before schema 8; `stuckSituationIds` reads a missing list as empty.
+    stuckIds: optional(textList),
     createdAt: num,
     updatedAt: num,
   },

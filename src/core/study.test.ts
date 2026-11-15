@@ -43,7 +43,7 @@ describe('buildQueue', () => {
     expect(buildQueue(lib, 'blueBelt', 10, NOW).queue).toEqual([{ kind: 'transition', id: 'listed' }]);
   });
 
-  it('puts new cards for techniques from recent classes first, most recent first', () => {
+  it('puts the new cards the training log names first, in its order', () => {
     const techniques = [
       transition({ id: 't1', name: 'A' }),
       transition({ id: 't2', name: 'B' }),
@@ -51,11 +51,11 @@ describe('buildQueue', () => {
     ];
     const lib = buildLibrary(concepts, positions, techniques, [card('transition', 't2', { due: NOW + DAY_MS })]);
     // t2 was practised too, but it is already being studied and not due: only fresh cards jump the queue.
-    const result = buildQueue(lib, 'all', 2, NOW, ['t3', 't2', 't1']);
+    const result = buildQueue(lib, 'all', 2, NOW, ['transition:t3', 'transition:t2', 'transition:t1']);
     expect(result.queue.map((i) => i.id)).toEqual(['t3', 't1']);
     expect(result.fromClass).toBe(2);
     expect(result.fresh.map((i) => i.id)).toEqual(['t3', 't1', 'c1', 'c2', 'c3', 'p1', 'p1:bottom']);
-    expect(buildQueue(lib, 'concept', 2, NOW, ['t3']).fromClass).toBe(0);
+    expect(buildQueue(lib, 'concept', 2, NOW, ['transition:t3']).fromClass).toBe(0);
   });
 
   it('has a situations deck with one card per side of a position that has options, after the techniques', () => {

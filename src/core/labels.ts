@@ -19,6 +19,27 @@ export const ROLE_LABELS: Record<PositionCategory, [string, string]> = {
   scramble: ['Attacking', 'Defending'],
 };
 
+/** How to say which side someone ends up on, after the destination's name: "Mount, on top". */
+const END_SIDE_LABELS: Record<PositionCategory, [string, string]> = {
+  standing: ['attacking', 'defending'],
+  guard: ['passing', 'playing guard'],
+  top: ['on top', 'underneath'],
+  back: ['on their back', 'defending your back'],
+  scramble: ['on top', 'underneath'],
+};
+
+export function endSideLabel(category: PositionCategory, role: PositionRole): string {
+  const [top, bottom] = END_SIDE_LABELS[category];
+  switch (role) {
+    case 'top':
+      return top;
+    case 'bottom':
+      return bottom;
+    default:
+      return assertNever(role);
+  }
+}
+
 /** What a role is called in one kind of position. */
 export function roleLabel(category: PositionCategory, role: PositionRole): string {
   const [top, bottom] = ROLE_LABELS[category];

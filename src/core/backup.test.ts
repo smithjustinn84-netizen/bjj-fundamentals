@@ -36,6 +36,8 @@ describe('validateBackup', () => {
       /"day" is missing or invalid/,
     );
     expect(() => validateBackup(file({ trainingLog: [trainingEntry({ minutes: -1 })] }))).toThrow(/"minutes"/);
+    const withStuck = validateBackup(file({ trainingLog: [trainingEntry({ stuckIds: ['mount:bottom'] })] }));
+    expect(withStuck.data.trainingLog[0]?.stuckIds).toEqual(['mount:bottom']);
   });
 
   it('accepts a complete backup and returns its rows', () => {

@@ -24,10 +24,15 @@ export function situationPositionId(id: string): string {
   return id.slice(0, Math.max(0, id.lastIndexOf(':')));
 }
 
+/** The role a situation id ends with, or undefined if it is not a situation id at all. */
+export function situationRole(id: string): PositionRole | undefined {
+  return POSITION_ROLES.find((candidate) => id.endsWith(`:${candidate}`));
+}
+
 /** The situation an id names, or null if its position is gone or that side has nothing to do there. */
 export function findSituation(lib: Library, id: string): Situation | null {
   const position = lib.positionById.get(situationPositionId(id));
-  const role = POSITION_ROLES.find((candidate) => id.endsWith(`:${candidate}`));
+  const role = situationRole(id);
   if (!position || !role) return null;
   const options = positionOptions(lib, position.id)[role];
   return options.length > 0 ? { position, role, options } : null;

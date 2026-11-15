@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { trainingLog, useLibrary, useTrainingLog } from '../../bindings';
 import type { Library } from '../../core/library';
 import type { TrainingEntry } from '../../core/models';
+import { allSituations, findSituation, situationId, situationName } from '../../core/situations';
 import { localDayKey } from '../../core/srs';
-import { formatClassCount, formatMatTime, trainingSummary } from '../../core/trainingLog';
+import { formatClassCount, formatMatTime, stuckSituationIds, trainingSummary } from '../../core/trainingLog';
 import { Loading } from '../components/common';
 import { EmptyState } from '../graphics/EmptyState';
 import { itemPath } from '../routes';
@@ -35,9 +36,14 @@ function EntryForm({ lib, entry, onDone }: { lib: Library; entry: TrainingEntry 
   const [struggled, setStruggled] = useState(entry?.struggled ?? '');
   const [focus, setFocus] = useState(entry?.focus ?? '');
   const [techniqueIds, setTechniqueIds] = useState<string[]>(entry?.techniqueIds ?? []);
+  const [stuckIds, setStuckIds] = useState<string[]>(entry ? stuckSituationIds(entry) : []);
 
   function toggleTechnique(id: string, picked: boolean) {
     setTechniqueIds((ids) => (picked ? [...ids, id] : ids.filter((other) => other !== id)));
+  }
+
+  function toggleStuck(id: string, picked: boolean) {
+    setStuckIds((ids) => (picked ? [...ids, id] : ids.filter((other) => other !== id)));
   }
 
   async function submit(e: FormEvent) {
@@ -50,10 +56,15 @@ function EntryForm({ lib, entry, onDone }: { lib: Library; entry: TrainingEntry 
       struggled,
       focus,
       techniqueIds,
+      stuckIds,
     });
     onDone();
   }
 
+  const situations = allSituations(lib).map((situation) => ({
+    id: situationId(situation.position.id, situation.role),
+    name: situationName(situation),
+  }));
   const groups = lib.positions
     .map((position) => ({ position, techniques: lib.transitions.filter((t) => t.fromId === position.id) }))
     .filter((group) => group.techniques.length > 0);
@@ -85,6 +96,24 @@ function EntryForm({ lib, entry, onDone }: { lib: Library; entry: TrainingEntry 
       <Field label="Where I got stuck">
         <textarea rows={2} value={struggled} onChange={(e) => setStruggled(e.target.value)} />
       </Field>
+      {situations.length > 0 && (
+        <details className="technique-picker">
+          <summary>Positions I got stuck in ({stuckIds.length})</summary>
+          <p className="muted small">These, and your techniques from them, come first in your next review.</p>
+          <div className="technique-groups">
+            {situations.map((situation) => (
+              <label key={situation.id} className="check">
+                <input
+                  type="checkbox"
+                  checked={stuckIds.includes(situation.id)}
+                  onChange={(e) => toggleStuck(situation.id, e.target.checked)}
+                />
+                {situation.name}
+              </label>
+            ))}
+          </div>
+        </details>
+      )}
       <Field label="One thing to work on next time" hint="Shown on the home page until your next entry sets a new one.">
         <input value={focus} onChange={(e) => setFocus(e.target.value)} />
       </Field>
@@ -129,6 +158,9 @@ function EntryRow({ lib, entry, onEdit }: { lib: Library; entry: TrainingEntry; 
     if (confirm(`Delete the entry for ${formatDay(entry.day)}?`)) void trainingLog.remove(entry.id);
   }
   const techniques = entry.techniqueIds.map((id) => lib.transitionById.get(id)).filter((t) => t !== undefined);
+  const stuck = stuckSituationIds(entry)
+    .map((id) => findSituation(lib, id))
+    .filter((situation) => situation !== null);
   const notes = [
     { label: 'Taught', text: entry.taught },
     { label: 'Worked', text: entry.worked },
@@ -145,6 +177,11 @@ function EntryRow({ lib, entry, onEdit }: { lib: Library; entry: TrainingEntry; 
           <strong>{note.label}:</strong> {note.text}
         </p>
       ))}
+      {stuck.length > 0 && (
+        <p>
+          <strong>Stuck in:</strong> {stuck.map((situation) => situationName(situation)).join('; ')}
+        </p>
+      )}
       {techniques.length > 0 && (
         <ul className="chip-list">
           {techniques.map((technique) => (

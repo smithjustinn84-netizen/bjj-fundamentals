@@ -2,10 +2,11 @@ import { assertNever } from '../assertNever';
 import type { CoreEnv } from '../core';
 import { type Concept, endsTheRoll, type ItemKind, POSITION_ROLES, type Position, type Transition } from '../models';
 import { starterContent } from '../seed';
-import { situationId } from '../situations';
+import { situationId, situationPositionId } from '../situations';
 import { cardId } from '../srs';
 import { findMissingStarterConcepts, findMissingStarterTechniques, linkAddedConcepts } from '../starter';
 import type { Repository } from '../storage';
+import { stuckSituationIds } from '../trainingLog';
 
 /** Fields the service fills in, so callers cannot get ids or timestamps wrong. */
 type Managed = 'id' | 'createdAt' | 'updatedAt';
@@ -48,6 +49,19 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
     );
   }
 
+  /** Likewise for the places an entry says the student got stuck, when their position is deleted. */
+  async function unlinkSituationsFromTrainingLog(positionId: string) {
+    const mentioning = (await storage.trainingLog.all()).filter((entry) =>
+      stuckSituationIds(entry).some((id) => situationPositionId(id) === positionId),
+    );
+    await storage.trainingLog.putMany(
+      mentioning.map((entry) => ({
+        ...entry,
+        stuckIds: stuckSituationIds(entry).filter((id) => situationPositionId(id) !== positionId),
+      })),
+    );
+  }
+
   async function deletePosition(id: string) {
     const touching = (await storage.transitions.all()).filter((t) => t.fromId === id || t.toId === id);
     for (const transition of touching) {
@@ -57,6 +71,7 @@ export function createItemService({ storage, newId, now }: CoreEnv) {
     const touchingIds = touching.map((t) => t.id);
     await unlinkVideos('transition', touchingIds);
     await unlinkFromTrainingLog(touchingIds);
+    await unlinkSituationsFromTrainingLog(id);
     for (const role of POSITION_ROLES) await storage.reviews.remove(cardId('situation', situationId(id, role)));
     await storage.positions.remove(id);
   }

@@ -21,7 +21,7 @@ Small, independent fixes. Each can ship alone. The first five were done on 2026-
 Today every card asks you to recite one thing. Rolling asks a different question: *I am stuck here, what are my options?*
 
 - [x] **Add who performs a technique.** Done 2026-11-15 as `Transition.role`, read through `performerRole` (`core/roles.ts`); backup schema is now 4. A technique has only `fromId` and `toId`; nothing says whether the person doing it is top or bottom. Add a role field to `Transition` (follow the "Add a field to an item" recipe in `AGENTS.md`: model, `SCHEMAS`, default for old rows through one function, bump `BACKUP_SCHEMA_VERSION`).
-- [ ] **Fix the ambiguous destinations this exposes.** `back-escape`, `ground-headlock-escape`, `standing-headlock-escape`, `tripod-sweep` and the submission defences end in a position where only the step text says which side you are on.
+- [x] **Fix the ambiguous destinations this exposes.** Done 2026-11-15 as `Transition.endRole`, read through `endRole` (`core/roles.ts`): technique lists and pages say which side you end up on ("→ Closed Guard, passing"). Backup schema 8.
 - [x] **Situation cards.** Done 2026-11-15: one card per side of each position that has techniques ("Mount, Bottom side: what are your options?"), in their own Situations deck and at the end of Everything. Cards use `CARD_KINDS` (item kinds plus `situation`); backup schema is 7. The position card went back to asking only for goals.
 - [x] **Coverage on the position page.** Done 2026-11-15: "From here" is split by side (`positionOptions`) and an empty side says so. It flags a side with nothing at all, not a missing escape specifically. Per role, show what you have and flag what is missing ("no escape from here yet"). The calculation is a pure function in `core/` with a test.
 
@@ -32,7 +32,7 @@ The app tracks flashcard reviews but not mat time, and mat time is what makes th
 - [x] **Log a class.** Done 2026-11-15. Date, minutes on the mat, what was taught, what worked and what failed in rolling, and one thing to focus on next time, with techniques linked.
 - [x] **New table.** Done 2026-11-15 as `trainingLog` (Dexie version 5, backup schema 5). Deleting a technique or position removes it from entries and keeps the entry. Follow the "Add a table" recipe in `AGENTS.md`: model, backup schema and labels, `AppStorage`, both storage engines with a new Dexie `version(5)`, a service, the storage contract and service tests.
 - [x] **A Log screen**, plus the latest "focus for next time" on Home. Done 2026-11-15. On phones the tab bar is full, so the log is reached from Home's training log card.
-- [x] **Use the log in study.** Partly done 2026-11-15: new cards for techniques practised in the last three classes come first in review (`recentlyPractised`, `buildQueue`). Not done: reordering cards already being studied, or treating "got stuck" differently from "practised". The original idea: Techniques logged as "failed in rolling" or drilled in class come up first in the next review.
+- [x] **Use the log in study.** Done 2026-11-15: an entry can name the situations you got stuck in (`stuckIds`); those cards and their techniques, then the techniques you practised, come first among new cards for the last three classes (`studyFirst`). Cards already being studied keep their schedule.
 
 Open question: should mat time feed the belt and streak display, or stay separate from study progress?
 

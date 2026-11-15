@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { trainingEntry } from './testing/testFixtures';
+import { buildLibrary } from './library';
+import { position, trainingEntry, transition } from './testing/testFixtures';
 import {
   formatClassCount,
   formatMatTime,
   isDayKey,
   newestFirst,
   recentlyPractised,
+  studyFirst,
   trainingSummary,
 } from './trainingLog';
 
@@ -38,11 +40,11 @@ describe('trainingSummary', () => {
       trainingEntry({ id: 'b', day: '2026-11-08', minutes: 90, focus: 'Keep elbows in' }),
       trainingEntry({ id: 'c', day: '2026-11-14', minutes: 45, focus: '' }),
     ]);
-    expect(summary).toEqual({ classes: 3, minutes: 195, focus: 'Keep elbows in' });
+    expect(summary).toEqual({ classes: 3, minutes: 195, focus: 'Keep elbows in', stuckIds: [] });
   });
 
   it('is empty for an empty log', () => {
-    expect(trainingSummary([])).toEqual({ classes: 0, minutes: 0, focus: '' });
+    expect(trainingSummary([])).toEqual({ classes: 0, minutes: 0, focus: '', stuckIds: [] });
   });
 });
 
@@ -71,5 +73,37 @@ describe('recentlyPractised', () => {
     ];
     expect(recentlyPractised(entries, 2)).toEqual(['escape', 'sweep', 'pass']);
     expect(recentlyPractised(entries, 0)).toEqual([]);
+  });
+});
+
+describe('where the student got stuck', () => {
+  const lib = buildLibrary(
+    [],
+    [position({ id: 'mount', category: 'top' })],
+    [
+      transition({ id: 'upa', name: 'A', type: 'escape', fromId: 'mount', role: 'bottom' }),
+      transition({ id: 'shrimp', name: 'B', type: 'escape', fromId: 'mount', role: 'bottom' }),
+      transition({ id: 'armbar', name: 'C', type: 'submission', fromId: 'mount', role: 'top' }),
+    ],
+    [],
+  );
+
+  it('is summarised from the latest class that named anywhere', () => {
+    const entries = [
+      trainingEntry({ id: 'a', day: '2026-11-01', stuckIds: ['mount:bottom'] }),
+      trainingEntry({ id: 'b', day: '2026-11-08' }),
+    ];
+    expect(trainingSummary(entries).stuckIds).toEqual(['mount:bottom']);
+  });
+
+  it('puts the situation and its techniques before the techniques practised', () => {
+    const entries = [trainingEntry({ techniqueIds: ['armbar', 'upa'], stuckIds: ['mount:bottom', 'gone:top'] })];
+    expect(studyFirst(lib, entries, 3)).toEqual([
+      'situation:mount:bottom',
+      'transition:upa',
+      'transition:shrimp',
+      'transition:armbar',
+    ]);
+    expect(studyFirst(lib, entries, 0)).toEqual([]);
   });
 });

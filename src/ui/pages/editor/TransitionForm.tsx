@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { items } from '../../../bindings';
 import { isOnBlueBeltTest } from '../../../core/beltTest';
-import { BLUE_BELT_TEST_LABEL, roleLabel, TRANSITION_LABELS } from '../../../core/labels';
+import { BLUE_BELT_TEST_LABEL, endSideLabel, roleLabel, TRANSITION_LABELS } from '../../../core/labels';
 import type { Library } from '../../../core/library';
 import {
   DEFAULT_TRANSITION_TYPE,
@@ -13,7 +13,7 @@ import {
   type Transition,
   type TransitionType,
 } from '../../../core/models';
-import { defaultRole, performerRole } from '../../../core/roles';
+import { defaultRole, endRole, performerRole } from '../../../core/roles';
 import type { TransitionInput } from '../../../core/services/items';
 import { techniqueDrill } from '../../../core/techniqueDrill';
 import { FROM_POSITION_PARAM } from '../../routes';
@@ -36,6 +36,8 @@ interface Draft {
   toId: string;
   /** Null until the user picks: the form then shows, and saves, the usual role for the chosen type. */
   role: PositionRole | null;
+  /** Null until the user picks: the form then shows, and saves, the usual end side for the chosen type. */
+  endRole: PositionRole | null;
   steps: string;
   commonMistakes: string;
   drill: string;
@@ -50,6 +52,7 @@ function toDraft(library: Library, transition: Transition | undefined, defaultFr
     fromId: transition?.fromId ?? defaultFromId,
     toId: transition?.toId ?? '',
     role: transition ? performerRole(library, transition) : null,
+    endRole: transition ? endRole(library, transition) : null,
     steps: fromLines(transition?.steps ?? []),
     commonMistakes: fromLines(transition?.commonMistakes ?? []),
     drill: transition ? techniqueDrill(transition) : '',
@@ -57,6 +60,20 @@ function toDraft(library: Library, transition: Transition | undefined, defaultFr
     notes: transition?.notes ?? '',
   };
 }
+
+/** A stand-in for the technique being typed, so the core's defaults can be asked about it before it is saved. */
+const EMPTY_TECHNIQUE: Transition = {
+  id: '',
+  name: '',
+  type: DEFAULT_TRANSITION_TYPE,
+  fromId: '',
+  toId: '',
+  steps: [],
+  commonMistakes: [],
+  notes: '',
+  createdAt: 0,
+  updatedAt: 0,
+};
 
 /** Role names before a starting position is chosen; after that they come from its kind of position. */
 const PLAIN_ROLE_LABELS: Record<PositionRole, string> = { top: 'Top', bottom: 'Bottom' };
@@ -66,13 +83,15 @@ function roleLabels(category: PositionCategory | undefined): Record<PositionRole
   return { top: roleLabel(category, 'top'), bottom: roleLabel(category, 'bottom') };
 }
 
-function fromDraft(draft: Draft, role: PositionRole): TransitionInput {
+function fromDraft(draft: Draft, role: PositionRole, endSide: PositionRole | null): TransitionInput {
   return {
     name: draft.name.trim(),
     type: draft.type,
     fromId: draft.fromId,
     toId: draft.toId,
     role,
+    // A technique that ends the roll leads nowhere, so it has no end side to store.
+    ...(endSide ? { endRole: endSide } : {}),
     steps: toLines(draft.steps),
     commonMistakes: toLines(draft.commonMistakes),
     drill: draft.drill.trim(),
@@ -91,6 +110,11 @@ export function TransitionForm({ itemId, library, cancelTo, onSaved, onDelete }:
 
   const fromCategory = library.positionById.get(draft.fromId)?.category;
   const role = draft.role ?? defaultRole(draft.type, fromCategory);
+  const toCategory = library.positionById.get(draft.toId)?.category;
+  // The rule of thumb for a technique not saved yet: `endRole` reads only its type, start and role.
+  const endSide =
+    draft.endRole ??
+    endRole(library, { ...EMPTY_TECHNIQUE, type: draft.type, fromId: draft.fromId, toId: draft.toId, role });
 
   const positionOptions = library.positions.map((p) => (
     <option key={p.id} value={p.id}>
@@ -102,7 +126,9 @@ export function TransitionForm({ itemId, library, cancelTo, onSaved, onDelete }:
     <FormShell
       cancelTo={cancelTo}
       onDelete={onDelete}
-      onSubmit={async () => onSaved(await items.saveTransition(itemId, fromDraft(draft, role)))}
+      onSubmit={async () =>
+        onSaved(await items.saveTransition(itemId, fromDraft(draft, role, endsTheRoll(draft.type) ? null : endSide)))
+      }
     >
       <NameField value={draft.name} onChange={(v) => set('name', v)} />
       <ChoiceField
@@ -139,6 +165,15 @@ export function TransitionForm({ itemId, library, cancelTo, onSaved, onDelete }:
         value={role}
         onChange={(v) => set('role', v)}
       />
+      {endSide && toCategory && !endsTheRoll(draft.type) && (
+        <ChoiceField
+          label="You end up"
+          options={POSITION_ROLES}
+          labels={{ top: endSideLabel(toCategory, 'top'), bottom: endSideLabel(toCategory, 'bottom') }}
+          value={endSide}
+          onChange={(v) => set('endRole', v)}
+        />
+      )}
       <Field label="Steps" hint="One step per line, in order.">
         <textarea rows={6} value={draft.steps} onChange={(e) => set('steps', e.target.value)} />
       </Field>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildLibrary } from './library';
-import { defaultRole, performerRole, positionOptions } from './roles';
+import { defaultRole, endRole, performerRole, positionOptions } from './roles';
 import { starterContent } from './seed';
 import { position, transition } from './testing/testFixtures';
 
@@ -60,5 +60,29 @@ describe('positionOptions', () => {
       return [...(options.top.length ? [] : [`${p.id} top`]), ...(options.bottom.length ? [] : [`${p.id} bottom`])];
     });
     expect(gaps).toEqual([]);
+  });
+});
+
+describe('endRole', () => {
+  const lib = buildLibrary([], positions, [], []);
+
+  it('uses the stored side, then the starter answer', () => {
+    expect(endRole(lib, transition({ id: 'back-escape', type: 'escape', endRole: 'bottom' }))).toBe('bottom');
+    // Escaping the back by the starter method leaves you on top, in their guard.
+    expect(endRole(lib, transition({ id: 'back-escape', type: 'escape' }))).toBe('top');
+  });
+
+  it('otherwise puts a sweep, pass or takedown on top and leaves anything else on its starting side', () => {
+    expect(endRole(lib, transition({ id: 'my-sweep', type: 'sweep', fromId: 'guard' }))).toBe('top');
+    expect(endRole(lib, transition({ id: 'my-escape', type: 'escape', fromId: 'mount' }))).toBe('bottom');
+    expect(endRole(lib, transition({ id: 'my-move', type: 'transition', fromId: 'mount', role: 'bottom' }))).toBe(
+      'bottom',
+    );
+  });
+
+  it('is nothing for a submission, and set for every other starter technique', () => {
+    expect(endRole(lib, transition({ id: 'my-choke', type: 'submission', fromId: 'mount' }))).toBeNull();
+    const unset = starterContent(0).transitions.filter((t) => t.type !== 'submission' && !t.endRole);
+    expect(unset.map((t) => t.id)).toEqual([]);
   });
 });

@@ -1,7 +1,7 @@
 import { assertNever } from './assertNever';
 import type { Library } from './library';
-import type { PositionCategory, PositionRole, Transition, TransitionType } from './models';
-import { STARTER_ROLES } from './seed';
+import { endsTheRoll, type PositionCategory, type PositionRole, type Transition, type TransitionType } from './models';
+import { STARTER_END_ROLES, STARTER_ROLES } from './seed';
 
 /**
  * Who usually does a technique of this type, for one the user has not said. A sweep or escape is done by
@@ -24,16 +24,42 @@ export function defaultRole(type: TransitionType, category: PositionCategory | u
   }
 }
 
+/** The part of a library these rules read. Narrow, so a component holding only the position lookup can ask. */
+type Positions = Pick<Library, 'positionById'>;
+
 /**
  * Who does a technique, as their role in its starting position. Techniques stored before the field existed
  * fall back to the starter content's answer, then to the usual role for their type.
  */
-export function performerRole(lib: Library, transition: Transition): PositionRole {
+export function performerRole(lib: Positions, transition: Transition): PositionRole {
   return (
     transition.role ??
     STARTER_ROLES.get(transition.id) ??
     defaultRole(transition.type, lib.positionById.get(transition.fromId)?.category)
   );
+}
+
+/**
+ * Which side of the destination the person who did a technique ends up on, or null for one that `endsTheRoll`.
+ * Techniques stored before the field existed fall back to the starter content's answer, then to a rule of
+ * thumb: a sweep, pass or takedown puts you on top, and anything else leaves you on the side you started on.
+ */
+export function endRole(lib: Positions, transition: Transition): PositionRole | null {
+  if (endsTheRoll(transition.type)) return null;
+  const stored = transition.endRole ?? STARTER_END_ROLES.get(transition.id);
+  if (stored) return stored;
+  switch (transition.type) {
+    case 'sweep':
+    case 'pass':
+    case 'takedown':
+      return 'top';
+    case 'escape':
+    case 'transition':
+    case 'submission':
+      return performerRole(lib, transition);
+    default:
+      return assertNever(transition.type);
+  }
 }
 
 /** The techniques each person can do from a position, in library order. An empty list is a gap in the game. */

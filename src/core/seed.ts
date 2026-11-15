@@ -488,6 +488,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'standing',
     toId: 'closed-guard',
     role: 'top',
+    endRole: 'bottom',
     steps: [
       'Get a collar and sleeve grip',
       'Step in close',
@@ -505,6 +506,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'standing',
     toId: 'side-control',
     role: 'top',
+    endRole: 'top',
     steps: [
       'Lower your level by bending your knees',
       'Step deep between their feet',
@@ -526,6 +528,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'standing',
     toId: 'side-control',
     role: 'top',
+    endRole: 'top',
     steps: [
       'Grip their sleeve and reach your other arm around their waist',
       'Step across in front of them and pivot so your back is to their chest, knees bent',
@@ -548,6 +551,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'standing',
     toId: 'standing',
     role: 'bottom',
+    endRole: 'bottom',
     steps: [
       'Drop into base with your knees bent',
       'Turn the thin edge of your wrist toward the gap between their thumb and fingers',
@@ -569,6 +573,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'standing',
     toId: 'standing',
     role: 'bottom',
+    endRole: 'bottom',
     steps: [
       'Tuck your chin and step one foot back into base',
       'Reach one arm straight up beside your ear',
@@ -586,6 +591,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'standing',
     toId: 'standing',
     role: 'bottom',
+    endRole: 'bottom',
     steps: [
       'Drop your weight into base straight away: knees bent, hips back',
       'Push your elbows out and forward to make a little space',
@@ -604,6 +610,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'standing',
     toId: 'side-control',
     role: 'bottom',
+    endRole: 'top',
     steps: [
       'Bend your knees into base and turn your chin toward their ribs so you can breathe',
       'Reach your far hand over their shoulder and push on their face, under the nose',
@@ -625,6 +632,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'standing',
     toId: 'turtle',
     role: 'bottom',
+    endRole: 'top',
     steps: [
       'As they shoot in for your legs, block their head or shoulders with your hands',
       'Kick both legs straight back and drop your hips to the mat',
@@ -648,6 +656,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'closed-guard',
     toId: 'open-guard',
     role: 'top',
+    endRole: 'top',
     steps: [
       'Build posture: sit back, head up',
       'Pin their hips with both hands',
@@ -665,6 +674,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'closed-guard',
     toId: 'mount',
     role: 'bottom',
+    endRole: 'top',
     steps: [
       'Grip their collar and same-side sleeve',
       'Open your guard and shrimp to one side',
@@ -683,6 +693,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'closed-guard',
     toId: 'mount',
     role: 'bottom',
+    endRole: 'top',
     steps: [
       'When they posture up, sit up onto one hand',
       'Reach over their shoulder and trap their arm on that side',
@@ -786,6 +797,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'closed-guard',
     toId: 'mount',
     role: 'bottom',
+    endRole: 'top',
     steps: [
       'Grip one of their sleeves and hold that arm tight so they cannot post on it',
       'Scoop your other hand under their opposite leg, behind the knee',
@@ -808,6 +820,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'closed-guard',
     toId: 'closed-guard',
     role: 'top',
+    endRole: 'top',
     steps: [
       'As soon as they control your arm and turn, clasp your hands together and bend the trapped elbow',
       'Drive your weight forward, toward them, and stack their knees toward their face',
@@ -830,6 +843,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'closed-guard',
     toId: 'closed-guard',
     role: 'top',
+    endRole: 'top',
     steps: [
       'Never leave one arm inside their legs and one outside: both in or both out',
       'If a leg comes over your shoulder, posture up at once: head up, back straight, eyes on the ceiling',
@@ -852,6 +866,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'closed-guard',
     toId: 'side-control',
     role: 'top',
+    endRole: 'top',
     steps: [
       'Tuck your chin and pull down on their choking wrist with one hand to make room to breathe',
       'Reach your other arm over their shoulder, on the side away from your head, and hug their back',
@@ -875,6 +890,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'open-guard',
     toId: 'side-control',
     role: 'top',
+    endRole: 'top',
     steps: [
       'Stand up and grip their pants at both knees',
       'Push their legs to one side and pin them to the mat',
@@ -892,6 +908,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'open-guard',
     toId: 'side-control',
     role: 'top',
+    endRole: 'top',
     steps: [
       'From your knees, scoop both arms under their legs and pull their hips up onto your thighs',
       'Keep your elbows tight to their hips and your head up',
@@ -915,6 +932,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'open-guard',
     toId: 'mount',
     role: 'bottom',
+    endRole: 'top',
     steps: [
       'Sit up close to them with both feet hooked inside their thighs',
       'Get an underhook on one side and grip their other arm at the elbow or sleeve',
@@ -938,6 +956,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'open-guard',
     toId: 'open-guard',
     role: 'bottom',
+    endRole: 'top',
     steps: [
       'With them standing over your open guard, grip one of their ankles behind the heel',
       'Put one foot on their hip and hook your other foot behind the knee of their free leg',
@@ -959,6 +978,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'open-guard',
     toId: 'open-guard',
     role: 'bottom',
+    endRole: 'bottom',
     steps: [
       'As they get past your feet, turn onto your side to face them: never stay flat',
       'Frame on their shoulder and hip so they cannot drop their chest onto yours',
@@ -981,6 +1001,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'open-guard',
     toId: 'standing',
     role: 'bottom',
+    endRole: 'bottom',
     steps: [
       'Sit up and post one hand on the mat behind you',
       'Plant the opposite foot flat on the mat and keep your free hand up between you and them',
@@ -1003,6 +1024,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'half-guard',
     toId: 'side-control',
     role: 'top',
+    endRole: 'top',
     steps: [
       'Get a crossface or underhook so they are flat',
       'Slide your trapped knee across their thigh toward the mat',
@@ -1020,6 +1042,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'half-guard',
     toId: 'closed-guard',
     role: 'bottom',
+    endRole: 'bottom',
     steps: [
       'Frame against their hip or shoulder',
       'Shrimp your hips away',
@@ -1036,6 +1059,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'half-guard',
     toId: 'side-control',
     role: 'bottom',
+    endRole: 'top',
     steps: [
       'Get on your side facing them, with a frame so they cannot flatten you',
       'Dig your top arm under their armpit for a deep underhook and reach around their back',
@@ -1060,6 +1084,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'side-control',
     toId: 'open-guard',
     role: 'bottom',
+    endRole: 'bottom',
     steps: [
       'Frame: forearm on their neck, other hand on their hip',
       'Bridge slightly to make them react',
@@ -1077,6 +1102,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'side-control',
     toId: 'mount',
     role: 'top',
+    endRole: 'top',
     steps: [
       'Keep chest pressure and control their far side',
       'Block their near hip with your hand',
@@ -1111,6 +1137,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'side-control',
     toId: 'side-control',
     role: 'bottom',
+    endRole: 'top',
     steps: [
       'Turn onto your side to face them and tuck your bottom elbow in so they cannot flatten you',
       'Frame your forearm across their jaw, holding that wrist with your other hand',
@@ -1133,6 +1160,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'side-control',
     toId: 'turtle',
     role: 'bottom',
+    endRole: 'bottom',
     steps: [
       'Frame on their neck and hip and bridge into them to make space',
       'Swim your far arm under their armpit for an underhook',
@@ -1155,6 +1183,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'mount',
     toId: 'closed-guard',
     role: 'bottom',
+    endRole: 'top',
     steps: [
       'Trap one of their arms against your chest',
       'Trap the foot on the same side with your foot',
@@ -1172,6 +1201,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'mount',
     toId: 'half-guard',
     role: 'bottom',
+    endRole: 'bottom',
     steps: [
       'Frame with your elbows on their hips',
       'Turn on your side and shrimp away',
@@ -1229,6 +1259,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'mount',
     toId: 'back-control',
     role: 'top',
+    endRole: 'top',
     steps: [
       'When they turn to their side to escape, follow them',
       'Get a seatbelt grip: one arm over the shoulder, one under the arm',
@@ -1264,6 +1295,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'back-control',
     toId: 'closed-guard',
     role: 'bottom',
+    endRole: 'top',
     steps: [
       'Protect your neck with both hands',
       'Slide down so your back is on the mat, on the side of their bottom arm',
@@ -1281,6 +1313,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'back-control',
     toId: 'back-control',
     role: 'bottom',
+    endRole: 'bottom',
     steps: [
       'Tuck your chin and bring both hands to your neck before anything else',
       'Find the choking arm, the one coming across your neck, and grab its wrist with both hands: two on one',
@@ -1304,6 +1337,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'turtle',
     toId: 'back-control',
     role: 'top',
+    endRole: 'top',
     steps: [
       'Stay chest-on-back with weight on them',
       'Get a seatbelt grip',
@@ -1321,6 +1355,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     fromId: 'turtle',
     toId: 'open-guard',
     role: 'bottom',
+    endRole: 'bottom',
     steps: [
       'Keep elbows tight to knees',
       'Post on one hand and sit through, or roll to your shoulder',
@@ -1350,6 +1385,11 @@ export const STARTER_BLUE_BELT_TEST_IDS: ReadonlySet<string> = new Set(transitio
 
 /** Who performs each starter technique, for copies stored before techniques had a role (see `performerRole`). */
 export const STARTER_ROLES: ReadonlyMap<string, PositionRole> = new Map(transitions.map((t) => [t.id, t.role]));
+
+/** The side each starter technique leaves its performer on, for copies stored before that was recorded (see `endRole`). */
+export const STARTER_END_ROLES: ReadonlyMap<string, PositionRole> = new Map(
+  transitions.flatMap((t) => (t.endRole ? [[t.id, t.endRole] as const] : [])),
+);
 
 /** The drill for each starter technique, for copies stored before techniques had one (see `techniqueDrill`). */
 export const STARTER_DRILLS: ReadonlyMap<string, string> = new Map(transitions.map((t) => [t.id, t.drill]));
