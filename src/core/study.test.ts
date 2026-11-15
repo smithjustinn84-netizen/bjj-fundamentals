@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildLibrary } from './library';
 import type { ReviewState } from './models';
 import { DAY_MS } from './srs';
-import { buildQueue, cardName, progressSummary, stickingPoints } from './study';
+import { buildQueue, cardName, conceptsToLearn, progressSummary, stickingPoints } from './study';
 import { concept, position, review, transition } from './testing/testFixtures';
 
 const NOW = 1_000_000_000_000;
@@ -110,5 +110,16 @@ describe('cardName', () => {
     expect(cardName(lib, { kind: 'situation', id: 'p1:bottom' })).toBe('Position, playing guard');
     expect(cardName(lib, { kind: 'situation', id: 'p1:top' })).toBeNull();
     expect(cardName(lib, { kind: 'concept', id: 'gone' })).toBeNull();
+  });
+});
+
+describe('conceptsToLearn', () => {
+  it('lists the concepts not learned yet, in learning order, up to the limit', () => {
+    const lib = buildLibrary(concepts, positions, transitions, [
+      card('concept', 'c1', { intervalDays: 8 }), // learned
+      card('concept', 'c2', { intervalDays: 1 }), // started, not learned
+    ]);
+    expect(conceptsToLearn(lib, 5).map((c) => c.id)).toEqual(['c2', 'c3']);
+    expect(conceptsToLearn(lib, 1).map((c) => c.id)).toEqual(['c2']);
   });
 });

@@ -1,7 +1,7 @@
 import { assertNever } from './assertNever';
 import { isOnBlueBeltTest } from './beltTest';
 import { itemName, type Library, reviewOf } from './library';
-import type { CardKind, Deck } from './models';
+import type { CardKind, Concept, Deck } from './models';
 import { allSituations, findSituation, situationId, situationName } from './situations';
 import { cardId, isLearned } from './srs';
 
@@ -143,4 +143,9 @@ export function stickingPoints(lib: Library, limit: number): StudyItem[] {
   }
   slipping.sort((a, b) => b.lapses - a.lapses || a.ease - b.ease);
   return slipping.slice(0, Math.max(0, limit)).map((s) => s.item);
+}
+
+/** The concepts not learned yet, in learning order, up to `limit`: what to read next. */
+export function conceptsToLearn(lib: Library, limit: number): Concept[] {
+  return lib.concepts.filter((c) => !isLearned(reviewOf(lib, 'concept', c.id))).slice(0, Math.max(0, limit));
 }

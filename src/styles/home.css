@@ -112,7 +112,23 @@ ol.path {
   .hero h1 {
     font-size: var(--text-xl);
   }
+  /* On a phone the hero must leave room for today's work below it: no intro line, and the rank beside its ring. */
+  .hero-intro {
+    display: none;
+  }
   .hero-rank {
     max-width: none;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    justify-items: start;
+    gap: var(--space-2) var(--space-4);
+    text-align: left;
+  }
+  .hero-rank .ring {
+    grid-row: span 2;
+    width: 7rem;
+  }
+  .hero-rank .stat {
+    font-size: 1.4rem;
   }
 }

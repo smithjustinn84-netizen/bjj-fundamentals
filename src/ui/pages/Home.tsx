@@ -6,7 +6,7 @@ import { reviewOf } from '../../core/library';
 import { beltRank } from '../../core/rank';
 import { findSituation, situationName } from '../../core/situations';
 import { cardId } from '../../core/srs';
-import { cardName, progressSummary, STICKING_POINT_LIMIT, stickingPoints } from '../../core/study';
+import { cardName, conceptsToLearn, progressSummary, STICKING_POINT_LIMIT, stickingPoints } from '../../core/study';
 import { type DrillReason, pickDrill } from '../../core/todaysDrill';
 import { formatClassCount, formatMatTime, trainingSummary } from '../../core/trainingLog';
 import { Loading, ProgressDot } from '../components/common';
@@ -22,6 +22,9 @@ function reviewButtonLabel(dueCount: number, started: number): string {
   if (dueCount > 0) return `Review ${dueCount} card${dueCount === 1 ? '' : 's'}`;
   return started === 0 ? 'Start studying' : 'Study new cards';
 }
+
+/** Home shows only the next few concepts; the Concepts page has them all. */
+const HOME_CONCEPT_LIMIT = 6;
 
 /** Why today's drill was chosen, said to the student. */
 const DRILL_REASON_TEXT: Record<DrillReason, string> = {
@@ -104,6 +107,7 @@ export default function Home() {
   const sticking = stickingPoints(lib, STICKING_POINT_LIMIT);
   const training = trainingSummary(log);
   const drill = pickDrill(lib, log);
+  const nextConcepts = conceptsToLearn(lib, HOME_CONCEPT_LIMIT);
   const stuck = training.stuckIds.map((id) => findSituation(lib, id)).filter((situation) => situation !== null);
 
   const steps: PathStep[] = [
@@ -176,7 +180,7 @@ export default function Home() {
         <div className="hero-text">
           <p className="eyebrow">Your training</p>
           <h1>Learn the fundamentals, one idea at a time</h1>
-          <p className="muted">
+          <p className="muted hero-intro">
             Start with the core concepts, then see how they show up in each position. Short daily reviews will help them
             stick.
           </p>
@@ -293,17 +297,27 @@ export default function Home() {
       )}
 
       <section className="card">
-        <h2>Concepts</h2>
-        {lib.concepts.length === 0 && <p className="muted">No concepts yet.</p>}
-        <ul className="chip-list stagger">
-          {lib.concepts.map((c) => (
-            <li key={c.id}>
-              <Link to={itemPath('concept', c.id)} className="chip">
-                <ProgressDot state={reviewOf(lib, 'concept', c.id)} /> {c.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="section-head">
+          <h2>Concepts to learn next</h2>
+          <Link className="button small" to={ROUTES.concepts}>
+            All {lib.concepts.length} concepts
+          </Link>
+        </div>
+        {nextConcepts.length === 0 ? (
+          <p className="muted">
+            {lib.concepts.length === 0 ? 'No concepts yet.' : 'Every concept is learned. Keep reviewing to stay sharp.'}
+          </p>
+        ) : (
+          <ul className="chip-list stagger">
+            {nextConcepts.map((c) => (
+              <li key={c.id}>
+                <Link to={itemPath('concept', c.id)} className="chip">
+                  <ProgressDot state={reviewOf(lib, 'concept', c.id)} /> {c.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </div>
   );
