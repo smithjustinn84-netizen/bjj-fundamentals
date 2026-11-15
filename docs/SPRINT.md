@@ -4,15 +4,17 @@ Reviewed on 2026-11-15 as a BJJ coach. The coaching copy across all 25 starter c
 
 Sizes: **S** is an hour or two, **M** is a day, **L** is several days.
 
-## 1. Expand white-to-blue-belt starter curriculum (M)
+## 1. Expand white-to-blue-belt starter curriculum (M) — Done 2026-11-15
+
+Done 2026-11-15: 28 concepts and 57 techniques. Videos were chosen from their titles and descriptions and checked to exist and be embeddable; nobody watched them or read transcripts. Three things differ from the list below: the half guard sweep is the scissor version only; the side control kimura is taught through north-south; and the turtle sit-out ends on top of their turtle (`turtle`, `top`), not in side control. The sit-out video is a short clip from a small channel and is the weakest of the set.
 
 Every new starter concept and technique below connects to the existing 8 starter positions so existing libraries are offered them automatically on the Concepts and Blue belt pages (`core/starter.ts`).
 
-- [ ] **New starter concepts (3)**, each with an inline SVG pose scene in `ui/graphics/ConceptSvg.tsx`, position links in `core/seed.ts`, and at least two verified YouTube bookmarks:
+- [x] **New starter concepts (3)**, each with an inline SVG pose scene in `ui/graphics/ConceptSvg.tsx`, position links in `core/seed.ts`, and at least two verified YouTube bookmarks:
   - **`breakfalls` — Breakfalls (ukemi):** Tucking the chin, slapping the mat at 45° to spread impact across the back/lat, and never posting a straight arm on the floor during a takedown or sweep. Linked to `standing`.
   - **`crossface` — Crossface and shoulder-line control:** Driving your shoulder under their jaw to turn their head away so their spine cannot bridge or turn toward you. Linked to `half-guard`, `side-control`, and `mount`.
   - **`wedges` — Wedges vs. levers:** Blocking a hip or shoulder close to the torso (a wedge) to stop movement, vs. controlling the end of a limb (the knee, ankle, or wrist lever) to rotate or open it. Linked to `open-guard`, `half-guard`, `side-control`, and `back-control`.
-- [ ] **New starter techniques across existing positions (10)**, each with `role`, `endRole`, ordered biomechanical steps, common mistakes, a drill, and verified YouTube bookmarks:
+- [x] **New starter techniques across existing positions (10)**, each with `role`, `endRole`, ordered biomechanical steps, common mistakes, a drill, and verified YouTube bookmarks:
   - **Closed Guard:**
     - `cross-collar-guard` — Cross collar choke from closed guard (`submission`, `bottom`).
     - `omoplata-guard` — Omoplata shoulder lock / sweep from closed guard (`submission`, `bottom`).

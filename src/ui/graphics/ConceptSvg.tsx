@@ -469,6 +469,34 @@ const TIPPING: FigurePose = {
   },
 };
 
+/* Flat on the back seen from above, chin tucked, both arms landing palm down at 45 degrees from the body. */
+const BREAKFALL: FigurePose = {
+  head: [128, 118],
+  neck: [142, 118],
+  hip: [198, 118],
+  face: 1,
+  arms: {
+    far: [
+      [162, 96],
+      [184, 76],
+    ],
+    near: [
+      [162, 140],
+      [184, 160],
+    ],
+  },
+  legs: {
+    far: [
+      [234, 104],
+      [264, 112],
+    ],
+    near: [
+      [234, 132],
+      [264, 124],
+    ],
+  },
+};
+
 interface Scene {
   view?: 'side' | 'above';
   draw: () => ReactNode;
@@ -745,6 +773,43 @@ const CONCEPT_SCENES: Record<string, Scene> = {
         {/* Give and take: each person moves, and lets the other move. */}
         <Arrow from={[150, 60]} to={[250, 60]} bend={-18} />
         <Arrow from={[250, 78]} to={[150, 78]} bend={-18} />
+      </>
+    ),
+  },
+  breakfalls: {
+    view: 'above',
+    draw: () => (
+      <>
+        <Figure pose={BREAKFALL} gi="light" />
+        {/* The slap: the whole arm meets the mat at once and spreads the fall. */}
+        <circle className="dgm-ring" cx="184" cy="76" r="13" />
+        <circle className="dgm-ring" cx="184" cy="160" r="13" />
+        <path className="dgm-good" d="M276 62 l8 9 l15 -19" />
+      </>
+    ),
+  },
+  crossface: {
+    view: 'above',
+    draw: () => (
+      <>
+        <StillPosition id="side-control" />
+        {/* The shoulder under the jaw turns the head away, and the spine follows it. */}
+        <circle className="dgm-ring" cx="136" cy="100" r="17" />
+        <Arrow from={[112, 92]} to={[116, 126]} bend={-10} />
+      </>
+    ),
+  },
+  wedges: {
+    view: 'above',
+    draw: () => (
+      <>
+        <StillPosition id="side-control" />
+        {/* The wedge: a block against the hip, close to the body, that takes no strength to hold. */}
+        <circle className="dgm-ring" cx="212" cy="106" r="13" />
+        <circle className="dgm-dot" cx="212" cy="106" r="5" />
+        {/* The lever: the far end of the leg, where a small push turns everything. */}
+        <circle className="dgm-ring" cx="270" cy="126" r="11" />
+        <Arrow from={[288, 124]} to={[274, 156]} bend={10} />
       </>
     ),
   },

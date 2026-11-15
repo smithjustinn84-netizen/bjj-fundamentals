@@ -383,6 +383,54 @@ const concepts: StarterRow<Concept>[] = [
       'Do a 3-minute flow roll at 40% speed with a partner: move continuously from position to position, never holding a pin for more than 3 seconds and releasing every submission setup as soon as it is caught cleanly.',
     order: 25,
   },
+  {
+    id: 'breakfalls',
+    name: 'Breakfalls (ukemi)',
+    summary:
+      'Falling is a skill. A breakfall spreads the impact of a takedown or sweep across your back and arm instead of a wrist, elbow, or the back of your head.',
+    keyPoints: [
+      'Tuck your chin to your chest and look at your belt knot, so the back of your head never touches the mat.',
+      'Round your back and roll down it; do not land flat or sit straight down onto your tailbone.',
+      'Slap the mat with the whole arm, palm down, about 45 degrees from your body, at the moment your back lands.',
+      'Never reach back with a straight arm to catch yourself: a posted arm takes your whole weight through the elbow and shoulder.',
+      'Breathe out as you land, and accept the fall early instead of fighting a takedown that is already finished.',
+    ],
+    drill:
+      'From a squat, tuck your chin, roll back and slap with both arms at 45 degrees: 10 reps. Then 10 side breakfalls each side, kicking one leg across and slapping with the same-side arm. Only then try it from standing.',
+    order: 26,
+  },
+  {
+    id: 'crossface',
+    name: 'Crossface and shoulder-line control',
+    summary:
+      'Where the head points, the spine follows. A shoulder driven under the jaw turns their head away from you, and a spine twisted that way cannot bridge or turn in.',
+    keyPoints: [
+      'Slide your arm under their head and drive the point of your shoulder into their jaw line, turning their face away from you.',
+      'Pair it with an underhook on the far side, so both of their shoulders stay flat on the mat.',
+      'The pressure comes from your chest and toes driving forward, not from squeezing with the arm.',
+      'Underneath, deny it early: keep your near forearm framed against their neck or bicep before the arm slides under your head.',
+      'Use only as much pressure as holds the position: grinding on the jaw of a training partner teaches nothing.',
+    ],
+    drill:
+      'From top half guard, 5 reps each side: win the crossface and far underhook, settle your weight, and let your partner try to turn in to face you for 10 seconds. Then swap, and practise framing to stop the crossface arriving.',
+    order: 27,
+  },
+  {
+    id: 'wedges',
+    name: 'Wedges and levers',
+    summary:
+      'A wedge blocks a part of the body close to the torso so it cannot move. A lever is the far end of a limb, where a small push turns the whole body.',
+    keyPoints: [
+      'Wedges go against the hips, the shoulders and the head: a knee in the hip, a forearm across the collarbone, a shoulder in the jaw.',
+      'A wedge needs no strength once it is in place, because your skeleton and the mat hold it there.',
+      'Levers are knees, ankles, elbows and wrists: the further from the body you hold, the less force it takes to move them.',
+      'To pin, wedge both sides of the hips or shoulders; to open or turn someone, control a lever.',
+      'To escape, remove one wedge first: nothing else moves until a hip or shoulder is free.',
+    ],
+    drill:
+      'In side control, the top person names their wedges out loud (crossface, hip block, knee) while the bottom person finds the one they can move. Then in open guard, steer your partner by the knees and ankles only. 2 minutes each.',
+    order: 28,
+  },
 ];
 
 const positions: StarterRow<Position>[] = [
@@ -404,7 +452,7 @@ const positions: StarterRow<Position>[] = [
       'Win inside head and underhook position when clinched',
       'Counter their takedown or pull guard on your own terms with grips',
     ],
-    conceptIds: ['base', 'grips', 'posture', 'distance', 'off-balancing', 'angles'],
+    conceptIds: ['base', 'grips', 'posture', 'distance', 'off-balancing', 'angles', 'breakfalls'],
     order: 1,
   },
   {
@@ -446,7 +494,7 @@ const positions: StarterRow<Position>[] = [
       'Off-balance them constantly so they must post their hands instead of passing',
       'When they clear your feet, frame on their shoulder and hip, shrimp away, and pummel your knees back inside',
     ],
-    conceptIds: ['frames', 'hip-escape', 'grips', 'inside-position', 'distance', 'hip-control'],
+    conceptIds: ['frames', 'hip-escape', 'grips', 'inside-position', 'distance', 'hip-control', 'wedges'],
     order: 3,
   },
   {
@@ -475,6 +523,8 @@ const positions: StarterRow<Position>[] = [
       'head-position',
       'face-your-opponent',
       'hip-control',
+      'crossface',
+      'wedges',
     ],
     order: 4,
   },
@@ -505,6 +555,8 @@ const positions: StarterRow<Position>[] = [
       'breathing',
       'face-your-opponent',
       'defend-early',
+      'crossface',
+      'wedges',
     ],
     order: 5,
   },
@@ -535,6 +587,7 @@ const positions: StarterRow<Position>[] = [
       'breathing',
       'positional-hierarchy',
       'defend-early',
+      'crossface',
     ],
     order: 6,
   },
@@ -564,6 +617,7 @@ const positions: StarterRow<Position>[] = [
       'positional-hierarchy',
       'defend-early',
       'two-on-one',
+      'wedges',
     ],
     order: 7,
   },
@@ -1082,6 +1136,52 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     drill:
       'Your partner sits up and locks a slow kimura grip from guard without rotating the shoulder. Anchor your hand to your belt or thigh, drive forward to flatten them, square your hips, and posture the elbow free. 5 reps per side.',
   },
+  {
+    id: 'cross-collar-guard',
+    name: 'Cross collar choke from closed guard',
+    type: 'submission',
+    fromId: 'closed-guard',
+    toId: '',
+    role: 'bottom',
+    steps: [
+      'Break their posture by pulling your knees to your chest, and use one hand to open their collar for the other',
+      'Feed the first hand in palm up, four fingers inside the collar, as deep as it will go: your knuckles should reach the back of their neck',
+      'Keep that elbow heavy on your own chest so they cannot posture up, and turn your hips slightly toward it to make room for the second hand',
+      'Slide the second hand palm up underneath the first arm and take the opposite collar as deep as you can',
+      'Pull them down onto you with your legs, then draw both elbows back past your ribs and turn your wrists so the edges of your forearms close on both sides of the neck',
+      'Hold steady pressure and expand your chest; let go the moment they tap',
+    ],
+    commonMistakes: [
+      'A shallow first grip, which presses on the jaw or windpipe instead of closing the sides of the neck',
+      'Flaring the elbows wide and pulling with the arms instead of drawing the elbows back along the ribs',
+      'Letting them sit back up to posture before the second hand is in',
+    ],
+    drill:
+      '10 reps each side on a partner giving light posture resistance: deep first grip, hip turn, second grip, then close slowly to a count of three and release.',
+  },
+  {
+    id: 'omoplata-guard',
+    name: 'Omoplata from closed guard',
+    type: 'submission',
+    fromId: 'closed-guard',
+    toId: '',
+    role: 'bottom',
+    steps: [
+      'When one of their hands lands on the mat beside your ribs, control that wrist or sleeve and keep their posture broken with your other hand behind their head',
+      'Open your guard, put the opposite foot on their hip, and turn your hips out until you are perpendicular to them',
+      'Swing the leg on the trapped-arm side over their shoulder so the back of your knee sits on their shoulder blade and their arm is bent around your hip',
+      'Keep turning until you face the same way they do, sit up, and reach across their back to hold their far hip so they cannot roll forward',
+      'Scoot your hips away from them and bend both knees back to flatten their chest to the mat',
+      'Lean your chest slowly toward their far shoulder until they tap',
+    ],
+    commonMistakes: [
+      'Not holding the far hip, which lets them forward-roll out and land on top',
+      'Staying square instead of turning to face the same way, so there is no angle on the shoulder',
+      'Leaning forward fast: a shoulder lock gives very little warning before it injures',
+    ],
+    drill:
+      '10 slow entries each side from closed guard, stopping once you are sitting up beside your partner with the far hip held. Add the finish only at walking pace.',
+  },
   // Open guard
   {
     id: 'toreando-pass',
@@ -1295,6 +1395,53 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     drill:
       '10 reps on each side: from knee-shield half guard, shoot the deep low underhook, scoot your hips out, come up to your knees with your ear glued to their chest, and tap the far knee to sweep.',
   },
+  {
+    id: 'knee-shield-sweep',
+    name: 'Knee shield sweep from half guard',
+    type: 'sweep',
+    fromId: 'half-guard',
+    toId: 'side-control',
+    role: 'bottom',
+    endRole: 'top',
+    steps: [
+      'On your side facing them, put your top shin across their belt line with the knee pointing at their far shoulder: that is the knee shield',
+      'Grip their collar with your top hand and the sleeve on the same side as your shield with your bottom hand',
+      'Pull the sleeve and collar toward you and above your head so their weight comes forward onto your shin',
+      'Unlock your feet and slide your bottom leg flat on the mat against the outside of their knee',
+      'Scissor: kick the shield leg across while the bottom leg chops their knee out from under them, pulling the trapped sleeve so they cannot post',
+      'Follow them over, clear your legs, and settle chest to chest across them',
+    ],
+    commonMistakes: [
+      'Trying to sweep while their weight is sitting back on their heels, with nothing loaded onto the shield',
+      'Letting go of the sleeve, so they post that hand on the mat and stop the sweep',
+      'Lying flat on your back, which lets them crush the knee shield down and pass',
+    ],
+    drill:
+      '10 reps each side: build the shield and grips, have your partner lean in, and sweep. The partner should feel weightless on your shin just before going over.',
+  },
+  {
+    id: 'half-guard-to-mount',
+    name: 'Pass half guard to mount',
+    type: 'pass',
+    fromId: 'half-guard',
+    toId: 'mount',
+    role: 'top',
+    endRole: 'top',
+    steps: [
+      'Flatten them first: crossface with your shoulder under their jaw and an underhook on the far side, chest heavy on their chest',
+      'Walk your hips up toward their head until your trapped knee comes free of their legs and touches the mat on the far side of their belly',
+      'Keep the crossface and put your free foot on their top knee or thigh',
+      'Push their legs down with that foot while you pull your trapped heel toward your backside, until the ankle slides free',
+      'Bring both knees up under their armpits and settle into mount before you let go of the crossface',
+    ],
+    commonMistakes: [
+      'Trying to pull the foot out before their shoulders are flat, which gives them the underhook and the sweep',
+      'Lifting your chest to look at your legs, which gives them room to turn in and recover guard',
+      'Leaving the freed foot behind where they can catch it again in half guard',
+    ],
+    drill:
+      '5 reps each side with your partner holding half guard at half strength: crossface, underhook, knee to the mat, free the foot, mount. Hold mount for 3 seconds each time.',
+  },
   // Side control
   {
     id: 'side-control-escape',
@@ -1433,6 +1580,53 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     drill:
       'Your partner pins your wrist from side control and pauses before locking the figure-four. Grab your own hand, turn slightly toward the pinned arm to suck the elbow down to your ribs, then turn back in to frame. 5 reps per side.',
   },
+  {
+    id: 'kimura-side-control',
+    name: 'Kimura from side control',
+    type: 'submission',
+    fromId: 'side-control',
+    toId: '',
+    role: 'top',
+    steps: [
+      'From side control, when their far arm pushes at your neck or shoulder, wrap it at the elbow with the arm nearest their head and hug it to your chest',
+      'Keep your chest on them and step around their head toward north-south, turning them onto their side with the trapped arm on top',
+      'Sit your weight back over their head and shoulder so they cannot sit up or roll, and pin their head between your knees',
+      'Take their wrist with your free hand, thumb on the same side as your fingers, and lock a figure-four by gripping your own wrist',
+      'Lift their elbow off their chest, keeping it bent at 90 degrees and tight to you',
+      'Slowly steer their wrist behind their back toward the back of their head until they tap',
+    ],
+    commonMistakes: [
+      'Letting the elbow straighten, which turns the lock into a wrestling match for the arm',
+      'Leaving space between your chest and their shoulder, so they can turn belly down and free the arm',
+      'Cranking fast: shoulders give little warning, so take it to the first resistance and wait for the tap',
+    ],
+    drill:
+      '10 reps each side at walking pace: wrap the far arm, walk to north-south, lock the figure-four, lift the elbow, and stop at the first resistance.',
+  },
+  {
+    id: 'side-control-to-back',
+    name: 'Gift wrap from side control to the back',
+    type: 'transition',
+    fromId: 'side-control',
+    toId: 'back-control',
+    role: 'top',
+    endRole: 'top',
+    steps: [
+      'From side control, when their near arm comes across to push your face or neck, push that elbow across their own throat with your chest',
+      'Reach under their head with your crossface arm and take their wrist: their own arm is now wrapped around their neck, the gift wrap',
+      'Drive your chest forward so they have to turn onto their side, facing away from you',
+      'Slide your knee up tight behind their shoulders and step your other foot over in front of their hips',
+      'Keeping the wrist, sit back and pull them into your lap, and put your first heel inside their thigh',
+      'Thread the second hook, then swap the wrist grip for a seatbelt: one arm over the shoulder, one under the armpit',
+    ],
+    commonMistakes: [
+      'Letting go of the wrist too early, which lets them turn back flat and recover their frames',
+      'Leaving space behind their back as they turn, so they keep turning to their knees and escape',
+      'Crossing your feet in front of them instead of hooking inside the thighs',
+    ],
+    drill:
+      '5 reps each side: partner gives the near arm, wrap it, turn them, knee behind the back, and take both hooks with the seatbelt. Pause 3 seconds in back control.',
+  },
   // Mount
   {
     id: 'upa-escape',
@@ -1547,6 +1741,52 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     drill:
       'Your partner turns onto their side under your mount. Clear the top elbow across, slide your knee behind their head, lock the seatbelt, sit to the bottom-hook side, and insert the second hook. 10 reps per side.',
   },
+  {
+    id: 'americana-mount',
+    name: 'Americana from mount',
+    type: 'submission',
+    fromId: 'mount',
+    toId: '',
+    role: 'top',
+    steps: [
+      'From a low, settled mount, wait for an arm to come up to push or frame, and pin its wrist to the mat beside their head with both of your hands, elbow bent at 90 degrees',
+      'Hold the wrist down with the hand on the same side as their head, and drop that elbow to the mat tight against their ear',
+      'Slide your other hand under their upper arm, just above the elbow, and grip your own wrist with all five fingers on top',
+      'Lower your head and chest over the grip so your weight, not your arms, keeps the wrist on the mat',
+      'Drag their elbow down toward their hip to take out the slack',
+      'Keeping their knuckles on the mat, slowly lift the elbow until they tap',
+    ],
+    commonMistakes: [
+      'Sitting up tall to reach for the arm, which lets them bridge you off',
+      'Letting the wrist come off the mat as you lift, so the arm straightens and slips out',
+      'Lifting the elbow while it is still high beside the shoulder, where the shoulder has room to turn',
+    ],
+    drill:
+      '10 slow reps each side from mount: two-handed pin, elbow by the ear, figure-four, drag the elbow down, then lift two inches and stop.',
+  },
+  {
+    id: 'ezekiel-mount',
+    name: 'Ezekiel choke from mount',
+    type: 'submission',
+    fromId: 'mount',
+    toId: '',
+    role: 'top',
+    steps: [
+      'From a low mount, slide one arm under their head as a crossface and keep your chest heavy and your knees wide',
+      'With that hand, grip inside your own opposite sleeve: four fingers inside the cuff',
+      'Bring the free hand, now tied to the first by the sleeve, across the front of their throat with the blade of the hand or the fist against the far side of the neck',
+      'Put your forehead on the mat beside their head so they cannot bridge you over',
+      'Straighten the choking arm across their neck while the arm behind the head pulls the sleeve tight, closing a scissor around the neck',
+      'Hold steady until the tap and release at once',
+    ],
+    commonMistakes: [
+      'Raising your hips or posture to make room for the hand, which gives them the bridge-and-roll escape',
+      'Pushing straight down on the windpipe instead of scissoring across the sides of the neck',
+      'A loose sleeve grip that lets the two arms come apart',
+    ],
+    drill:
+      '10 reps each side from low mount: crossface, sleeve grip, hand across, forehead down, and close slowly. Your partner tries one bridge on each rep to test your base.',
+  },
   // Back
   {
     id: 'rear-naked-choke',
@@ -1614,6 +1854,29 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     ],
     drill:
       'Your partner works at 30% strength from back control to slide an arm under your chin. Hand-fight with a two-on-one grip and chin tucked for 1-minute rounds, tapping immediately if the lock closes.',
+  },
+  {
+    id: 'sliding-collar-choke',
+    name: 'Sliding collar choke from the back',
+    type: 'submission',
+    fromId: 'back-control',
+    toId: '',
+    role: 'top',
+    steps: [
+      'From back control with a seatbelt, use the hand under their armpit to open their collar and feed it to the hand over their shoulder',
+      'Take that collar thumb inside, as high and as deep as you can, so your wrist sits against the side of their neck',
+      'With the hand under the armpit, grip their opposite lapel lower down and pull it toward their hip to take the slack out of the jacket',
+      'Lean back and slightly toward the side of the choking hand so their head rests on your chest',
+      'Pull the high collar across their throat and round toward your own shoulder while the low hand keeps pulling down',
+      'If they defend by turning in, hook their near knee or trouser leg with the low hand and stretch them like a bow to finish',
+    ],
+    commonMistakes: [
+      'A shallow collar grip, which pulls across the chin instead of the neck',
+      'Squeezing with both arms instead of pulling the two hands in opposite directions',
+      'Losing the hooks while concentrating on the grip, so they slide their back to the mat and escape',
+    ],
+    drill:
+      '10 reps each side from back control: open the collar, feed it, set the low lapel grip, lean, and tighten slowly until your partner taps early.',
   },
   // Turtle
   {
@@ -1684,6 +1947,30 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     ],
     drill:
       'Solo: 10 turtle sit-throughs and 10 tucked-knee shoulder rolls per side into open guard. Then 10 partner reps: partner pressures into your turtle from the side and you sit through or roll to put both feet on their hips.',
+  },
+  {
+    id: 'turtle-sit-out',
+    name: 'Sit-out from turtle',
+    type: 'escape',
+    fromId: 'turtle',
+    toId: 'turtle',
+    role: 'bottom',
+    endRole: 'top',
+    steps: [
+      'In turtle with their chest on your back, keep your elbows inside your knees and hold the wrist of the arm they have around your waist',
+      'Step the foot furthest from them flat onto the mat and post the hand on the same side',
+      'Kick your inside leg through underneath you, out in front, so you land sitting with your hip pointing away from them',
+      'Drive the back of your head and your shoulders back into their arm and chest so they cannot follow you',
+      'Turn in toward them over your posted hand, pulling their trapped wrist past your hip',
+      'Come up to your knees behind their hips and settle on top of their turtle',
+    ],
+    commonMistakes: [
+      'Sitting out while they still have a hook in or a seatbelt, which hands them your back',
+      'Stopping in the seated position instead of turning in at once',
+      'Letting go of their wrist, so the arm stays around your waist and follows you through',
+    ],
+    drill:
+      '10 reps each side: partner rides your turtle with one arm round the waist and no hooks. Step, sit through, head back, turn in, and finish behind them.',
   },
 ];
 
@@ -3081,6 +3368,135 @@ const videos: Omit<VideoBookmark, 'createdAt' | 'startSeconds'>[] = [
     linkedKind: 'transition',
     linkedId: 'turtle-recover-guard',
     note: 'Keeping elbows and knees connected in turtle and sitting through to recover guard when they pressure in.',
+  },
+  // Added with the white-to-blue-belt curriculum: three concepts and ten techniques
+  {
+    id: 'video-breakfalls',
+    title: 'How and why to breakfall (Knight Jiu-Jitsu)',
+    youtubeId: 'aauMRslfCyo',
+    linkedKind: 'concept',
+    linkedId: 'breakfalls',
+    note: 'The common breakfalls and why they keep you from getting hurt when you are taken down.',
+  },
+  {
+    id: 'video-breakfalls-chess-club',
+    title: 'How to breakfall: beginners tutorial (Chess Club Jiu-Jitsu)',
+    youtubeId: 'Qcgv8lLBxPk',
+    linkedKind: 'concept',
+    linkedId: 'breakfalls',
+    note: 'A step-by-step beginner breakfall lesson, starting from posture.',
+  },
+  {
+    id: 'video-crossface',
+    title: 'How to actually use your crossface (Brian Glick)',
+    youtubeId: 'Q0OLZ_XM64s',
+    linkedKind: 'concept',
+    linkedId: 'crossface',
+    note: 'Pairing the crossface with the underhook to flatten someone and take away their bridge and turn.',
+  },
+  {
+    id: 'video-crossface-rvv',
+    title: 'How to maximise your crossface pressure (RVV BJJ)',
+    youtubeId: 'IugFZC3fjDg',
+    linkedKind: 'concept',
+    linkedId: 'crossface',
+    note: 'Using posture, structure and base, not arm strength, to make the crossface heavy.',
+  },
+  {
+    id: 'video-wedges',
+    title: 'What a wedge is in BJJ (Stephan Kesting with Rob Biernacki)',
+    youtubeId: 'Drf9dSP9okA',
+    linkedKind: 'concept',
+    linkedId: 'wedges',
+    note: 'What a wedge is and how it shows up in armlocks, chokes, leglocks and pin escapes.',
+  },
+  {
+    id: 'video-wedges-levers',
+    title: 'The three types of levers in BJJ (Stephan Kesting with Rob Biernacki)',
+    youtubeId: '6gOPy2-fPJs',
+    linkedKind: 'concept',
+    linkedId: 'wedges',
+    note: 'The other half of the idea: the three kinds of lever and where each is used.',
+  },
+  {
+    id: 'video-cross-collar-guard',
+    title: 'Cross collar choke from closed guard: beginners tutorial (Chess Club Jiu-Jitsu)',
+    youtubeId: '1rV1AZeJdxQ',
+    linkedKind: 'transition',
+    linkedId: 'cross-collar-guard',
+    note: 'A beginner walkthrough of the cross collar choke from closed guard.',
+  },
+  {
+    id: 'video-omoplata-guard',
+    title: 'Omoplata from closed guard: beginners tutorial (Chess Club Jiu-Jitsu)',
+    youtubeId: 'gRbdGeb6-sE',
+    linkedKind: 'transition',
+    linkedId: 'omoplata-guard',
+    note: 'The omoplata from closed guard, step by step.',
+  },
+  {
+    id: 'video-knee-shield-sweep',
+    title: 'Four knee shield sweeps (The Grapple Lab)',
+    youtubeId: '6aRVT30n_wU',
+    linkedKind: 'transition',
+    linkedId: 'knee-shield-sweep',
+    note: 'Four sweeps from the knee shield; the first is the basic scissor sweep described here.',
+  },
+  {
+    id: 'video-half-guard-to-mount',
+    title: 'Pass half guard straight to mount (Henry Akins)',
+    youtubeId: 'MCatAHEgRzg',
+    linkedKind: 'transition',
+    linkedId: 'half-guard-to-mount',
+    note: 'Henry Akins passing half guard directly to mount.',
+  },
+  {
+    id: 'video-kimura-side-control',
+    title: 'North-south kimura: beginners tutorial (Chess Club Jiu-Jitsu)',
+    youtubeId: 'nPie9yUU4LM',
+    linkedKind: 'transition',
+    linkedId: 'kimura-side-control',
+    note: 'A beginner tutorial on the kimura finished from north-south.',
+  },
+  {
+    id: 'video-side-control-to-back',
+    title: 'Gift wrap back take from side control (James Clingerman)',
+    youtubeId: '342d7kn_DdE',
+    linkedKind: 'transition',
+    linkedId: 'side-control-to-back',
+    note: 'Taking the back from side control with the gift wrap; part of a longer gift wrap series.',
+  },
+  {
+    id: 'video-americana-mount',
+    title: 'Americana from mount: beginners tutorial (Chess Club Jiu-Jitsu)',
+    youtubeId: 'A8YWndNtnsU',
+    linkedKind: 'transition',
+    linkedId: 'americana-mount',
+    note: 'The fundamentals of the americana from mount.',
+  },
+  {
+    id: 'video-ezekiel-mount',
+    title: 'Ezekiel choke from mount (Gracie Ohio Jiu-Jitsu Academy)',
+    youtubeId: 'KVnengZD1XA',
+    linkedKind: 'transition',
+    linkedId: 'ezekiel-mount',
+    note: 'A gi Ezekiel choke set up from mount.',
+  },
+  {
+    id: 'video-sliding-collar-choke',
+    title: 'Sliding collar choke from the back (Bellingham BJJ)',
+    youtubeId: '0_OdEmjzKyo',
+    linkedKind: 'transition',
+    linkedId: 'sliding-collar-choke',
+    note: 'An introductory look at the sliding collar choke from back control.',
+  },
+  {
+    id: 'video-turtle-sit-out',
+    title: 'Sit-out escape from turtle (Combatbasene)',
+    youtubeId: 'y5nAO-yYnQU',
+    linkedKind: 'transition',
+    linkedId: 'turtle-sit-out',
+    note: 'A short demonstration of the sit-out from the bottom of turtle.',
   },
 ];
 
