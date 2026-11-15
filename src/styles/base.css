@@ -217,6 +217,12 @@ button.small,
   padding: 0.25rem 0.6rem;
   font-size: var(--text-sm);
 }
+button.large,
+.button.large {
+  padding: 0.7rem 1.4rem;
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
 button.link {
   background: none;
   border: 0;
@@ -421,9 +427,61 @@ legend {
   background: var(--state-learned);
   border-color: var(--state-learned);
 }
-.pager {
+/* A card's progress in words, for the one item a page is about. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+.status-learning {
+  color: var(--state-learning);
+}
+.status-learned {
+  color: var(--state-learned);
+}
+.progress-legend {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+.progress-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+.pager-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+.pager-link:hover {
+  border-color: var(--accent);
+}
+.pager-next {
+  grid-column: 2;
+  text-align: right;
 }
 
 /* Videos */

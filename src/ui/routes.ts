@@ -1,5 +1,5 @@
 import { assertNever } from '../core/assertNever';
-import type { ItemKind } from '../core/models';
+import type { Deck, ItemKind } from '../core/models';
 
 /** Every path in the app is built here, so a route can be renamed in one place. */
 export const ROUTES = {
@@ -24,6 +24,14 @@ export const ROUTE_PATTERNS = {
 
 /** Query parameter on the new-technique page naming the position it should start from. */
 export const FROM_POSITION_PARAM = 'from';
+
+/** Query parameter on the review page naming the deck to open with. */
+export const DECK_PARAM = 'deck';
+
+/** The review page, opened on one deck. */
+export function reviewPath(deck: Deck): string {
+  return `${ROUTES.review}?${DECK_PARAM}=${deck}`;
+}
 
 /** The detail page for one item. */
 export function itemPath(kind: ItemKind, id: string): string {

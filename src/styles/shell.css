@@ -77,6 +77,10 @@
   color: var(--accent);
   background: var(--accent-soft);
 }
+/* The brand is the home link on wide screens; the tab bar below swaps this in for Backup. */
+.nav .nav-home {
+  display: none;
+}
 .badge {
   background: var(--belt);
   color: var(--on-belt);
@@ -120,6 +124,7 @@
     flex-wrap: nowrap;
     justify-content: space-around;
     gap: 0;
+    height: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
     padding: var(--space-1) var(--space-1) calc(var(--space-1) + env(safe-area-inset-bottom));
     background: var(--surface);
     border-top: 1px solid var(--border);
@@ -127,6 +132,7 @@
   .nav a {
     flex: 1 1 0;
     flex-direction: column;
+    justify-content: center;
     gap: 0.1rem;
     padding: var(--space-1) 0;
     font-size: 0.7rem;
@@ -140,8 +146,15 @@
     top: 0;
     left: calc(50% + 0.4rem);
   }
+  /* Six tabs is the most that fit: Home takes Backup's place, and the footer links to Backup on every page. */
+  .nav .nav-home {
+    display: flex;
+  }
+  .nav .nav-backup {
+    display: none;
+  }
   /* Keep the footer clear of the fixed tab bar. */
   .footer {
-    padding-bottom: calc(var(--space-4) + 4rem + env(safe-area-inset-bottom));
+    padding-bottom: calc(var(--space-4) + var(--tabbar-height) + env(safe-area-inset-bottom));
   }
 }

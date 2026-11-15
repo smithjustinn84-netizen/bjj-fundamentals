@@ -178,10 +178,13 @@ export default function Home() {
             </span>
           </p>
         </div>
-        <div className="stat-tiles">
-          <StatTile icon="review" value={stats.dueCount} label="due now" />
-          <StatTile icon="flame" value={stats.streakDays} label="day streak" />
-        </div>
+        {/* Before the first review both numbers are zero, which tells a newcomer nothing. */}
+        {progress.started > 0 && (
+          <div className="stat-tiles">
+            <StatTile icon="review" value={stats.dueCount} label="due now" />
+            <StatTile icon="flame" value={stats.streakDays} label="day streak" />
+          </div>
+        )}
       </section>
 
       <section className="card">

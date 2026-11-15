@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { items, useLibrary, useMissingStarterConcepts } from '../../bindings';
 import { reviewOf } from '../../core/library';
-import { Loading, ProgressDot } from '../components/common';
+import { Loading, ProgressDot, ProgressLegend } from '../components/common';
 import { StarterOffer } from '../components/StarterOffer';
 import { ConceptArtwork } from '../graphics/ConceptSvg';
-import { itemPath, newItemPath } from '../routes';
+import { itemPath, newItemPath, reviewPath } from '../routes';
 
 export default function Concepts() {
   const lib = useLibrary();
@@ -17,9 +17,16 @@ export default function Concepts() {
           <h1>Concepts</h1>
           <p className="muted">The big ideas that make every technique work. Learn these first.</p>
         </div>
-        <Link className="button" to={newItemPath('concept')}>
-          + New concept
-        </Link>
+        <div className="row">
+          {lib.concepts.length > 0 && (
+            <Link className="button primary" to={reviewPath('concept')}>
+              Study concepts
+            </Link>
+          )}
+          <Link className="button" to={newItemPath('concept')}>
+            + New concept
+          </Link>
+        </div>
       </div>
       <StarterOffer
         noun="concept"
@@ -27,6 +34,7 @@ export default function Concepts() {
         onAdd={items.addMissingStarterConcepts}
         onDismiss={items.dismissMissingStarterConcepts}
       />
+      {lib.concepts.length > 0 && <ProgressLegend />}
       <ol className="tile-list">
         {lib.concepts.map((c, i) => (
           <li key={c.id}>

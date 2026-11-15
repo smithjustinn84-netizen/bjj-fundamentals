@@ -1,11 +1,10 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useLibrary } from '../../bindings';
 import { isOnBlueBeltTest } from '../../core/beltTest';
 import { TRANSITION_LABELS } from '../../core/labels';
-import { reviewOf } from '../../core/library';
+import { connections, reviewOf } from '../../core/library';
 import { endsTheRoll } from '../../core/models';
-import { Bullets, Loading, Missing, NotesBlock, ProgressDot, Section } from '../components/common';
-import { confirmDelete } from '../components/confirmDelete';
+import { Bullets, Loading, Missing, NotesBlock, Pager, Section, StudyStatusPill } from '../components/common';
 import { ItemPicture } from '../components/ItemPicture';
 import { LinkedVideos } from '../components/VideoList';
 import { TransitionArtwork } from '../graphics/Artwork';
@@ -13,7 +12,6 @@ import { editPath, itemPath, ROUTES } from '../routes';
 
 export default function TransitionDetail() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
   const lib = useLibrary();
   if (!lib) return <Loading />;
   const transition = lib.transitionById.get(id);
@@ -22,10 +20,11 @@ export default function TransitionDetail() {
   const from = lib.positionById.get(transition.fromId);
   const to = lib.positionById.get(transition.toId);
   const backPath = from ? itemPath('position', from.id) : ROUTES.positions;
-
-  const remove = async () => {
-    if (await confirmDelete(lib, 'transition', transition.id)) navigate(backPath);
-  };
+  // Paging stays among the techniques that start where this one does, the way the position page lists them.
+  const siblings = from ? connections(lib, from.id).outgoing : [];
+  const index = siblings.findIndex((t) => t.id === transition.id);
+  const previous = siblings[index - 1];
+  const next = siblings[index + 1];
 
   return (
     <article className="stack">
@@ -43,7 +42,7 @@ export default function TransitionDetail() {
                 </Link>{' '}
               </>
             )}
-            <ProgressDot state={reviewOf(lib, 'transition', transition.id)} />
+            <StudyStatusPill state={reviewOf(lib, 'transition', transition.id)} />
           </p>
           <h1>{transition.name}</h1>
           <p className="route">
@@ -58,14 +57,9 @@ export default function TransitionDetail() {
             )}
           </p>
         </div>
-        <div className="row">
-          <Link className="button" to={editPath('transition', transition.id)}>
-            Edit
-          </Link>
-          <button type="button" className="danger" onClick={remove}>
-            Delete
-          </button>
-        </div>
+        <Link className="button small" to={editPath('transition', transition.id)}>
+          Edit
+        </Link>
       </div>
       <div className="card">
         <ItemPicture kind="transition" id={transition.id}>
@@ -85,6 +79,10 @@ export default function TransitionDetail() {
         <NotesBlock notes={transition.notes} />
         <LinkedVideos kind="transition" id={transition.id} />
       </div>
+      <Pager
+        previous={previous && { to: itemPath('transition', previous.id), label: previous.name }}
+        next={next && { to: itemPath('transition', next.id), label: next.name }}
+      />
     </article>
   );
 }

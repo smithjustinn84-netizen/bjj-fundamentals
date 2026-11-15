@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useLibrary, useStudyStats } from '../../bindings';
 import { GRADE_LABELS, KIND_GROUP_LABELS, plural } from '../../core/labels';
-import { reviewOf } from '../../core/library';
+import { type Library, reviewOf } from '../../core/library';
 import { DECKS, type Deck, GRADES, type Grade } from '../../core/models';
 import { describeInterval, newReviewState } from '../../core/srs';
 import { buildQueue } from '../../core/study';
@@ -12,12 +12,13 @@ import { EmptyState } from '../graphics/EmptyState';
 import { Icon } from '../graphics/icons';
 import { prefersReducedMotion } from '../graphics/motion';
 import { ProgressBar } from '../graphics/ProgressBar';
-import { itemPath, ROUTES } from '../routes';
+import { DECK_PARAM, itemPath, ROUTES } from '../routes';
 import { type GradeTally, useReviewSession } from './useReviewSession';
 
 const DECK_LABELS: Record<Deck, string> = { all: 'Everything', ...KIND_GROUP_LABELS };
 /** Keyboard shortcut for each grade: its place in the row, starting from 1. */
 const GRADE_BUTTONS = GRADES.map((grade, index) => ({ grade, label: GRADE_LABELS[grade], key: String(index + 1) }));
+const DECK_LABEL_ID = 'review-deck-label';
 const DEFAULT_NEW_CARDS = 5;
 const MAX_NEW_CARDS = 20;
 /** How long a graded card takes to slide away: `--dur-base`, which the `card-leave` animation in review.css uses. */
@@ -47,8 +48,11 @@ function GradeBreakdown({ tally }: { tally: GradeTally }) {
   );
 }
 
-function SessionComplete({ doneCount, tally, onAgain }: { doneCount: number; tally: GradeTally; onAgain: () => void }) {
+function SessionComplete(props: { lib: Library; doneCount: number; tally: GradeTally; onAgain: () => void }) {
+  const { lib, doneCount, tally, onAgain } = props;
   const stats = useStudyStats();
+  // Offer another round only when one exists; otherwise the next step is to leave.
+  const moreWaiting = buildQueue(lib, 'all', DEFAULT_NEW_CARDS, Date.now()).queue.length;
   return (
     <div className="stack narrow-page">
       <div className="card center session-complete">
@@ -64,16 +68,31 @@ function SessionComplete({ doneCount, tally, onAgain }: { doneCount: number; tal
             <Icon name="flame" /> {plural(stats.streakDays, 'day')} in a row
           </p>
         )}
+        <p className="muted">
+          {moreWaiting > 0
+            ? `${plural(moreWaiting, 'more card')} ready if you want another round.`
+            : 'Nothing else is due. Come back tomorrow.'}
+        </p>
         <div className="row center">
-          <button type="button" className="primary" onClick={onAgain}>
-            Back to review
-          </button>
-          <Link className="button" to={ROUTES.positions}>
-            Position map
-          </Link>
-          <Link className="button" to={ROUTES.home}>
-            Home
-          </Link>
+          {moreWaiting > 0 ? (
+            <>
+              <button type="button" className="primary" onClick={onAgain}>
+                Keep going
+              </button>
+              <Link className="button" to={ROUTES.home}>
+                Done for now
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link className="button primary" to={ROUTES.home}>
+                Done
+              </Link>
+              <Link className="button" to={ROUTES.positions}>
+                Position map
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -83,7 +102,9 @@ function SessionComplete({ doneCount, tally, onAgain }: { doneCount: number; tal
 export default function Review() {
   const lib = useLibrary();
   const session = useReviewSession(lib);
-  const [deck, setDeck] = useState<Deck>('all');
+  const [params] = useSearchParams();
+  // A list page can open the review on its own deck; anything unrecognised falls back to everything.
+  const [deck, setDeck] = useState<Deck>(() => DECKS.find((d) => d === params.get(DECK_PARAM)) ?? 'all');
   const [newLimit, setNewLimit] = useState(DEFAULT_NEW_CARDS);
   /** The grade just given, while its card slides away. */
   const [leaving, setLeaving] = useState<Grade | null>(null);
@@ -124,37 +145,11 @@ export default function Review() {
 
   if (status === 'idle') {
     const preview = buildQueue(lib, deck, newLimit, Date.now());
+    const newCount = Math.min(newLimit, preview.fresh.length);
     return (
       <div className="stack narrow-page">
         <h1>Review</h1>
         <div className="card stack">
-          <p className="muted">
-            Read the question, answer it in your head (or out loud), then reveal and rate how well you knew it. Cards
-            you know well come back less often.
-          </p>
-          <label>
-            What to study
-            {/* The cast is safe: every option's value comes from DECKS. */}
-            <select value={deck} onChange={(e) => setDeck(e.target.value as Deck)}>
-              {DECKS.map((d) => (
-                <option key={d} value={d}>
-                  {DECK_LABELS[d]}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            <span>
-              New cards this session: <strong>{newLimit}</strong>
-            </span>
-            <input
-              type="range"
-              min={0}
-              max={MAX_NEW_CARDS}
-              value={newLimit}
-              onChange={(e) => setNewLimit(Number(e.target.value))}
-            />
-          </label>
           {preview.queue.length === 0 ? (
             <EmptyState icon="check" title="Nothing to review right now">
               {preview.fresh.length > 0
@@ -162,26 +157,55 @@ export default function Review() {
                 : 'No cards are due in this deck. Come back later, or pick another deck.'}
             </EmptyState>
           ) : (
-            <>
-              <p>
-                <strong>{preview.due.length}</strong> due · <strong>{Math.min(newLimit, preview.fresh.length)}</strong>{' '}
-                new
-                {preview.fresh.length > newLimit && (
-                  <span className="muted"> ({preview.fresh.length} not started)</span>
-                )}
-              </p>
-              <button type="button" className="primary" onClick={() => session.start(preview.queue)}>
-                Start ({plural(preview.queue.length, 'card')})
+            <div className="session-ready">
+              <div>
+                <p className="session-count">{plural(preview.queue.length, 'card')} ready</p>
+                <p className="muted">
+                  {preview.due.length} due · {newCount} new
+                  {preview.fresh.length > newCount && ` · ${preview.fresh.length - newCount} more not started`}
+                </p>
+              </div>
+              <button type="button" className="primary large" onClick={() => session.start(preview.queue)}>
+                Start session
+                <Icon name="arrow" />
               </button>
-            </>
+            </div>
           )}
+          <div className="session-options stack">
+            <div className="option">
+              <span id={DECK_LABEL_ID}>What to study</span>
+              <fieldset className="segmented" aria-labelledby={DECK_LABEL_ID}>
+                {DECKS.map((d) => (
+                  <button key={d} type="button" aria-pressed={deck === d} onClick={() => setDeck(d)}>
+                    {DECK_LABELS[d]}
+                  </button>
+                ))}
+              </fieldset>
+            </div>
+            <label>
+              <span>
+                New cards this session: <strong>{newLimit}</strong>
+              </span>
+              <input
+                type="range"
+                min={0}
+                max={MAX_NEW_CARDS}
+                value={newLimit}
+                onChange={(e) => setNewLimit(Number(e.target.value))}
+              />
+            </label>
+          </div>
         </div>
+        <p className="muted small">
+          Read the question, answer it in your head (or out loud), then reveal and rate how well you knew it. Cards you
+          know well come back less often.
+        </p>
       </div>
     );
   }
 
   if (status === 'finished') {
-    return <SessionComplete doneCount={session.doneCount} tally={session.tally} onAgain={session.end} />;
+    return <SessionComplete lib={lib} doneCount={session.doneCount} tally={session.tally} onAgain={session.end} />;
   }
 
   const { current } = session;

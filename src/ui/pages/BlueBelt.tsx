@@ -3,12 +3,12 @@ import { items, useLibrary, useMissingStarterTechniques } from '../../bindings';
 import { blueBeltTestList } from '../../core/beltTest';
 import { TRANSITION_GROUP_LABELS } from '../../core/labels';
 import { reviewOf } from '../../core/library';
-import { Loading, ProgressDot } from '../components/common';
+import { Loading, ProgressDot, ProgressLegend } from '../components/common';
 import { StarterOffer } from '../components/StarterOffer';
 import { Belt } from '../graphics/Belt';
 import { EmptyState } from '../graphics/EmptyState';
 import { ProgressBar } from '../graphics/ProgressBar';
-import { itemPath, newItemPath, ROUTES } from '../routes';
+import { itemPath, newItemPath, ROUTES, reviewPath } from '../routes';
 
 export default function BlueBelt() {
   const lib = useLibrary();
@@ -63,7 +63,11 @@ export default function BlueBelt() {
               </p>
               <ProgressBar value={list.learned} max={list.total} label="Blue belt techniques learned" />
             </div>
+            <Link className="button primary" to={reviewPath('transition')}>
+              Study techniques
+            </Link>
           </div>
+          <ProgressLegend />
           {list.groups.map((group) => (
             <section key={group.type}>
               <h2 className="group-title">

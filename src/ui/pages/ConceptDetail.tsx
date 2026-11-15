@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { useLibrary } from '../../bindings';
 import { reviewOf } from '../../core/library';
-import { Bullets, Loading, Missing, NotesBlock, ProgressDot, Section } from '../components/common';
+import { Bullets, Loading, Missing, NotesBlock, Pager, Section, StudyStatusPill } from '../components/common';
 import { ItemPicture } from '../components/ItemPicture';
 import { LinkedVideos } from '../components/VideoList';
 import { ConceptArtwork } from '../graphics/ConceptSvg';
@@ -27,12 +27,12 @@ export default function ConceptDetail() {
       <div className="page-head">
         <div>
           <p className="eyebrow">
-            Concept <ProgressDot state={reviewOf(lib, 'concept', concept.id)} />
+            Concept <StudyStatusPill state={reviewOf(lib, 'concept', concept.id)} />
           </p>
           <h1>{concept.name}</h1>
           <p className="lead">{concept.summary}</p>
         </div>
-        <Link className="button" to={editPath('concept', concept.id)}>
+        <Link className="button small" to={editPath('concept', concept.id)}>
           Edit
         </Link>
       </div>
@@ -64,14 +64,14 @@ export default function ConceptDetail() {
         <NotesBlock notes={concept.notes} />
         <LinkedVideos kind="concept" id={concept.id} />
       </div>
-      <nav className="pager">
-        {previous ? <Link to={itemPath('concept', previous.id)}>← {previous.name}</Link> : <span />}
-        {next ? (
-          <Link to={itemPath('concept', next.id)}>{next.name} →</Link>
-        ) : (
-          <Link to={ROUTES.positions}>On to positions →</Link>
-        )}
-      </nav>
+      <Pager
+        previous={previous && { to: itemPath('concept', previous.id), label: previous.name }}
+        next={
+          next
+            ? { to: itemPath('concept', next.id), label: next.name }
+            : { to: ROUTES.positions, label: 'On to the position map' }
+        }
+      />
     </article>
   );
 }

@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import { NavLink, Route, Routes, useLocation } from 'react-router-dom';
+import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { useDueCount } from './bindings';
 import { ErrorBoundary } from './ui/components/ErrorBoundary';
 import { BrandMark } from './ui/graphics/BrandMark';
@@ -54,11 +54,20 @@ export default function App() {
           BJJ Fundamentals
         </NavLink>
         <nav className="nav" aria-label="Main">
+          {/* On wide screens the brand is the way home; on phones the tab bar needs its own. */}
+          <NavLink to={ROUTES.home} className="nav-home" end>
+            <Icon name="home" />
+            Home
+          </NavLink>
           <NavLink to={ROUTES.concepts}>
             <Icon name="concepts" />
             Concepts
           </NavLink>
-          <NavLink to={ROUTES.positions}>
+          {/* Techniques are reached from positions, so their pages keep this tab lit. */}
+          <NavLink
+            to={ROUTES.positions}
+            className={({ isActive }) => (isActive || pathname.startsWith(ROUTES.transitions) ? 'active' : '')}
+          >
             <Icon name="map" />
             Positions
           </NavLink>
@@ -73,7 +82,7 @@ export default function App() {
             <Icon name="video" />
             Videos
           </NavLink>
-          <NavLink to={ROUTES.backup}>
+          <NavLink to={ROUTES.backup} className="nav-backup">
             <Icon name="backup" />
             Backup
           </NavLink>
@@ -99,7 +108,7 @@ export default function App() {
         </ErrorBoundary>
       </main>
       <footer className="footer">
-        Everything is stored on this device only. Export a backup from the Backup page.
+        Everything is stored on this device only. <Link to={ROUTES.backup}>Export a backup</Link> now and then.
       </footer>
     </div>
   );

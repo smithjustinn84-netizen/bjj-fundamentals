@@ -5,6 +5,41 @@
   align-items: center;
 }
 
+/* Before a session: what is waiting and the button to begin, then the settings that change it. */
+.session-ready {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+}
+.session-ready p {
+  margin: 0;
+}
+.session-count {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.session-options {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+.option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+/* Four across where they fit, two by two on a phone; never a ragged wrap. */
+.option .segmented {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  width: 100%;
+}
+
 /* Each grade has one colour, used by its button, the leaving card's tint and the session breakdown. */
 .grade-again {
   --grade-color: var(--grade-again);
@@ -176,7 +211,28 @@
 }
 
 @media (max-width: 600px) {
+  .session-ready .primary {
+    width: 100%;
+  }
+  /*
+   * A long answer would push the grades below the fold, so on phones they stay pinned just above
+   * the tab bar. The page-coloured band keeps the card's text from showing through between them.
+   */
   .grades {
-    grid-template-columns: repeat(2, 1fr);
+    position: sticky;
+    bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+    z-index: 5;
+    margin-inline: calc(-1 * var(--space-2));
+    padding: var(--space-2);
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+  .grade {
+    padding: 0.45rem 0.25rem;
+  }
+  /* No keyboard on a phone, so the shortcut hints only take room. */
+  .grade kbd,
+  .reveal kbd {
+    display: none;
   }
 }

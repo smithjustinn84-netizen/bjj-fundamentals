@@ -1,9 +1,8 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useLibrary } from '../../bindings';
 import { CATEGORY_LABELS, ROLE_LABELS } from '../../core/labels';
 import { connections, reviewOf } from '../../core/library';
-import { Bullets, Loading, Missing, NotesBlock, ProgressDot, Section } from '../components/common';
-import { confirmDelete } from '../components/confirmDelete';
+import { Bullets, Loading, Missing, NotesBlock, Pager, Section, StudyStatusPill } from '../components/common';
 import { NO_TECHNIQUES_FROM_HERE, TransitionList } from '../components/TransitionLink';
 import { LinkedVideos } from '../components/VideoList';
 import { PositionArtwork } from '../graphics/PositionSvg';
@@ -11,7 +10,6 @@ import { editPath, itemPath, newItemPath, ROUTES } from '../routes';
 
 export default function PositionDetail() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
   const lib = useLibrary();
   if (!lib) return <Loading />;
   const position = lib.positionById.get(id);
@@ -20,10 +18,9 @@ export default function PositionDetail() {
   const [top, bottom] = ROLE_LABELS[position.category];
   const { outgoing, incoming } = connections(lib, position.id);
   const concepts = position.conceptIds.map((c) => lib.conceptById.get(c)).filter((c) => c !== undefined);
-
-  const remove = async () => {
-    if (await confirmDelete(lib, 'position', position.id)) navigate(ROUTES.positions);
-  };
+  const index = lib.positions.findIndex((p) => p.id === position.id);
+  const previous = lib.positions[index - 1];
+  const next = lib.positions[index + 1];
 
   return (
     <article className="stack">
@@ -33,19 +30,14 @@ export default function PositionDetail() {
       <div className="page-head">
         <div>
           <p className="eyebrow">
-            {CATEGORY_LABELS[position.category]} <ProgressDot state={reviewOf(lib, 'position', position.id)} />
+            {CATEGORY_LABELS[position.category]} <StudyStatusPill state={reviewOf(lib, 'position', position.id)} />
           </p>
           <h1>{position.name}</h1>
           <p className="lead">{position.summary}</p>
         </div>
-        <div className="row">
-          <Link className="button" to={editPath('position', position.id)}>
-            Edit
-          </Link>
-          <button type="button" className="danger" onClick={remove}>
-            Delete
-          </button>
-        </div>
+        <Link className="button small" to={editPath('position', position.id)}>
+          Edit
+        </Link>
       </div>
       <div className="card">
         <PositionArtwork id={position.id} name={position.name} />
@@ -92,6 +84,10 @@ export default function PositionDetail() {
         <NotesBlock notes={position.notes} />
         <LinkedVideos kind="position" id={position.id} />
       </div>
+      <Pager
+        previous={previous && { to: itemPath('position', previous.id), label: previous.name }}
+        next={next && { to: itemPath('position', next.id), label: next.name }}
+      />
     </article>
   );
 }
