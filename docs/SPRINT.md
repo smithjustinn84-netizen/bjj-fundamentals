@@ -14,7 +14,11 @@ Small, independent fixes. Each can ship alone. The first five were done on 2026-
 - [x] **"Keep going" does not keep going.** It returns to the options screen instead of starting another round (`Review.tsx`).
 - [x] **The safety concept is linked to no position.** "Tap early, tap often" is the only concept no position lists. Link it where submissions happen (closed guard, mount, back control, side control).
 - [x] **Tighten the tripod sweep step.** Done 2026-11-15 from written instructions (the video was not watched): the hip foot goes on the same side as the gripped ankle, the other foot hooks the far leg, and the push goes back, not up. The step is loose about which foot goes on the hip; confirm against how it is taught and fix the wording in `core/seed.ts`.
-- [ ] **Skim the new starter videos.** 19 were added on 2026-11-14 and 15 (17 techniques, 2 concepts). Their ids were checked as real and embeddable, but matched by title only. Swap any that teach a different variation from the written steps.
+- [x] **Skim the new starter videos.** Done 2026-11-15 by reading each video's YouTube transcript (auto-captions) against the written steps, with a few frames looked at; nobody watched them through.
+  - Match (11): pendulum, butterfly, tripod and half guard sweeps, armbar and rear naked choke defences, double-under pass, technical stand-up, side control escape to knees, single leg, and both concept videos. The etiquette video uses crude language.
+  - Swapped (2): the americana defence video showed a different escape (hips down and up to the knees), now Lachlan Giles turning toward the pinned arm; the turtle video ended in a back take, now a turnover to side control, and the written steps were rewritten to that breakdown (pull the far hip toward you).
+  - Kept with an honest note (3): the guillotine video ends inside the guard, not in the pass; the kimura and triangle videos show other late escapes than the written steps.
+  - Could not be checked (2): the sprawl video is a silent solo demonstration and the guard retention drill has no captions.
 
 ## 2. "What do I do here?" cards (M)
 
