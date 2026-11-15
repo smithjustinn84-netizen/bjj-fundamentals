@@ -24,7 +24,7 @@ import { isYouTubeId } from './youtube';
 
 export const BACKUP_APP = 'bjj-fundamentals';
 /** Bump when the shape of any table changes, and teach `validateBackup` to accept the older shape. */
-export const BACKUP_SCHEMA_VERSION = 5;
+export const BACKUP_SCHEMA_VERSION = 6;
 
 export interface BackupData {
   positions: Position[];
@@ -101,6 +101,8 @@ const SCHEMAS: { [T in BackupTable]: Schema<BackupData[T][number]> } = {
     role: optional(oneOf(POSITION_ROLES)),
     steps: textList,
     commonMistakes: textList,
+    // Absent before schema 6; `techniqueDrill` fills the gap on read.
+    drill: optional(text),
     // Absent in schema 1 backups, which predate the blue belt list.
     blueBeltTest: optional(bool),
     notes: text,

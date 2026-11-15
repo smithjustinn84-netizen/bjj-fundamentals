@@ -4,6 +4,7 @@ import type { Library } from '../../core/library';
 import type { Transition } from '../../core/models';
 import { positionOptions } from '../../core/roles';
 import type { StudyItem } from '../../core/study';
+import { techniqueDrill } from '../../core/techniqueDrill';
 import { TransitionArtwork } from '../graphics/Artwork';
 import { ConceptArtwork } from '../graphics/ConceptSvg';
 import { PositionArtwork } from '../graphics/PositionSvg';
@@ -101,6 +102,7 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
       const transition = lib.transitionById.get(item.id);
       if (!transition) return null;
       const to = transition.toId ? lib.positionById.get(transition.toId)?.name : null;
+      const drill = techniqueDrill(transition);
       return (
         <>
           <ItemPicture kind="transition" id={transition.id} className={ARTWORK_CLASS}>
@@ -117,6 +119,11 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
               <h3>Common mistakes</h3>
               <Bullets items={transition.commonMistakes} />
             </>
+          )}
+          {drill && (
+            <p className="drill">
+              <strong>Drill:</strong> {drill}
+            </p>
           )}
         </>
       );

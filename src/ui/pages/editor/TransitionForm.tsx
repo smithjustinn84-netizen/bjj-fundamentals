@@ -15,6 +15,7 @@ import {
 } from '../../../core/models';
 import { defaultRole, performerRole } from '../../../core/roles';
 import type { TransitionInput } from '../../../core/services/items';
+import { techniqueDrill } from '../../../core/techniqueDrill';
 import { FROM_POSITION_PARAM } from '../../routes';
 import {
   ChoiceField,
@@ -37,6 +38,7 @@ interface Draft {
   role: PositionRole | null;
   steps: string;
   commonMistakes: string;
+  drill: string;
   blueBeltTest: boolean;
   notes: string;
 }
@@ -50,6 +52,7 @@ function toDraft(library: Library, transition: Transition | undefined, defaultFr
     role: transition ? performerRole(library, transition) : null,
     steps: fromLines(transition?.steps ?? []),
     commonMistakes: fromLines(transition?.commonMistakes ?? []),
+    drill: transition ? techniqueDrill(transition) : '',
     blueBeltTest: transition ? isOnBlueBeltTest(transition) : false,
     notes: transition?.notes ?? '',
   };
@@ -72,6 +75,7 @@ function fromDraft(draft: Draft, role: PositionRole): TransitionInput {
     role,
     steps: toLines(draft.steps),
     commonMistakes: toLines(draft.commonMistakes),
+    drill: draft.drill.trim(),
     blueBeltTest: draft.blueBeltTest,
     notes: draft.notes.trim(),
   };
@@ -140,6 +144,9 @@ export function TransitionForm({ itemId, library, cancelTo, onSaved, onDelete }:
       </Field>
       <Field label="Common mistakes" hint="One per line.">
         <textarea rows={3} value={draft.commonMistakes} onChange={(e) => set('commonMistakes', e.target.value)} />
+      </Field>
+      <Field label="Drill" hint="A short solo or partner drill to practise it.">
+        <textarea rows={2} value={draft.drill} onChange={(e) => set('drill', e.target.value)} />
       </Field>
       <label className="check">
         <input type="checkbox" checked={draft.blueBeltTest} onChange={(e) => set('blueBeltTest', e.target.checked)} />

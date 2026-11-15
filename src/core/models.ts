@@ -59,6 +59,11 @@ export interface Transition {
   steps: string[];
   commonMistakes: string[];
   /**
+   * A short solo or partner drill for the technique. Read it through `techniqueDrill`: techniques stored
+   * before the field existed have none.
+   */
+  drill?: string;
+  /**
    * Whether the technique is on the blue belt test list. Rows saved before this field existed do not
    * have it, so read it through `isOnBlueBeltTest`, which supplies the default.
    */

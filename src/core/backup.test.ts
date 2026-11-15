@@ -25,6 +25,8 @@ describe('validateBackup', () => {
     expect(() => validateBackup(backupOf({ ...transition(), role: 'sideways' }))).toThrow(
       /"role" is missing or invalid/,
     );
+    expect(validateBackup(backupOf(transition({ drill: 'Ten reps' }))).data.transitions[0]?.drill).toBe('Ten reps');
+    expect(() => validateBackup(backupOf({ ...transition(), drill: 5 }))).toThrow(/"drill" is missing or invalid/);
   });
 
   it('accepts training log entries, treats a backup without the table as an empty log, and checks the day', () => {

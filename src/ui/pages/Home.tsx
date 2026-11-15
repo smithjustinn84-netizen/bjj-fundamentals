@@ -8,6 +8,7 @@ import { cardId } from '../../core/srs';
 import { progressSummary, STICKING_POINT_LIMIT, stickingPoints } from '../../core/study';
 import { formatClassCount, formatMatTime, trainingSummary } from '../../core/trainingLog';
 import { Loading, ProgressDot } from '../components/common';
+import { LibrarySearch } from '../components/LibrarySearch';
 import { ArtworkFrame, HERO_DOJO_ARTWORK } from '../graphics/Artwork';
 import { Belt } from '../graphics/Belt';
 import { Icon, type IconName } from '../graphics/icons';
@@ -196,6 +197,10 @@ export default function Home() {
             <StatTile icon="flame" value={stats.streakDays} label="day streak" />
           </div>
         )}
+      </section>
+
+      <section className="card">
+        <LibrarySearch lib={lib} />
       </section>
 
       <section className="card">

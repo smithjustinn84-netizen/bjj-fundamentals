@@ -39,6 +39,6 @@ Open question: should mat time feed the belt and streak display, or stay separat
 ## 4. Smaller content ideas (S each)
 
 - [ ] **More curriculum.** Still missing: knee-on-belly and north-south (new starter positions do not reach existing libraries, so decide how to offer them first), a single-leg takedown, a straight ankle lock with leg-lock safety, kimura and americana defences, attacks from turtle top other than taking the back.
-- [ ] **Drills on techniques.** Only concepts have a drill. A solo or partner drill per technique would give a white belt something to do between classes.
+- [x] **Drills on techniques.** Done 2026-11-15: `Transition.drill`, read through `techniqueDrill`, with a drill written for all 43 starter techniques (backup schema 6). Only concepts have a drill. A solo or partner drill per technique would give a white belt something to do between classes.
 - [ ] **Training etiquette and safety.** One or two concepts on rolling intensity, hygiene, and what to tell a partner about an injury.
-- [ ] **Search.** Only the Videos page has a search box; there is none for concepts, positions or techniques.
+- [x] **Search.** Done 2026-11-15: one box on Home finds concepts, positions and techniques by name or text (`core/search.ts`). Only the Videos page has a search box; there is none for concepts, positions or techniques.

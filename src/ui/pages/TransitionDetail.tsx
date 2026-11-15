@@ -5,6 +5,7 @@ import { roleLabel, TRANSITION_LABELS } from '../../core/labels';
 import { connections, reviewOf } from '../../core/library';
 import { endsTheRoll } from '../../core/models';
 import { performerRole } from '../../core/roles';
+import { techniqueDrill } from '../../core/techniqueDrill';
 import { Bullets, Loading, Missing, NotesBlock, Pager, Section, StudyStatusPill } from '../components/common';
 import { ItemPicture } from '../components/ItemPicture';
 import { LinkedVideos } from '../components/VideoList';
@@ -20,6 +21,7 @@ export default function TransitionDetail() {
 
   const from = lib.positionById.get(transition.fromId);
   const to = lib.positionById.get(transition.toId);
+  const drill = techniqueDrill(transition);
   const backPath = from ? itemPath('position', from.id) : ROUTES.positions;
   // Paging stays among the techniques that start where this one does, the way the position page lists them.
   const siblings = from ? connections(lib, from.id).outgoing : [];
@@ -77,6 +79,11 @@ export default function TransitionDetail() {
         {transition.commonMistakes.length > 0 && (
           <Section title="Common mistakes">
             <Bullets items={transition.commonMistakes} />
+          </Section>
+        )}
+        {drill && (
+          <Section title="Try this drill">
+            <p>{drill}</p>
           </Section>
         )}
         {endsTheRoll(transition.type) && (

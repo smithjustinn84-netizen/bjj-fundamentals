@@ -445,8 +445,11 @@ const positions: StarterRow<Position>[] = [
   },
 ];
 
-/** Every starter technique says who does it, so the default for stored rows without a role never has to guess. */
-const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
+/**
+ * Every starter technique says who does it and how to drill it, so the defaults for copies stored before
+ * those fields existed never have to guess.
+ */
+const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string })[] = [
   // Standing
   {
     id: 'pull-guard',
@@ -462,6 +465,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Wrap your legs around their waist and cross your ankles',
     ],
     commonMistakes: ['Jumping or falling without grips', 'Sitting down too far away to close your legs'],
+    drill:
+      'With a standing partner, take your grips, put a foot on their hip and sit to closed guard. 10 slow reps on each side while your partner stays upright.',
   },
   {
     id: 'double-leg',
@@ -481,6 +486,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Shooting from too far away',
       'Head in front of their chest',
     ],
+    drill:
+      'Solo: 10 penetration steps on each side down the mat, head up. Then 10 entries on a partner, stopping at the lift without finishing.',
   },
   {
     id: 'hip-throw',
@@ -501,6 +508,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Standing tall instead of getting under their hips',
       'Letting go of the arm as they fall',
     ],
+    drill:
+      '10 fit-ins on each side: step in, turn your hips across, load your partner onto your hips and set them back down without throwing.',
   },
   {
     id: 'wrist-grab-release',
@@ -520,6 +529,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Pulling straight back against their four fingers',
       'Using arm strength instead of stepping in and using the elbow',
     ],
+    drill:
+      'Your partner grabs your wrist at half strength. 10 releases with each hand, stepping in and levering with the elbow.',
   },
   {
     id: 'front-choke-defence',
@@ -536,6 +547,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Step back out of range with your hands up',
     ],
     commonMistakes: ['Trying to pry their fingers off your neck', 'Swinging the arm without turning the body'],
+    drill: 'Your partner rests both hands lightly on your collarbones. 10 reps on each side: chin down, arm up, turn.',
   },
   {
     id: 'bear-hug-escape',
@@ -552,6 +564,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Straighten your legs to lift and tip them backward off their feet',
     ],
     commonMistakes: ['Staying upright, which lets them lift you', 'Trying to peel their hands apart'],
+    drill:
+      'Your partner hugs you from behind at half strength. 10 reps of dropping into base and stepping your hip behind theirs, stopping before the lift.',
   },
   {
     id: 'standing-headlock-escape',
@@ -571,6 +585,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Bending over with straight legs, so they can drag you down',
       'Pulling your head straight out against the squeeze',
     ],
+    drill:
+      'Your partner holds a loose headlock. 10 reps of base, frame on the face and hook the knee, sitting them down gently.',
   },
   {
     id: 'sprawl',
@@ -591,6 +607,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Leaving one leg forward for them to grab',
       'Sprawling and stopping instead of circling behind',
     ],
+    drill:
+      'Solo: 3 rounds of 10 sprawls, hips to the mat and straight back up to your stance. Then your partner shoots slowly and you sprawl and circle behind.',
   },
   // Closed guard
   {
@@ -607,6 +625,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Step the other leg back to stretch their legs until the ankles open',
     ],
     commonMistakes: ['Leaning forward so they break your posture', 'Leaving an arm on the mat between their legs'],
+    drill:
+      "Inside your partner's closed guard: build posture, pin their hips, and open the guard. 5 reps while they hold on at about a third of their strength.",
   },
   {
     id: 'scissor-sweep',
@@ -624,6 +644,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Follow them over into mount',
     ],
     commonMistakes: ['Staying flat instead of getting on your side', 'Not pulling them forward first'],
+    drill: '10 reps on each side up to the moment they tip, then 5 on each side finishing in mount.',
   },
   {
     id: 'hip-bump-sweep',
@@ -639,6 +660,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Roll them over the trapped arm side and come up in mount',
     ],
     commonMistakes: ['Not trapping the arm, so they post and stop the sweep', 'Sitting up without lifting the hips'],
+    drill: 'Solo: 10 sit-up-and-post hip bumps on each side. Then 10 sweeps on a partner, finishing in mount.',
   },
   {
     id: 'armbar-guard',
@@ -658,6 +680,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Letting your knees open so they pull the arm out',
       'Applying it fast — go slowly in training',
     ],
+    drill:
+      '10 slow reps on each side, stopping when your legs are in place and your knees are squeezed. Do not lift your hips.',
   },
   {
     id: 'triangle-choke',
@@ -679,6 +703,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Locking over your toes instead of your ankle',
       'Letting them posture up before the legs are locked',
     ],
+    drill:
+      'Solo: 20 triangle lock-ups in the air, switching legs each time. Then 10 set-ups on each side on a partner, locking the legs without squeezing.',
   },
   {
     id: 'kimura-guard',
@@ -700,6 +726,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Letting their elbow drift away from your chest',
       'No leg across their back, so they roll forward and escape',
     ],
+    drill: '10 reps on each side: sit up, lock the figure-four grip and hip out. Stop before you turn the arm.',
   },
   {
     id: 'guillotine-guard',
@@ -720,6 +747,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Leaving the guard open, so they pass to the side and the choke is gone',
       'Squeezing with the arms only',
     ],
+    drill: '10 reps of sitting up and wrapping the neck, checking your wrist is under the chin. A light squeeze only.',
   },
   {
     id: 'pendulum-sweep',
@@ -741,6 +769,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Swinging the leg in a small circle with no momentum',
       'Staying square instead of turning your hips toward the scooped leg',
     ],
+    drill: 'Solo: on your back, 10 big pendulum leg swings on each side. Then 10 sweeps on each side on a partner.',
   },
   {
     id: 'armbar-defence',
@@ -761,6 +790,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Sitting back upright, which gives them room to lift their hips',
       'Waiting until the arm is straight before defending',
     ],
+    drill:
+      'Your partner sets up a slow armbar and stops before extending. You clasp, stack and pull the elbow out. 5 reps on each side.',
   },
   {
     id: 'triangle-defence',
@@ -782,6 +813,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Letting them pull your trapped arm across',
       'Looking down: your head drops and your posture breaks with it',
     ],
+    drill: 'Your partner throws up a loose triangle and does not squeeze. You posture and stack. 5 reps on each side.',
   },
   {
     id: 'guillotine-defence',
@@ -802,6 +834,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Passing to the same side as your head, which also tightens it',
       'Holding out once the choke is fully locked instead of tapping',
     ],
+    drill:
+      'Your partner holds a loose guillotine from guard. 5 reps on each side: wrist control, arm over the shoulder, shoulder pressure, pass to the far side.',
   },
   // Open guard
   {
@@ -818,6 +852,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Drop your chest onto theirs in side control',
     ],
     commonMistakes: ['Staying too upright after the pass', 'Letting go of the legs before you are chest to chest'],
+    drill:
+      '10 reps on each side: grip the knees, push the legs aside and step around until your chest is on theirs. Your partner keeps their legs light.',
   },
   {
     id: 'double-under-pass',
@@ -839,6 +875,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Backing off to go around instead of keeping the stack pressure',
       "Stacking hard onto your partner's neck: put the weight on their shoulders",
     ],
+    drill:
+      '5 slow reps on each side. Your partner says so the moment they feel pressure on their neck, and you shift it to their shoulders.',
   },
   {
     id: 'butterfly-sweep',
@@ -860,6 +898,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Not trapping the arm, so they post on it',
       'Lifting before their weight is forward',
     ],
+    drill:
+      'Solo: sitting with your feet together, rock onto each shoulder and lift the opposite foot, 10 on each side. Then 10 sweeps on each side on a partner.',
   },
   {
     id: 'tripod-sweep',
@@ -879,6 +919,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Letting go of the ankle, so they just step back',
       'Staying on your back after they fall instead of coming up straight away',
     ],
+    drill:
+      'Your partner stands in your open guard. 10 reps on each side: sit them down, then come up over their legs with a technical stand-up.',
   },
   {
     id: 'guard-retention',
@@ -899,6 +941,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Staying flat on your back',
       'Waiting until they are chest to chest: start as soon as they pass your knees',
     ],
+    drill:
+      'Your partner walks slowly around your legs to either side for 2 minutes without dropping any weight. Each time, turn to face them, frame, shrimp and re-square.',
   },
   {
     id: 'technical-stand-up',
@@ -919,6 +963,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Bringing the leg back without lifting the hips first',
       'Standing with your feet together instead of in base',
     ],
+    drill: 'Solo: 10 on each side on the spot, then travelling down the mat. Keep one hand up the whole time.',
   },
   // Half guard
   {
@@ -935,6 +980,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Free your foot and settle in side control',
     ],
     commonMistakes: ['Letting them get the underhook', 'Sitting back so your weight comes off them'],
+    drill:
+      'From top half guard with an underhook and a crossface, 10 slow slices on each side. Your partner holds the leg lightly.',
   },
   {
     id: 'half-to-full-guard',
@@ -950,6 +997,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Free your trapped leg and lock your ankles around their waist',
     ],
     commonMistakes: ['Staying flat, which lets them crossface you'],
+    drill: 'From bottom half guard: frame, shrimp, free the knee and close your guard. 10 reps on each side.',
   },
   {
     id: 'half-guard-underhook-sweep',
@@ -971,6 +1019,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Coming up without scooting your hips out, so they drive you back down',
       'Letting them crossface you before you get to your side',
     ],
+    drill:
+      '10 reps on each side: win the underhook, scoot out and come up to your knees. Your partner gives a light whizzer.',
   },
   // Side control
   {
@@ -987,6 +1037,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Slide your bottom knee into the gap and recover guard',
     ],
     commonMistakes: ['Pushing with straight arms', 'Turning away from them, giving your back'],
+    drill:
+      'Your partner holds side control at about a third of their weight. Frame, bridge, shrimp and bring the knee in. 10 reps on each side.',
   },
   {
     id: 'side-to-mount',
@@ -1002,6 +1054,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Put your foot on the far side and settle into mount',
     ],
     commonMistakes: ['Lifting your chest off them while switching', 'Getting your leg caught in half guard'],
+    drill:
+      '10 reps on each side of sliding your knee across the belly into mount, while your partner blocks lightly with their near knee.',
   },
   {
     id: 'americana',
@@ -1017,6 +1071,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Slowly slide their wrist toward their hip and lift the elbow',
     ],
     commonMistakes: ['Letting the wrist come off the mat', 'Cranking quickly — apply slowly'],
+    drill:
+      '10 slow reps on each side up to the grip and the first drag of the elbow. Stop at the first sign of tension.',
   },
   {
     id: 'ground-headlock-escape',
@@ -1037,6 +1093,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Pushing with a bent wrist instead of the forearm',
       'Trying to pull your head out before making space',
     ],
+    drill:
+      'Your partner holds a loose headlock on the ground. 5 reps on each side: turn onto your side, frame on the jaw, then finish the escape.',
   },
   {
     id: 'side-control-escape-knees',
@@ -1057,6 +1115,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Reaching for the underhook before you have made space, so they pin the arm',
       'Stopping in turtle and waiting instead of moving straight away',
     ],
+    drill: '10 reps on each side: frame, bridge, swim the underhook and turn to your knees. Do not stop in turtle.',
   },
   // Mount
   {
@@ -1073,6 +1132,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Roll them over and land in their guard',
     ],
     commonMistakes: ['Bridging straight up instead of over the shoulder', 'Not trapping both the arm and the foot'],
+    drill:
+      "Solo: 10 bridges over each shoulder. Then under a partner's mount: trap the arm and foot, bridge and roll, 10 on each side.",
   },
   {
     id: 'elbow-knee-escape',
@@ -1091,6 +1152,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Pushing on their chest with straight arms',
       'Doing it while they are still heavy and balanced — bridge first',
     ],
+    drill: "Solo: shrimp down the mat and back. Then under a partner's mount, 10 escapes on each side to half guard.",
   },
   {
     id: 'cross-collar-choke',
@@ -1106,6 +1168,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Pull your elbows out to the sides to close the choke',
     ],
     commonMistakes: ['First grip too shallow', 'Staying upright so the choke has no tension'],
+    drill:
+      'From mount, 10 reps of feeding the first hand deep in the collar and then the second. A light squeeze only; your partner taps early.',
   },
   {
     id: 'armbar-mount',
@@ -1126,6 +1190,7 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Knees apart, so they pull the elbow free',
       'Dropping back quickly instead of with control',
     ],
+    drill: '10 slow reps on each side from mount to sitting back with your knees squeezed. Do not extend the arm.',
   },
   {
     id: 'mount-to-back',
@@ -1141,6 +1206,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Fall to your side and keep the seatbelt',
     ],
     commonMistakes: ['Crossing your feet when putting hooks in (ankle lock risk)', 'Letting go of the upper body'],
+    drill:
+      'Your partner turns onto their side under your mount. Take the seatbelt grip and both hooks. 10 reps on each side.',
   },
   // Back
   {
@@ -1157,6 +1224,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Squeeze your elbows together and expand your chest',
     ],
     commonMistakes: ['Squeezing the jaw instead of getting under the chin', 'Losing hooks while focusing on the choke'],
+    drill:
+      'From back control with a seatbelt grip, 10 reps of sliding the arm under the chin and locking your hands. Barely squeeze, and let go at the tap.',
   },
   {
     id: 'back-escape',
@@ -1172,6 +1241,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Turn into them and come up on top in their guard',
     ],
     commonMistakes: ['Turning toward the wrong side', 'Dropping your hands from your neck too early'],
+    drill:
+      'Your partner has your back with both hooks and does not attack the neck. 5 escapes on each side: slide to the mat, clear the hook, turn in.',
   },
   {
     id: 'rear-naked-choke-defence',
@@ -1192,6 +1263,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Grabbing the arm behind your head instead of the one across your neck',
       'Refusing to tap once the arm is locked under your chin: this choke works in seconds',
     ],
+    drill:
+      'Your partner tries to slide an arm under your chin at about a third of their strength. Hand fight two on one for 1-minute rounds, tapping the moment it locks.',
   },
   // Turtle
   {
@@ -1208,6 +1281,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Roll or pull them back and insert the second hook',
     ],
     commonMistakes: ['Putting hooks in before you have upper body control', 'Sitting too far back so they roll out'],
+    drill:
+      'Your partner sits in turtle. 10 reps on each side: seatbelt grip, first hook in, roll them back and put in the second hook.',
   },
   {
     id: 'turtle-recover-guard',
@@ -1223,6 +1298,8 @@ const transitions: (StarterRow<Transition> & { role: PositionRole })[] = [
       'Bring your feet and knees back between you and them',
     ],
     commonMistakes: ['Reaching out with an arm, which gets it trapped'],
+    drill:
+      'Solo: from turtle, sit through or roll over your shoulder to face forward with your feet up. 10 reps on each side.',
   },
 ];
 
@@ -1243,6 +1320,9 @@ export const STARTER_BLUE_BELT_TEST_IDS: ReadonlySet<string> = new Set(transitio
 
 /** Who performs each starter technique, for copies stored before techniques had a role (see `performerRole`). */
 export const STARTER_ROLES: ReadonlyMap<string, PositionRole> = new Map(transitions.map((t) => [t.id, t.role]));
+
+/** The drill for each starter technique, for copies stored before techniques had one (see `techniqueDrill`). */
+export const STARTER_DRILLS: ReadonlyMap<string, string> = new Map(transitions.map((t) => [t.id, t.drill]));
 
 function seedTransitions(now: number): Transition[] {
   return transitions.map((t) => ({
