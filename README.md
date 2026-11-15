@@ -24,6 +24,17 @@ npm run dev
 | `npm run format` | Auto-format and apply safe lint fixes |
 | `npm run build` | Production build into `dist/`, which can be served from any static host, at the root or in a subfolder |
 
+## CI and deploy
+
+Every push to `main` and every pull request runs lint, typecheck, tests and the production build ([ci.yml](.github/workflows/ci.yml)). Pull requests that touch dependencies are also checked for known vulnerabilities, and Dependabot opens weekly update pull requests.
+
+Deploying to GitHub Pages is built in but off. To turn it on:
+
+1. In the repository's **Settings → Pages**, set the source to **GitHub Actions**.
+2. In **Settings → Secrets and variables → Actions → Variables**, add `DEPLOY_TO_PAGES` with the value `true`.
+
+From then on every green run on `main` publishes that run's `dist/`.
+
 ## How the code is organised
 
 ```

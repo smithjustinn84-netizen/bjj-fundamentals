@@ -76,7 +76,9 @@ This repo uses [Jujutsu](https://jj-vcs.github.io/jj/) (`jj`) on a git backend, 
 - The working copy is always a change; there is no staging area. `jj st` and `jj diff` show it.
 - Finish a change with `jj commit -m "..."`, or `jj describe -m "..."` then `jj new`.
 - `main` is a bookmark and does not move by itself: `jj bookmark move main --to @-` after committing.
-- jj does not run git hooks, so nothing runs `npm run check` locally for you. Run it before every `jj commit` and before any `jj git push`. CI (`.github/workflows/ci.yml`) runs the same command on every push to `main` and every pull request; a red run means the change is not done.
+- jj does not run git hooks, so nothing runs `npm run check` locally for you. Run it before every `jj commit` and before any `jj git push`. CI (`.github/workflows/ci.yml`) runs the same four stages, as separate steps, on every push to `main` and every pull request; a red run means the change is not done. If you change the `check` script, change those steps to match.
+- A green run on `main` deploys the built `dist/` to GitHub Pages when the repository variable `DEPLOY_TO_PAGES` is `true`. Pushing to `main` is then a release.
+- Actions in `.github/workflows/` are pinned to a commit SHA with the version in a trailing comment. Dependabot (`.github/dependabot.yml`) updates the pins and the npm packages weekly; do not replace a pin with a tag.
 - Mistake? `jj undo` reverses the last operation; `jj op log` lists them all.
 - Commit or push only when the user asks.
 

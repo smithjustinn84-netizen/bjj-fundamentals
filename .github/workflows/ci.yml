@@ -4,14 +4,20 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
-# A newer push to the same branch cancels the run it replaces.
+# A newer push to a pull request cancels the run it replaces. Runs on main are
+# never cancelled, so a deploy is not cut off halfway.
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# Least privilege by default; the deploy job asks for what it needs.
 permissions:
   contents: read
+
+# Actions are pinned to a commit so a moved tag cannot change what runs here.
+# Dependabot (.github/dependabot.yml) keeps the pins and their version comments current.
 
 jobs:
   check:
@@ -19,10 +25,70 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: npm
+
       - run: npm ci
-      - run: npm run check
+
+      # The four steps below are `npm run check`, split up so a failure names
+      # its stage. Keep them in step with the `check` script in package.json.
+      - name: Lint and format
+        # `biome ci` applies the same rules as `biome check` but never writes;
+        # the github reporter turns findings into annotations on the diff.
+        run: npx biome ci --reporter=github .
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npx vite build
+
+      - name: Report bundle size
+        run: |
+          {
+            echo '### Bundle size'
+            echo
+            echo '| File | Bytes | Gzipped |'
+            echo '| --- | ---: | ---: |'
+            find dist -type f \( -name '*.js' -o -name '*.css' -o -name '*.html' \) | sort | while read -r file; do
+              echo "| \`${file#dist/}\` | $(wc -c < "$file") | $(gzip -c "$file" | wc -c) |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # The exact files that passed the checks are the ones that get deployed.
+      - name: Upload site
+        if: github.event_name != 'pull_request' && vars.DEPLOY_TO_PAGES == 'true'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: check
+    # Off until the repository opts in: enable Pages with "GitHub Actions" as
+    # the source, then set the repository variable DEPLOY_TO_PAGES to true.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.DEPLOY_TO_PAGES == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    # One deploy at a time, in order; a newer one waits instead of cancelling.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

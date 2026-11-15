@@ -73,4 +73,5 @@ The interface is deliberately small. Filtering, sorting, cascading deletes and b
 - The streak looks back 400 days (`STREAK_WINDOW_DAYS`), so it tops out there.
 - Only the IndexedDB engine exists. The SQLite/Capacitor path is designed for and contract-tested in shape, but not built.
 - `npm run check` runs in CI after a push, not before a commit: jj has no commit hooks.
+- CI deploys what it built: the `dist/` that passed the checks on `main` is the artifact published to GitHub Pages, and only when the repository variable `DEPLOY_TO_PAGES` is `true`. There is no staging site and no rollback beyond re-running an older run's deploy or reverting the change.
 - There are no automated UI tests. Core and storage are covered by unit and contract tests; screens are checked by hand.
