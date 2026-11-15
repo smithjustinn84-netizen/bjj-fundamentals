@@ -2,10 +2,10 @@ import { assertNever } from '../../core/assertNever';
 import { ROLE_LABELS, TRANSITION_LABELS } from '../../core/labels';
 import type { Library } from '../../core/library';
 import type { StudyItem } from '../../core/study';
-import { TransitionArtwork } from '../graphics/Artwork';
 import { ConceptArtwork } from '../graphics/ConceptSvg';
 import { PositionArtwork } from '../graphics/PositionSvg';
 import { Bullets } from './common';
+import { TechniquePicture } from './TechniquePicture';
 
 const ARTWORK_CLASS = 'review-artwork';
 
@@ -82,7 +82,7 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
       const to = transition.toId ? lib.positionById.get(transition.toId)?.name : null;
       return (
         <>
-          <TransitionArtwork transition={transition} positionById={lib.positionById} className={ARTWORK_CLASS} />
+          <TechniquePicture transition={transition} positionById={lib.positionById} className={ARTWORK_CLASS} />
           {to && (
             <p className="lead">
               Ends in: <strong>{to}</strong>

@@ -4,7 +4,7 @@ Rules for anyone changing this app, human or AI. They exist to stop small shortc
 
 ## What this app is
 
-A 100% client-side Vite + React + TypeScript app for learning beginner BJJ concepts. No backend, no accounts, no network calls. All data is in IndexedDB (Dexie) and can be exported and imported as JSON.
+A 100% client-side Vite + React + TypeScript app for learning beginner BJJ concepts. No backend, no accounts, and no network calls except YouTube's player on a technique that has a video. All data is in IndexedDB (Dexie) and can be exported and imported as JSON.
 
 ## The one architectural rule
 
@@ -26,7 +26,7 @@ Where does new code go?
 
 ## Hard constraints
 
-- **No network calls.** No `fetch`, no analytics, no fonts or scripts from a CDN, no embedded iframes. YouTube bookmarks are plain links.
+- **No network calls, with one exception.** No `fetch`, no analytics, no fonts or scripts from a CDN. The only thing that may contact another site is the YouTube player iframe in `ui/components/VideoPlayer.tsx` (on `youtube-nocookie.com`, address built by `embedUrl` in `core/youtube.ts`), shown through `TechniquePicture` for a technique's bookmarked video. No other iframe, and no player anywhere else, without asking the user; everywhere else YouTube bookmarks are plain links.
 - **Core stays portable.** If `tsc -p tsconfig.core.json` or the linter rejects something in `core/`, the fix is to inject it through `CoreEnv` or move the code out, never to add DOM typings or loosen the config.
 - **No new dependencies without asking the user.** Say what it is for and what it costs in bundle size.
 - **No `any`, no non-null `!`, no `@ts-ignore`.** Narrow the type or fix the model. An `as` cast needs a comment saying why it is safe.
@@ -55,9 +55,9 @@ Where does new code go?
 - Colours, radii, durations and easings come from `tokens.css`. No hex colours anywhere else; a new colour is a new token with a light and a dark value.
 - Graphics are hand-written inline SVG components in `src/ui/graphics/` coloured through tokens. The only image files are the painted home-page hero and the touch icon in `public/artwork/`; every other picture is SVG, so do not add more paintings. No font files, no icon or animation library.
 - The hero and the diagrams share one sheet of paper: diagrams use only the `--art-*` tokens, which have a single value for both themes; the dark theme dims the whole `.artwork-frame` instead. This is the one exception to "a light and a dark value".
-- People in diagrams are `Figure`s (`ui/graphics/Figure.tsx`) posed by joint positions inside a `Diagram`; add a scene by adding poses to `ConceptSvg.tsx` or `PositionSvg.tsx`, not by drawing body shapes by hand. A position's scene in `PositionSvg.tsx` is data (two poses and a draw order), because a technique's picture (`TransitionArtwork`) moves the same two people from its start scene to its end scene, or fades from one to the other when they are drawn from different views or the end is a tap; `reversesRoles` in `core/techniqueArt.ts` says when they swap places. It plays once, has a Replay button, and falls back to the two still pictures under reduced motion.
+- People in diagrams are `Figure`s (`ui/graphics/Figure.tsx`) posed by joint positions inside a `Diagram`; add a scene by adding poses to `ConceptSvg.tsx` or `PositionSvg.tsx`, not by drawing body shapes by hand. A position's scene in `PositionSvg.tsx` is data (two poses and a draw order) so a concept can be drawn on it. A technique's picture (`TechniquePicture`) is its bookmarked video when it has one and the device is online; otherwise its start and end positions side by side (`TransitionArtwork`). Do not animate figures between poses: it was tried and two poses cannot show a technique.
 - Motion is CSS. `motion.css` ends with a `prefers-reduced-motion` block that switches every animation off; scripted motion checks `prefersReducedMotion()` from `ui/graphics/motion.ts`.
-- Anything a graphic has to calculate (where map boxes sit, how arrows curve, which belt a percentage earns, how a pose becomes limbs, the pose part-way through a move) is a pure function in `core/` with a test (`mapLayout.ts`, `rank.ts`, `figure.ts`). Components only draw the result.
+- Anything a graphic has to calculate (where map boxes sit, how arrows curve, which belt a percentage earns, how a pose becomes limbs) is a pure function in `core/` with a test (`mapLayout.ts`, `rank.ts`, `figure.ts`). Components only draw the result.
 
 ## Recipes
 

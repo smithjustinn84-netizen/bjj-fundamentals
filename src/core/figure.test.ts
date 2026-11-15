@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { arrowPath, type FigurePose, figureParts, liftPose, type Point, pointOnSpine, tweenPose } from './figure';
+import { arrowPath, type FigurePose, figureParts, pointOnSpine } from './figure';
 
 const standing: FigurePose = {
   head: [100, 35],
@@ -82,91 +82,5 @@ describe('arrowPath', () => {
 
   it('copes with a zero-length arrow', () => {
     expect(arrowPath([5, 5], [5, 5])).not.toContain('NaN');
-  });
-});
-
-describe('tweenPose', () => {
-  /** The standing pose laid on its back with the head to the left: every segment a quarter turn anticlockwise on screen. */
-  const lying: FigurePose = {
-    head: [35, 200],
-    neck: [50, 200],
-    hip: [100, 200],
-    face: -1,
-    arms: {
-      far: [
-        [70, 210],
-        [90, 210],
-      ],
-      near: [
-        [70, 190],
-        [90, 190],
-      ],
-    },
-    legs: {
-      far: [
-        [130, 205],
-        [160, 205],
-      ],
-      near: [
-        [130, 195],
-        [160, 195],
-      ],
-    },
-  };
-  const distance = (a: Point, b: Point) => Math.hypot(a[0] - b[0], a[1] - b[1]);
-
-  it('is the first pose at the start and the second at the end', () => {
-    expect(tweenPose(standing, lying, 0)).toBe(standing);
-    expect(tweenPose(standing, lying, 1)).toBe(lying);
-  });
-
-  it('moves the hips in a straight line', () => {
-    expect(tweenPose(standing, lying, 0.5).hip).toEqual([100, 150]);
-  });
-
-  it('keeps the body its own size while it turns', () => {
-    const half = tweenPose(standing, lying, 0.5);
-    expect(distance(half.neck, half.hip)).toBeCloseTo(50);
-    expect(distance(half.head, half.neck)).toBeCloseTo(15);
-    expect(distance(half.legs.near[0], half.legs.near[1])).toBeCloseTo(30);
-    expect(distance(half.arms.far[0], half.arms.far[1])).toBeCloseTo(20);
-  });
-
-  it('turns a segment the short way round', () => {
-    // A lower leg pointing just above "left" swings to just below it: 20 degrees through left, not 340 through right.
-    const withLeg = (foot: Point): FigurePose => ({
-      ...standing,
-      legs: { ...standing.legs, near: [[105, 130], foot] },
-    });
-    const half = tweenPose(withLeg([75.5, 124.8]), withLeg([75.5, 135.2]), 0.5);
-    expect(half.legs.near[1][0]).toBeCloseTo(75, 0);
-    expect(half.legs.near[1][1]).toBeCloseTo(130);
-  });
-
-  it('turns the face halfway through', () => {
-    expect(tweenPose(standing, lying, 0.49).face).toBe(1);
-    expect(tweenPose(standing, lying, 0.5).face).toBe(-1);
-  });
-
-  it('gives a spine point only when one of the poses bends', () => {
-    expect(tweenPose(standing, lying, 0.5).spine).toBeUndefined();
-    const hunched: FigurePose = { ...standing, spine: [80, 75] };
-    const half = tweenPose(standing, hunched, 0.5);
-    expect(half.spine?.[0]).toBeCloseTo(90);
-    expect(half.spine?.[1]).toBeCloseTo(75);
-  });
-});
-
-describe('liftPose', () => {
-  it('leaves a pose alone when nothing is below the floor', () => {
-    expect(liftPose(standing, 160)).toBe(standing);
-  });
-
-  it('raises the whole body until its lowest joint is on the floor', () => {
-    const lifted = liftPose({ ...standing, spine: [95, 75] }, 150);
-    expect(lifted.legs.near[1]).toEqual([105, 150]);
-    expect(lifted.head).toEqual([100, 25]);
-    expect(lifted.spine).toEqual([95, 65]);
-    expect(lifted.arms.far[0]).toEqual([90, 60]);
   });
 });

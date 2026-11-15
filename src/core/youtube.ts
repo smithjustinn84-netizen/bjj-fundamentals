@@ -96,3 +96,12 @@ export function watchUrl(youtubeId: string, startSeconds: number): string {
   const t = startSeconds > 0 ? `&t=${Math.floor(startSeconds)}s` : '';
   return `https://www.youtube.com/watch?v=${encodeURIComponent(youtubeId)}${t}`;
 }
+
+/**
+ * The address of the embedded player for a video, starting at the bookmarked moment. It is on
+ * YouTube's "no cookie" domain, which sets no cookies until the video is played.
+ */
+export function embedUrl(youtubeId: string, startSeconds: number): string {
+  const start = startSeconds > 0 ? `?start=${Math.floor(startSeconds)}` : '';
+  return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtubeId)}${start}`;
+}

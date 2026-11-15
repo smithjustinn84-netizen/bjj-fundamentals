@@ -441,10 +441,10 @@ interface SceneLayer {
 }
 
 /**
- * A position as data, so that a technique can move the same two people from one scene to another.
+ * A position as data, so that another picture can reuse its figures (a concept drawn on a position).
  * The light gi is always the person underneath or being controlled.
  */
-export interface PositionScene {
+interface PositionScene {
   view?: 'side' | 'above';
   light: FigurePose;
   dark: FigurePose;
@@ -531,35 +531,18 @@ export function positionScene(id: string): PositionScene | undefined {
   return POSITION_SCENES[id];
 }
 
-/**
- * Draws a scene's layers. `people` says who is in each of the scene's two places and how they are
- * posed right now: the scene's own poses for a still picture, or poses part-way through a technique.
- */
-export function SceneFigures({
-  layers,
-  people,
-}: {
-  layers: readonly SceneLayer[];
-  people: Record<Gi, { pose: FigurePose; gi: Gi }>;
-}) {
-  return (
-    <>
-      {layers.map((layer, index) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: a scene's layers are a fixed list that never reorders
-        <Figure key={index} pose={people[layer.gi].pose} gi={people[layer.gi].gi} parts={layer.parts} />
-      ))}
-    </>
-  );
+export function hasPositionArtwork(id: string): boolean {
+  return id in POSITION_SCENES;
 }
 
-/** A scene exactly as it is posed, without the paper behind it. */
+/** A scene's figures and marks, without the paper behind it. */
 export function StillScene({ scene }: { scene: PositionScene }) {
   return (
     <>
-      <SceneFigures
-        layers={scene.layers}
-        people={{ light: { pose: scene.light, gi: 'light' }, dark: { pose: scene.dark, gi: 'dark' } }}
-      />
+      {scene.layers.map((layer, index) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: a scene's layers are a fixed list that never reorders
+        <Figure key={index} pose={scene[layer.gi]} gi={layer.gi} parts={layer.parts} />
+      ))}
       {scene.extras?.()}
     </>
   );

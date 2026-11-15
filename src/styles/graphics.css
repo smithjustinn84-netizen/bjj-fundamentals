@@ -242,33 +242,6 @@
   stroke-linejoin: round;
 }
 
-/* A technique shown as one picture that moves from where it starts to where it ends. */
-.transition-motion {
-  max-width: 32rem;
-  margin: 0 0 var(--space-4);
-}
-.transition-motion.review-artwork {
-  max-width: 22rem;
-}
-.transition-motion .artwork-frame {
-  aspect-ratio: 4 / 3;
-  margin: 0;
-}
-.transition-motion-caption {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  margin-top: var(--space-2);
-}
-.transition-motion-caption p,
-.transition-motion-caption button {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  margin: 0;
-}
-
 /* Diagrams */
 .diagram-svg {
   display: block;

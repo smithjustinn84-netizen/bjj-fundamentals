@@ -72,16 +72,13 @@ function fmt([x, y]: Point): string {
   return `${roundSvg(x)} ${roundSvg(y)}`;
 }
 
-/** The joints that fix the spine's curve. */
-type SpinePose = Pick<FigurePose, 'neck' | 'hip' | 'spine'>;
-
 /** The control point that makes a straight spine: halfway between neck and hip. */
-function spineControl(pose: SpinePose): Point {
+function spineControl(pose: FigurePose): Point {
   return pose.spine ?? [(pose.neck[0] + pose.hip[0]) / 2, (pose.neck[1] + pose.hip[1]) / 2];
 }
 
 /** A point on the spine, t = 0 at the neck and 1 at the hip. The spine is a quadratic curve. */
-export function pointOnSpine(pose: SpinePose, t: number): Point {
+export function pointOnSpine(pose: FigurePose, t: number): Point {
   const c = spineControl(pose);
   const a = (1 - t) * (1 - t);
   const b = 2 * (1 - t) * t;
@@ -121,116 +118,6 @@ export function figureParts(pose: FigurePose): FigureParts {
       nearLeg: limbParts(pose.hip, pose.legs.near),
       nearArm: limbParts(shoulder, pose.arms.near),
     },
-  };
-}
-
-/** Below this much of the way through a tween the figure faces as it started; from here on, as it ends. */
-const FACE_TURNS_AT = 0.5;
-
-function mix(a: number, b: number, t: number): number {
-  return a + (b - a) * t;
-}
-
-/**
- * Where a body segment ends part-way through a move. The segment is given at both ends of the move
- * as root and tip; it turns through the shorter arc and changes length evenly, then hangs off `root`.
- * Turning rather than sliding the tip keeps a limb its own length while it swings.
- */
-function swing(from: readonly [Point, Point], to: readonly [Point, Point], root: Point, t: number): Point {
-  const fromAngle = Math.atan2(from[1][1] - from[0][1], from[1][0] - from[0][0]);
-  const toAngle = Math.atan2(to[1][1] - to[0][1], to[1][0] - to[0][0]);
-  const fromLength = Math.hypot(from[1][0] - from[0][0], from[1][1] - from[0][1]);
-  const toLength = Math.hypot(to[1][0] - to[0][0], to[1][1] - to[0][1]);
-  // Wrapped into half a turn either way, so the segment never goes the long way round.
-  const turn = Math.atan2(Math.sin(toAngle - fromAngle), Math.cos(toAngle - fromAngle));
-  const angle = fromAngle + turn * t;
-  const length = mix(fromLength, toLength, t);
-  return [root[0] + length * Math.cos(angle), root[1] + length * Math.sin(angle)];
-}
-
-/** The spine's bend as [how far along the neck-to-hip line, how far off to its side], so it can turn with the body. */
-function spineBend(pose: SpinePose): Point {
-  const [cx, cy] = spineControl(pose);
-  const dx = pose.hip[0] - pose.neck[0];
-  const dy = pose.hip[1] - pose.neck[1];
-  const length = Math.hypot(dx, dy) || 1;
-  const along = ((cx - pose.neck[0]) * dx + (cy - pose.neck[1]) * dy) / (length * length);
-  const aside = ((cx - pose.neck[0]) * -dy + (cy - pose.neck[1]) * dx) / length;
-  return [along, aside];
-}
-
-function spineFromBend(neck: Point, hip: Point, [along, aside]: Point): Point {
-  const dx = hip[0] - neck[0];
-  const dy = hip[1] - neck[1];
-  const length = Math.hypot(dx, dy) || 1;
-  return [neck[0] + along * dx + (aside * -dy) / length, neck[1] + along * dy + (aside * dx) / length];
-}
-
-function shoulder(pose: SpinePose): Point {
-  return pointOnSpine(pose, SHOULDER_AT);
-}
-
-/**
- * The pose part-way through a move from one pose to another: t = 0 is `from`, 1 is `to`.
- * The hips travel in a straight line and every segment above and below them turns about its joint.
- */
-export function tweenPose(from: FigurePose, to: FigurePose, t: number): FigurePose {
-  if (t <= 0) return from;
-  if (t >= 1) return to;
-  const hip: Point = [mix(from.hip[0], to.hip[0], t), mix(from.hip[1], to.hip[1], t)];
-  const neck = swing([from.hip, from.neck], [to.hip, to.neck], hip, t);
-  const head = swing([from.neck, from.head], [to.neck, to.head], neck, t);
-  const fromBend = spineBend(from);
-  const toBend = spineBend(to);
-  const curved = from.spine !== undefined || to.spine !== undefined;
-  const body: SpinePose = {
-    neck,
-    hip,
-    ...(curved
-      ? { spine: spineFromBend(neck, hip, [mix(fromBend[0], toBend[0], t), mix(fromBend[1], toBend[1], t)]) }
-      : {}),
-  };
-  const limb = (fromRoot: Point, a: Limb, toRoot: Point, b: Limb, root: Point): Limb => {
-    const joint = swing([fromRoot, a[0]], [toRoot, b[0]], root, t);
-    return [joint, swing([a[0], a[1]], [b[0], b[1]], joint, t)];
-  };
-  const fromShoulder = shoulder(from);
-  const toShoulder = shoulder(to);
-  const atShoulder = shoulder(body);
-  return {
-    ...body,
-    head,
-    face: t < FACE_TURNS_AT ? from.face : to.face,
-    arms: {
-      far: limb(fromShoulder, from.arms.far, toShoulder, to.arms.far, atShoulder),
-      near: limb(fromShoulder, from.arms.near, toShoulder, to.arms.near, atShoulder),
-    },
-    legs: {
-      far: limb(from.hip, from.legs.far, to.hip, to.legs.far, hip),
-      near: limb(from.hip, from.legs.near, to.hip, to.legs.near, hip),
-    },
-  };
-}
-
-/**
- * The pose moved straight up just far enough that no joint is below `floorY` (y points down, so
- * "below" is a larger y). A body turning over part-way through a move would otherwise dip through the mat.
- */
-export function liftPose(pose: FigurePose, floorY: number): FigurePose {
-  const limbs = [pose.arms.far, pose.arms.near, pose.legs.far, pose.legs.near];
-  const lowest = Math.max(pose.head[1], pose.neck[1], pose.hip[1], ...limbs.flat().map((point) => point[1]));
-  const rise = lowest - floorY;
-  if (rise <= 0) return pose;
-  const up = ([x, y]: Point): Point => [x, y - rise];
-  const upLimb = ([joint, end]: Limb): Limb => [up(joint), up(end)];
-  return {
-    ...pose,
-    head: up(pose.head),
-    neck: up(pose.neck),
-    hip: up(pose.hip),
-    ...(pose.spine ? { spine: up(pose.spine) } : {}),
-    arms: { far: upLimb(pose.arms.far), near: upLimb(pose.arms.near) },
-    legs: { far: upLimb(pose.legs.far), near: upLimb(pose.legs.near) },
   };
 }
 

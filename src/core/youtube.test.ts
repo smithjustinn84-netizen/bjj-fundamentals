@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatTime, parseTime, parseYouTubeId, parseYouTubeStart, watchUrl } from './youtube';
+import { embedUrl, formatTime, parseTime, parseYouTubeId, parseYouTubeStart, watchUrl } from './youtube';
 
 const ID = 'dQw4w9WgXcQ';
 
@@ -69,5 +69,9 @@ describe('formatting', () => {
   it('builds a watch URL with a timestamp', () => {
     expect(watchUrl(ID, 95)).toBe(`https://www.youtube.com/watch?v=${ID}&t=95s`);
     expect(watchUrl(ID, 0)).toBe(`https://www.youtube.com/watch?v=${ID}`);
+  });
+  it('builds a player address that starts at the bookmarked moment', () => {
+    expect(embedUrl(ID, 95.6)).toBe(`https://www.youtube-nocookie.com/embed/${ID}?start=95`);
+    expect(embedUrl(ID, 0)).toBe(`https://www.youtube-nocookie.com/embed/${ID}`);
   });
 });

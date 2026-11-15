@@ -654,11 +654,6 @@ function StillPosition({ id }: { id: string }) {
   return scene ? <StillScene scene={scene} /> : null;
 }
 
-/** The tap without the paper behind it, for a picture that fades into it. */
-export function TapScene() {
-  return <>{CONCEPT_SCENES.safety?.draw()}</>;
-}
-
 /** Someone tapping out, framed like a position picture: where a submission ends. */
 export function TapArtwork({ className = '' }: { className?: string }) {
   return (
