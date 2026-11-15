@@ -8,7 +8,13 @@ import { findSituation, situationName } from '../../core/situations';
 import { cardId } from '../../core/srs';
 import { cardName, conceptsToLearn, progressSummary, STICKING_POINT_LIMIT, stickingPoints } from '../../core/study';
 import { type DrillReason, pickDrill } from '../../core/todaysDrill';
-import { formatClassCount, formatMatTime, trainingSummary } from '../../core/trainingLog';
+import {
+  formatClassCount,
+  formatMatTime,
+  RECENT_CLASS_COUNT,
+  recentlyStuck,
+  trainingSummary,
+} from '../../core/trainingLog';
 import { Loading, ProgressDot } from '../components/common';
 import { LibrarySearch } from '../components/LibrarySearch';
 import { ArtworkFrame, HERO_DOJO_ARTWORK } from '../graphics/Artwork';
@@ -28,7 +34,7 @@ const HOME_CONCEPT_LIMIT = 6;
 
 /** Why today's drill was chosen, said to the student. */
 const DRILL_REASON_TEXT: Record<DrillReason, string> = {
-  stuck: 'A way out of where you got stuck last class.',
+  stuck: 'A way out of where you got stuck in a recent class.',
   slipping: 'This one keeps slipping in review.',
   practised: 'You practised this in a recent class.',
   next: 'The next technique you have not learned yet.',
@@ -108,7 +114,9 @@ export default function Home() {
   const training = trainingSummary(log);
   const drill = pickDrill(lib, log);
   const nextConcepts = conceptsToLearn(lib, HOME_CONCEPT_LIMIT);
-  const stuck = training.stuckIds.map((id) => findSituation(lib, id)).filter((situation) => situation !== null);
+  const stuck = recentlyStuck(log, RECENT_CLASS_COUNT)
+    .map((id) => findSituation(lib, id))
+    .filter((situation) => situation !== null);
 
   const steps: PathStep[] = [
     {
@@ -265,7 +273,7 @@ export default function Home() {
                     <Link to={itemPath('position', situation.position.id)}>{situationName(situation)}</Link>
                   </span>
                 ))}
-                . These come first in your next review.
+                . Cards from here that you have not studied yet come first in review.
               </p>
             )}
           </>

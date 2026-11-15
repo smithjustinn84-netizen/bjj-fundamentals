@@ -2,12 +2,12 @@ import { type Library, reviewOf } from './library';
 import type { TrainingEntry, Transition } from './models';
 import { findSituation } from './situations';
 import { isLearned } from './srs';
-import { STICKING_POINT_LIMIT, stickingPoints } from './study';
+import { stickingPoints } from './study';
 import { techniqueDrill } from './techniqueDrill';
-import { RECENT_CLASS_COUNT, recentlyPractised, trainingSummary } from './trainingLog';
+import { RECENT_CLASS_COUNT, recentlyPractised, recentlyStuck } from './trainingLog';
 
 /** Why a drill was picked, most pressing first. */
-export const DRILL_REASONS = ['stuck', 'slipping', 'practised', 'next'] as const;
+const DRILL_REASONS = ['stuck', 'slipping', 'practised', 'next'] as const;
 export type DrillReason = (typeof DRILL_REASONS)[number];
 
 export interface DrillPick {
@@ -28,10 +28,11 @@ export function pickDrill(lib: Library, entries: TrainingEntry[]): DrillPick | n
   const byId = (id: string) => lib.transitionById.get(id);
 
   const candidates: [DrillReason, (Transition | undefined)[]][] = [
-    ['stuck', trainingSummary(entries).stuckIds.flatMap((id) => findSituation(lib, id)?.options ?? [])],
+    ['stuck', recentlyStuck(entries, RECENT_CLASS_COUNT).flatMap((id) => findSituation(lib, id)?.options ?? [])],
     [
       'slipping',
-      stickingPoints(lib, STICKING_POINT_LIMIT)
+      // Every sticking point, not Home's short list: that one can be full of cards that are not techniques.
+      stickingPoints(lib, lib.reviews.size)
         .filter((item) => item.kind === 'transition')
         .map((item) => byId(item.id)),
     ],

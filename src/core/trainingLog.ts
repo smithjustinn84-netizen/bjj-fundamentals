@@ -33,8 +33,6 @@ export interface TrainingSummary {
   minutes: number;
   /** The focus set after the most recent class that set one, or '' if none has. */
   focus: string;
-  /** Where the student got stuck in the most recent class that named anywhere, as situation ids. */
-  stuckIds: string[];
 }
 
 export function trainingSummary(entries: TrainingEntry[]): TrainingSummary {
@@ -42,10 +40,6 @@ export function trainingSummary(entries: TrainingEntry[]): TrainingSummary {
     classes: entries.length,
     minutes: entries.reduce((total, entry) => total + entry.minutes, 0),
     focus: newestFirst(entries).find((entry) => entry.focus !== '')?.focus ?? '',
-    stuckIds:
-      newestFirst(entries)
-        .map(stuckSituationIds)
-        .find((ids) => ids.length > 0) ?? [],
   };
 }
 
@@ -69,6 +63,15 @@ export const RECENT_CLASS_COUNT = 3;
 export function recentlyPractised(entries: TrainingEntry[], classCount: number): string[] {
   const recent = newestFirst(entries).slice(0, Math.max(0, classCount));
   return [...new Set(recent.flatMap((entry) => entry.techniqueIds))];
+}
+
+/**
+ * Where the student got stuck in the most recent of the latest classes that named anywhere, as situation ids.
+ * An older class is left out: its sticking points no longer come first in review.
+ */
+export function recentlyStuck(entries: TrainingEntry[], classCount: number): string[] {
+  const recent = newestFirst(entries).slice(0, Math.max(0, classCount));
+  return recent.map(stuckSituationIds).find((ids) => ids.length > 0) ?? [];
 }
 
 /**

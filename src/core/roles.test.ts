@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildLibrary } from './library';
-import { defaultRole, endRole, performerRole, positionOptions } from './roles';
+import { endsTheRoll } from './models';
+import { defaultEndRole, defaultRole, endRole, performerRole, positionOptions } from './roles';
 import { starterContent } from './seed';
 import { position, transition } from './testing/testFixtures';
 
@@ -80,9 +81,15 @@ describe('endRole', () => {
     );
   });
 
+  it('has a usual side for each type that the technique form can show before anything is saved', () => {
+    expect(defaultEndRole('sweep', 'bottom')).toBe('top');
+    expect(defaultEndRole('escape', 'bottom')).toBe('bottom');
+    expect(defaultEndRole('submission', 'top')).toBeNull();
+  });
+
   it('is nothing for a submission, and set for every other starter technique', () => {
     expect(endRole(lib, transition({ id: 'my-choke', type: 'submission', fromId: 'mount' }))).toBeNull();
-    const unset = starterContent(0).transitions.filter((t) => t.type !== 'submission' && !t.endRole);
+    const unset = starterContent(0).transitions.filter((t) => !endsTheRoll(t.type) && !t.endRole);
     expect(unset.map((t) => t.id)).toEqual([]);
   });
 });

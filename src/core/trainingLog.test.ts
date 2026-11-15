@@ -7,6 +7,7 @@ import {
   isDayKey,
   newestFirst,
   recentlyPractised,
+  recentlyStuck,
   studyFirst,
   trainingSummary,
 } from './trainingLog';
@@ -40,11 +41,11 @@ describe('trainingSummary', () => {
       trainingEntry({ id: 'b', day: '2026-11-08', minutes: 90, focus: 'Keep elbows in' }),
       trainingEntry({ id: 'c', day: '2026-11-14', minutes: 45, focus: '' }),
     ]);
-    expect(summary).toEqual({ classes: 3, minutes: 195, focus: 'Keep elbows in', stuckIds: [] });
+    expect(summary).toEqual({ classes: 3, minutes: 195, focus: 'Keep elbows in' });
   });
 
   it('is empty for an empty log', () => {
-    expect(trainingSummary([])).toEqual({ classes: 0, minutes: 0, focus: '', stuckIds: [] });
+    expect(trainingSummary([])).toEqual({ classes: 0, minutes: 0, focus: '' });
   });
 });
 
@@ -88,12 +89,15 @@ describe('where the student got stuck', () => {
     [],
   );
 
-  it('is summarised from the latest class that named anywhere', () => {
+  it('is read from the latest recent class that named anywhere, and not from an older one', () => {
     const entries = [
       trainingEntry({ id: 'a', day: '2026-11-01', stuckIds: ['mount:bottom'] }),
       trainingEntry({ id: 'b', day: '2026-11-08' }),
     ];
-    expect(trainingSummary(entries).stuckIds).toEqual(['mount:bottom']);
+    expect(recentlyStuck(entries, 2)).toEqual(['mount:bottom']);
+    // Study no longer puts that class first, so nothing should claim it does.
+    expect(recentlyStuck(entries, 1)).toEqual([]);
+    expect(studyFirst(lib, entries, 1)).toEqual([]);
   });
 
   it('puts the situation and its techniques before the techniques practised', () => {

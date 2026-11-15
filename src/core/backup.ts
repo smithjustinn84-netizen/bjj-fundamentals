@@ -160,7 +160,7 @@ const SCHEMAS: { [T in BackupTable]: Schema<BackupData[T][number]> } = {
   trainingLog: {
     id,
     day: (v) => typeof v === 'string' && isDayKey(v),
-    minutes: (v) => num(v) && v >= 0,
+    minutes: (v) => num(v) && Number.isInteger(v) && v >= 0,
     taught: text,
     worked: text,
     struggled: text,

@@ -40,15 +40,13 @@ export function performerRole(lib: Positions, transition: Transition): PositionR
 }
 
 /**
- * Which side of the destination the person who did a technique ends up on, or null for one that `endsTheRoll`.
- * Techniques stored before the field existed fall back to the starter content's answer, then to a rule of
- * thumb: a sweep, pass or takedown puts you on top, and anything else leaves you on the side you started on.
+ * Which side a technique of this type usually leaves the person who did it on, for one the user has not said,
+ * or null for one that `endsTheRoll`. A sweep, pass or takedown puts you on top, and anything else leaves you
+ * on the side you started on.
  */
-export function endRole(lib: Positions, transition: Transition): PositionRole | null {
-  if (endsTheRoll(transition.type)) return null;
-  const stored = transition.endRole ?? STARTER_END_ROLES.get(transition.id);
-  if (stored) return stored;
-  switch (transition.type) {
+export function defaultEndRole(type: TransitionType, role: PositionRole): PositionRole | null {
+  if (endsTheRoll(type)) return null;
+  switch (type) {
     case 'sweep':
     case 'pass':
     case 'takedown':
@@ -56,10 +54,24 @@ export function endRole(lib: Positions, transition: Transition): PositionRole | 
     case 'escape':
     case 'transition':
     case 'submission':
-      return performerRole(lib, transition);
+      return role;
     default:
-      return assertNever(transition.type);
+      return assertNever(type);
   }
+}
+
+/**
+ * Which side of the destination the person who did a technique ends up on, or null for one that `endsTheRoll`.
+ * Techniques stored before the field existed fall back to the starter content's answer, then to the usual
+ * side for their type.
+ */
+export function endRole(lib: Positions, transition: Transition): PositionRole | null {
+  if (endsTheRoll(transition.type)) return null;
+  return (
+    transition.endRole ??
+    STARTER_END_ROLES.get(transition.id) ??
+    defaultEndRole(transition.type, performerRole(lib, transition))
+  );
 }
 
 /** The techniques each person can do from a position, in library order. An empty list is a gap in the game. */

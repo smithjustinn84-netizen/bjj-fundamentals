@@ -54,3 +54,18 @@ Open question: should mat time feed the belt and streak display, or stay separat
 - [x] **Search is on Home only.** Done 2026-11-15: also on the Concepts and Positions pages.
 - [x] **Mat time and study progress are separate.** Decided 2026-11-15: a day with a logged class counts toward the streak; the study belt stays cards-only.
 
+## 6. Found by an independent review of sections 1 to 5
+
+No serious defects. Fixed on 2026-11-15:
+
+- [x] **Editing a technique froze "Who does it" and "You end up".** Changing a pass to a sweep kept the passer as the one doing it. A side that is just the usual one for the type now follows the type; only a side that differs stays put (`defaultEndRole` in `core/roles.ts`).
+- [x] **The log form failed silently.** A date with a five-digit year saved nothing and said nothing, and a double click could write two entries. It now shows a message and ignores the second click.
+- [x] **Home promised more than study does.** "Where you got stuck" and the drill read the latest class that named anywhere, however old, while study only looks at the last three classes. Both now use the last three (`recentlyStuck`), and the text says only cards not studied yet come first.
+- [x] **Drill for today could miss a slipping technique** when five other cards had slipped more.
+- [x] **A backup could hold half minutes**, and nothing tested `endRole` or a situation's study card on import.
+
+Left as they are:
+
+- [ ] **Check the americana defence, step 3.** "Turn onto your side toward the trapped arm" turns you away from the person on top, which the side control escape lists as a mistake; the drill says "turn in". Needs an instructor's eye, like the tripod sweep.
+- Situation cards count toward overall progress, so an existing library's belt on Home drops a little after updating. Intended.
+- Saving a log entry that another tab deleted brings it back. Items behave the same way.

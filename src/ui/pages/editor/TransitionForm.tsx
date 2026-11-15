@@ -13,7 +13,7 @@ import {
   type Transition,
   type TransitionType,
 } from '../../../core/models';
-import { defaultRole, endRole, performerRole } from '../../../core/roles';
+import { defaultEndRole, defaultRole, endRole, performerRole } from '../../../core/roles';
 import type { TransitionInput } from '../../../core/services/items';
 import { techniqueDrill } from '../../../core/techniqueDrill';
 import { FROM_POSITION_PARAM } from '../../routes';
@@ -34,9 +34,9 @@ interface Draft {
   type: TransitionType;
   fromId: string;
   toId: string;
-  /** Null until the user picks: the form then shows, and saves, the usual role for the chosen type. */
+  /** Null while it follows the type: the form then shows, and saves, the usual role for the chosen type. */
   role: PositionRole | null;
-  /** Null until the user picks: the form then shows, and saves, the usual end side for the chosen type. */
+  /** Null while it follows the type: the form then shows, and saves, the usual end side for the chosen type. */
   endRole: PositionRole | null;
   steps: string;
   commonMistakes: string;
@@ -45,14 +45,28 @@ interface Draft {
   notes: string;
 }
 
+/**
+ * A stored side that is just the usual one for the technique's type becomes null, so it keeps following the
+ * type if that is changed. Only a side that differs was a deliberate pick, and that one stays put.
+ */
+function pickedSides(library: Library, transition: Transition | undefined): Pick<Draft, 'role' | 'endRole'> {
+  if (!transition) return { role: null, endRole: null };
+  const role = performerRole(library, transition);
+  const endSide = endRole(library, transition);
+  const usualRole = defaultRole(transition.type, library.positionById.get(transition.fromId)?.category);
+  return {
+    role: role === usualRole ? null : role,
+    endRole: endSide === defaultEndRole(transition.type, role) ? null : endSide,
+  };
+}
+
 function toDraft(library: Library, transition: Transition | undefined, defaultFromId: string): Draft {
   return {
     name: transition?.name ?? '',
     type: transition?.type ?? DEFAULT_TRANSITION_TYPE,
     fromId: transition?.fromId ?? defaultFromId,
     toId: transition?.toId ?? '',
-    role: transition ? performerRole(library, transition) : null,
-    endRole: transition ? endRole(library, transition) : null,
+    ...pickedSides(library, transition),
     steps: fromLines(transition?.steps ?? []),
     commonMistakes: fromLines(transition?.commonMistakes ?? []),
     drill: transition ? techniqueDrill(transition) : '',
@@ -60,20 +74,6 @@ function toDraft(library: Library, transition: Transition | undefined, defaultFr
     notes: transition?.notes ?? '',
   };
 }
-
-/** A stand-in for the technique being typed, so the core's defaults can be asked about it before it is saved. */
-const EMPTY_TECHNIQUE: Transition = {
-  id: '',
-  name: '',
-  type: DEFAULT_TRANSITION_TYPE,
-  fromId: '',
-  toId: '',
-  steps: [],
-  commonMistakes: [],
-  notes: '',
-  createdAt: 0,
-  updatedAt: 0,
-};
 
 /** Role names before a starting position is chosen; after that they come from its kind of position. */
 const PLAIN_ROLE_LABELS: Record<PositionRole, string> = { top: 'Top', bottom: 'Bottom' };
@@ -111,10 +111,7 @@ export function TransitionForm({ itemId, library, cancelTo, onSaved, onDelete }:
   const fromCategory = library.positionById.get(draft.fromId)?.category;
   const role = draft.role ?? defaultRole(draft.type, fromCategory);
   const toCategory = library.positionById.get(draft.toId)?.category;
-  // The rule of thumb for a technique not saved yet: `endRole` reads only its type, start and role.
-  const endSide =
-    draft.endRole ??
-    endRole(library, { ...EMPTY_TECHNIQUE, type: draft.type, fromId: draft.fromId, toId: draft.toId, role });
+  const endSide = draft.endRole ?? defaultEndRole(draft.type, role);
 
   const positionOptions = library.positions.map((p) => (
     <option key={p.id} value={p.id}>
@@ -126,9 +123,7 @@ export function TransitionForm({ itemId, library, cancelTo, onSaved, onDelete }:
     <FormShell
       cancelTo={cancelTo}
       onDelete={onDelete}
-      onSubmit={async () =>
-        onSaved(await items.saveTransition(itemId, fromDraft(draft, role, endsTheRoll(draft.type) ? null : endSide)))
-      }
+      onSubmit={async () => onSaved(await items.saveTransition(itemId, fromDraft(draft, role, endSide)))}
     >
       <NameField value={draft.name} onChange={(v) => set('name', v)} />
       <ChoiceField

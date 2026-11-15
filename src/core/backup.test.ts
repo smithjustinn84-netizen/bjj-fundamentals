@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { BACKUP_APP, BACKUP_SCHEMA_VERSION, BackupError, backupFilename, validateBackup } from './backup';
-import { concept, position, trainingEntry, transition } from './testing/testFixtures';
+import { concept, position, review, trainingEntry, transition } from './testing/testFixtures';
 
 function file(data: Record<string, unknown>) {
   return { app: BACKUP_APP, schemaVersion: BACKUP_SCHEMA_VERSION, exportedAt: 123, data };
@@ -25,8 +25,20 @@ describe('validateBackup', () => {
     expect(() => validateBackup(backupOf({ ...transition(), role: 'sideways' }))).toThrow(
       /"role" is missing or invalid/,
     );
+    expect(validateBackup(backupOf(transition({ endRole: 'top' }))).data.transitions[0]?.endRole).toBe('top');
+    expect(() => validateBackup(backupOf({ ...transition(), endRole: 'sideways' }))).toThrow(
+      /"endRole" is missing or invalid/,
+    );
     expect(validateBackup(backupOf(transition({ drill: 'Ten reps' }))).data.transitions[0]?.drill).toBe('Ten reps');
     expect(() => validateBackup(backupOf({ ...transition(), drill: 5 }))).toThrow(/"drill" is missing or invalid/);
+  });
+
+  it('accepts the study card of a situation, which belongs to no item', () => {
+    const card = review('situation', 'mount:bottom', { lapses: 2 });
+    expect(validateBackup(file({ reviews: [card] })).data.reviews).toEqual([card]);
+    expect(() => validateBackup(file({ reviews: [{ ...card, kind: 'mood' }] }))).toThrow(
+      /"kind" is missing or invalid/,
+    );
   });
 
   it('accepts training log entries, treats a backup without the table as an empty log, and checks the day', () => {
@@ -36,6 +48,7 @@ describe('validateBackup', () => {
       /"day" is missing or invalid/,
     );
     expect(() => validateBackup(file({ trainingLog: [trainingEntry({ minutes: -1 })] }))).toThrow(/"minutes"/);
+    expect(() => validateBackup(file({ trainingLog: [trainingEntry({ minutes: 45.5 })] }))).toThrow(/"minutes"/);
     const withStuck = validateBackup(file({ trainingLog: [trainingEntry({ stuckIds: ['mount:bottom'] })] }));
     expect(withStuck.data.trainingLog[0]?.stuckIds).toEqual(['mount:bottom']);
   });

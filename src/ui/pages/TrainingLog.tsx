@@ -5,7 +5,7 @@ import type { Library } from '../../core/library';
 import type { TrainingEntry } from '../../core/models';
 import { allSituations, findSituation, situationId, situationName } from '../../core/situations';
 import { localDayKey } from '../../core/srs';
-import { formatClassCount, formatMatTime, stuckSituationIds, trainingSummary } from '../../core/trainingLog';
+import { formatClassCount, formatMatTime, isDayKey, stuckSituationIds, trainingSummary } from '../../core/trainingLog';
 import { Loading } from '../components/common';
 import { EmptyState } from '../graphics/EmptyState';
 import { itemPath } from '../routes';
@@ -16,6 +16,8 @@ const DEFAULT_CLASS_MINUTES = 60;
 /** The minutes field moves in steps of this size. */
 const MINUTES_STEP = 5;
 const FORM_ID = 'log-form';
+const SAVE_FAILED = 'That did not save. Your entry is still in the form: try again.';
+const DELETE_FAILED = 'That entry could not be deleted. Try again.';
 
 /** A day key shown the way the reader's locale writes dates, e.g. "Sat 14 Nov 2026". */
 function formatDay(day: string): string {
@@ -37,6 +39,8 @@ function EntryForm({ lib, entry, onDone }: { lib: Library; entry: TrainingEntry 
   const [focus, setFocus] = useState(entry?.focus ?? '');
   const [techniqueIds, setTechniqueIds] = useState<string[]>(entry?.techniqueIds ?? []);
   const [stuckIds, setStuckIds] = useState<string[]>(entry ? stuckSituationIds(entry) : []);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   function toggleTechnique(id: string, picked: boolean) {
     setTechniqueIds((ids) => (picked ? [...ids, id] : ids.filter((other) => other !== id)));
@@ -48,16 +52,30 @@ function EntryForm({ lib, entry, onDone }: { lib: Library; entry: TrainingEntry 
 
   async function submit(e: FormEvent) {
     e.preventDefault();
-    await trainingLog.save(entry?.id ?? null, {
-      day,
-      minutes: Number(minutes),
-      taught,
-      worked,
-      struggled,
-      focus,
-      techniqueIds,
-      stuckIds,
-    });
+    // A second click while the first save is running would write a second entry.
+    if (saving) return;
+    if (!isDayKey(day)) {
+      setError('Choose a day with a four-digit year.');
+      return;
+    }
+    setSaving(true);
+    setError('');
+    try {
+      await trainingLog.save(entry?.id ?? null, {
+        day,
+        minutes: Number(minutes),
+        taught,
+        worked,
+        struggled,
+        focus,
+        techniqueIds,
+        stuckIds,
+      });
+    } catch {
+      setSaving(false);
+      setError(SAVE_FAILED);
+      return;
+    }
     onDone();
   }
 
@@ -99,7 +117,9 @@ function EntryForm({ lib, entry, onDone }: { lib: Library; entry: TrainingEntry 
       {situations.length > 0 && (
         <details className="technique-picker">
           <summary>Positions I got stuck in ({stuckIds.length})</summary>
-          <p className="muted small">These, and your techniques from them, come first in your next review.</p>
+          <p className="muted small">
+            Cards you have not studied yet for these, and for your techniques from them, come first in review.
+          </p>
           <div className="technique-groups">
             {situations.map((situation) => (
               <label key={situation.id} className="check">
@@ -139,8 +159,13 @@ function EntryForm({ lib, entry, onDone }: { lib: Library; entry: TrainingEntry 
           </div>
         </details>
       )}
+      {error && (
+        <p className="error" role="alert">
+          {error}
+        </p>
+      )}
       <div className="row">
-        <button type="submit" className="primary">
+        <button type="submit" className="primary" disabled={saving}>
           {entry ? 'Save changes' : 'Save entry'}
         </button>
         {entry && (
@@ -155,7 +180,8 @@ function EntryForm({ lib, entry, onDone }: { lib: Library; entry: TrainingEntry 
 
 function EntryRow({ lib, entry, onEdit }: { lib: Library; entry: TrainingEntry; onEdit: () => void }) {
   function remove() {
-    if (confirm(`Delete the entry for ${formatDay(entry.day)}?`)) void trainingLog.remove(entry.id);
+    if (confirm(`Delete the entry for ${formatDay(entry.day)}?`))
+      trainingLog.remove(entry.id).catch(() => alert(DELETE_FAILED));
   }
   const techniques = entry.techniqueIds.map((id) => lib.transitionById.get(id)).filter((t) => t !== undefined);
   const stuck = stuckSituationIds(entry)

@@ -1,7 +1,7 @@
 import { assertNever } from '../../core/assertNever';
 import { ROLE_LABELS, TRANSITION_LABELS } from '../../core/labels';
 import type { Library } from '../../core/library';
-import { findSituation, situationName } from '../../core/situations';
+import { findSituation, roleGoals, situationName } from '../../core/situations';
 import type { StudyItem } from '../../core/study';
 import { techniqueDrill } from '../../core/techniqueDrill';
 import { TransitionArtwork } from '../graphics/Artwork';
@@ -124,7 +124,7 @@ export function CardAnswer({ item, lib }: { item: StudyItem; lib: Library }) {
       const situation = findSituation(lib, item.id);
       if (!situation) return null;
       const { position, role, options } = situation;
-      const goals = role === 'top' ? position.topGoals : position.bottomGoals;
+      const goals = roleGoals(position, role);
       return (
         <>
           <PositionArtwork id={position.id} name={position.name} className={ARTWORK_CLASS} />

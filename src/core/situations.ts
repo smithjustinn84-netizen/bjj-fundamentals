@@ -1,3 +1,4 @@
+import { assertNever } from './assertNever';
 import { endSideLabel } from './labels';
 import type { Library } from './library';
 import { POSITION_ROLES, type Position, type PositionRole, type Transition } from './models';
@@ -53,4 +54,16 @@ export function allSituations(lib: Library): Situation[] {
 /** "Mount, underneath", "Closed Guard, passing": how a situation is named in lists and questions. */
 export function situationName({ position, role }: Situation): string {
   return `${position.name}, ${endSideLabel(position.category, role)}`;
+}
+
+/** What the person on one side of a position is trying to do there. */
+export function roleGoals(position: Position, role: PositionRole): string[] {
+  switch (role) {
+    case 'top':
+      return position.topGoals;
+    case 'bottom':
+      return position.bottomGoals;
+    default:
+      return assertNever(role);
+  }
 }
