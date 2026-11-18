@@ -504,7 +504,7 @@ const positions: StarterRow<Position>[] = [
     summary:
       "The bottom player traps one of the top player's legs between both of theirs. Who wins the position depends on who wins the crossface and far-side underhook.",
     topGoals: [
-      'Win the crossface (shoulder under their jaw) and far-side underhook to flatten their shoulders to the mat',
+      'Clear their knee shield and upper-body frames to get chest-to-chest, winning the crossface and far-side underhook to flatten their shoulders to the mat',
       'Keep your head low and weight heavy on their chest so they cannot get onto their side',
       'Walk your trapped foot up toward their hips or slice your knee across their thigh to free your leg',
       'Settle into side control or mount once your knee and ankle clear their legs',
@@ -1334,13 +1334,14 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     role: 'top',
     endRole: 'top',
     steps: [
-      'Inside their half guard, pummel your far arm under their top armpit to win the far-side underhook (or control their far lapel and near elbow) before trying to pull your leg out',
+      'Clear their lower- and upper-body frames first: angle your chest inside or around their knee shield and pummel past their stiff arms to win the far-side underhook before trying to pull your leg out',
       'Drop your head low beside their jaw or apply a crossface so both of their shoulders are pinned flat to the mat',
       'Point your trapped knee diagonally across their bottom thigh toward the mat, keeping your near elbow connected to your hip so their knee shield cannot come back in',
       'Slide your shin across their thigh until your knee touches the mat while keeping your chest glued heavy to theirs',
       'Post your free foot wide for base, pull your trapped ankle free (using your free foot to wipe off their top hook if needed), and settle in side control',
     ],
     commonMistakes: [
+      'Forcing your trapped leg out or muscling straight into their knee shield and stiff arms while they are still angled on their side',
       'Trying to slice your knee through while they still have the far-side underhook, which hands them your back',
       'Popping your chest and hips up high to yank your foot out, giving them space to get onto their side and sweep',
       'Leaving a gap between your slicing knee and your elbow, letting them slide a knee shield right back across your chest',
@@ -3087,6 +3088,14 @@ const videos: Omit<VideoBookmark, 'createdAt' | 'startSeconds'>[] = [
     linkedKind: 'position',
     linkedId: 'half-guard',
     note: 'Staying on your side, managing distance with a knee shield, and building underhook attacks.',
+  },
+  {
+    id: 'video-half-guard-saunders',
+    title: 'How to delete every frame in half guard (Josh Saunders)',
+    youtubeId: 'pIVNgcJWj2I',
+    linkedKind: 'position',
+    linkedId: 'half-guard',
+    note: 'Clearing knee shields, hooks, and upper-body frames systematically to get chest-to-chest and pass.',
   },
   {
     id: 'video-side-control-roger',
