@@ -26,10 +26,18 @@ describe('techniqueLinks', () => {
   it('names only starter techniques: every pair and every dilemma resolves in the starter library', () => {
     const all = starter.transitions.map((t) => techniqueLinks(lib, t.id));
     const count = (pick: (links: (typeof all)[number]) => unknown[]) => all.reduce((n, l) => n + pick(l).length, 0);
-    // 8 attack and defence pairs; dilemmas of 3, 3, 2 and 2 techniques, each pointing at the others in its group.
+    // 8 attack and defence pairs; dilemmas of these sizes, each technique pointing at the others in its group.
+    const dilemmaSizes = [3, 4, 2, 2, 3, 5, 4, 2, 3, 2, 2, 2, 2, 2, 3];
     expect(count((l) => l.defences)).toBe(8);
     expect(count((l) => l.answers)).toBe(8);
-    expect(count((l) => l.followUps)).toBe(3 * 2 + 3 * 2 + 2 + 2);
+    expect(count((l) => l.followUps)).toBe(dilemmaSizes.reduce((n, size) => n + size * (size - 1), 0));
+  });
+
+  it('lists no follow-up twice for one technique, even when it sits in two dilemmas', () => {
+    for (const t of starter.transitions) {
+      const followUps = ids(techniqueLinks(lib, t.id).followUps.map((f) => f.technique));
+      expect(new Set(followUps).size).toBe(followUps.length);
+    }
   });
 
   it('leaves out techniques the library no longer has, and has nothing for a technique the user added', () => {

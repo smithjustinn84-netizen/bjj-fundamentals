@@ -32,6 +32,7 @@ const STARTER_DILEMMAS: readonly (readonly { id: string; when: string }[])[] = [
     { id: 'armbar-guard', when: 'when an arm crosses your centre line' },
     { id: 'triangle-choke', when: 'when they yank one arm free' },
     { id: 'pendulum-sweep', when: 'when they stack their weight into you' },
+    { id: 'omoplata-guard', when: 'when they post a hand on the mat beside your ribs' },
   ],
   [
     { id: 'upa-escape', when: 'when they reach for your collar or post a hand close' },
@@ -40,6 +41,58 @@ const STARTER_DILEMMAS: readonly (readonly { id: string; when: string }[])[] = [
   [
     { id: 'side-control-escape', when: 'when space opens at your hip' },
     { id: 'side-control-escape-knees', when: 'when they block your bottom knee' },
+  ],
+  [
+    { id: 'cross-collar-guard', when: 'when they keep both hands low on your hips or belt' },
+    { id: 'armbar-guard', when: 'when they bring a hand up to strip the collar grip' },
+    { id: 'scissor-sweep', when: 'when they posture up away from the collar grip' },
+  ],
+  [
+    { id: 'cross-collar-choke', when: 'when they keep their elbows tight to their ribs' },
+    { id: 'ezekiel-mount', when: 'when they hand-fight your collar grips' },
+    { id: 'americana-mount', when: 'when a wrist comes up beside their head to frame' },
+    { id: 'armbar-mount', when: 'when they push your chest with a straight arm' },
+    { id: 'mount-to-back', when: 'when they turn onto their side to escape' },
+  ],
+  [
+    { id: 'americana', when: 'when their far wrist comes up beside their head' },
+    { id: 'kimura-side-control', when: 'when their far arm pushes at your neck or shoulder' },
+    { id: 'side-control-to-back', when: 'when their near arm crosses to push your face' },
+    { id: 'side-to-mount', when: 'when their arms stay tucked and their hips stay flat' },
+  ],
+  [
+    { id: 'rear-naked-choke', when: 'when they fight your lapel grips and leave the neck open' },
+    { id: 'sliding-collar-choke', when: 'when they tuck their chin against the bare-arm choke' },
+  ],
+  [
+    { id: 'half-guard-underhook-sweep', when: 'when they press their weight in and leave the far armpit open' },
+    { id: 'knee-shield-sweep', when: 'when they block the underhook and lean on your shield' },
+    { id: 'half-to-full-guard', when: 'when they sit back to free their trapped leg' },
+  ],
+  [
+    { id: 'knee-slice', when: 'when their bottom knee opens or a frame slips' },
+    { id: 'half-guard-to-mount', when: 'when they clamp your ankle and lie flat under the crossface' },
+  ],
+  [
+    { id: 'toreando-pass', when: 'when their knees are loose and you can stand out of reach' },
+    { id: 'double-under-pass', when: 'when they pull you in and lift their legs high' },
+  ],
+  [
+    { id: 'butterfly-sweep', when: 'when they kneel in front of you' },
+    { id: 'tripod-sweep', when: 'when they stand up in your guard' },
+  ],
+  [
+    { id: 'turtle-to-back', when: 'when a gap opens between their elbow and knee' },
+    { id: 'turtle-breakdown', when: 'when they seal their elbows to their knees' },
+  ],
+  [
+    { id: 'turtle-recover-guard', when: 'when they sit beside you without trapping your far hip' },
+    { id: 'turtle-sit-out', when: 'when they lean their chest on your back with no hooks in' },
+  ],
+  [
+    { id: 'double-leg', when: 'when they stand square with their feet level' },
+    { id: 'single-leg', when: 'when one foot steps out in front' },
+    { id: 'hip-throw', when: 'when they lean in and push forward' },
   ],
 ];
 
