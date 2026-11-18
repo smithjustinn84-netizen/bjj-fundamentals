@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { blueBeltTestList, isOnBlueBeltTest } from './beltTest';
 import { buildLibrary } from './library';
-import { starterContent } from './seed';
+import { STARTER_BLUE_BELT_TEST_IDS, starterContent } from './seed';
 import { position, review, transition } from './testing/testFixtures';
 
 describe('isOnBlueBeltTest', () => {
@@ -17,10 +17,19 @@ describe('isOnBlueBeltTest', () => {
     expect(isOnBlueBeltTest(transition({ id: 'my-own-move' }))).toBe(false);
   });
 
-  it('is on for every starter technique in a fresh installation', () => {
+  it('matches STARTER_BLUE_BELT_TEST_IDS in a fresh installation, excluding self-defense drills and omoplata', () => {
     const { transitions } = starterContent(0);
     expect(transitions.length).toBeGreaterThan(0);
-    expect(transitions.every((t) => t.blueBeltTest === true)).toBe(true);
+    expect(transitions.every((t) => t.blueBeltTest === STARTER_BLUE_BELT_TEST_IDS.has(t.id))).toBe(true);
+    const off = transitions.filter((t) => !t.blueBeltTest).map((t) => t.id);
+    expect(off).toEqual([
+      'wrist-grab-release',
+      'front-choke-defence',
+      'bear-hug-escape',
+      'standing-headlock-escape',
+      'omoplata-guard',
+      'ground-headlock-escape',
+    ]);
   });
 });
 

@@ -882,6 +882,29 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
       "Inside your partner's closed guard: build tall posture, pin the hips with elbows tucked in, wedge the tailbone, pop the ankles open, and bring a knee shield up. 5 reps per side against 30% leg resistance.",
   },
   {
+    id: 'standing-guard-break',
+    name: 'Standing closed guard break',
+    type: 'transition',
+    fromId: 'closed-guard',
+    toId: 'open-guard',
+    role: 'top',
+    endRole: 'top',
+    steps: [
+      'Establish tall posture inside their closed guard and control one of their sleeves (or wrists) with two hands, pinning it firmly against their hip or stomach so they cannot grab your ankle',
+      'Step the foot on the controlled-arm side up flat on the mat beside their hip, then immediately bring your second foot up to stand in a wide, athletic stance',
+      'Keep your hips forward and your spine upright so their weight hangs down off your hips rather than pulling your head forward',
+      'Release one hand to grip the inside of their knee (or pants at the knee) and push their knee straight down toward the mat while keeping your hips pressed forward',
+      'As their ankles pop open, drop one knee immediately into the space between their legs to establish combat base and begin your pass',
+    ],
+    commonMistakes: [
+      'Standing up without controlling an arm first, which lets them grab both ankles for a lumberjack sweep',
+      'Bending forward at the waist while standing, which hands them easy armbars and overhead sweeps',
+      'Standing with your feet too narrow or stepping back too far, letting them drop underneath your hips',
+    ],
+    drill:
+      "Inside your partner's closed guard: pin one sleeve to their hip, step up on that side first, stand tall with hips forward, push the knee down to pop the ankles open, and drop into combat base. 5 reps per side.",
+  },
+  {
     id: 'scissor-sweep',
     name: 'Scissor sweep',
     type: 'sweep',
@@ -1521,19 +1544,19 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     role: 'bottom',
     endRole: 'top',
     steps: [
-      'Turn immediately onto your side facing them and tuck your bottom elbow into your ribs so they cannot flatten your shoulders',
-      'Bring both hands together to build a reinforced forearm frame right across the point of their jaw or throat (outer hand reinforce-gripping the framing wrist)',
-      'Walk your hips back slightly while extending the forearm frame to push their head away from yours and break their headlock alignment',
-      'Swing your top leg up and hook the back of your calf across the front of their throat and face',
-      'Extend your leg to drive their head to the mat as you rock up into side control on top',
+      'Turn immediately onto your side facing them, tuck your bottom elbow tight to your ribs, and lock a reinforced forearm frame across the point of their jaw or throat',
+      'Extend the rigid bone of your forearm frame to pry their chin away from your head and break their headlock alignment so they cannot crank your neck',
+      'Walk your hips close to theirs, trapping their near arm tight against your chest so they cannot post it on the mat',
+      'Plant both feet flat and bridge explosively up and over your far shoulder to roll them through into top side control — or if they base wide to stop the roll, slip your head out and take their back',
+      'Keep your chest heavy as you settle on top so they cannot re-wrap your head',
     ],
     commonMistakes: [
-      'Staying flat on your back and trying to bridge them over while their legs are posted wide in front of you',
+      'Staying flat on your back and trying to bridge while their hips are far away and their legs are posted wide',
       'Pushing on their face with an open palm (which bends at the wrist) instead of the rigid bone of your forearm',
       'Yanking your head backward before your frame has pried their chin away',
     ],
     drill:
-      'Your partner holds a firm kesa-gatame (scarf-hold) headlock. 5 reps on each side: get on your side, build the two-handed forearm frame on the jaw, make space, hook the leg over the face, and come up on top.',
+      'Your partner holds a firm kesa-gatame (scarf-hold) headlock. 5 reps on each side: get on your side, build the forearm frame on the jaw, walk your hips in close, and bridge them over into top side control (or slip out to their back when they base wide).',
   },
   {
     id: 'side-control-escape-knees',
@@ -1788,6 +1811,28 @@ const transitions: (StarterRow<Transition> & { role: PositionRole; drill: string
     drill:
       '10 reps each side from low mount: crossface, sleeve grip, hand across, forehead down, and close slowly. Your partner tries one bridge on each rep to test your base.',
   },
+  {
+    id: 'arm-triangle-mount',
+    name: 'Arm triangle choke from mount',
+    type: 'submission',
+    fromId: 'mount',
+    toId: '',
+    role: 'top',
+    steps: [
+      'From a heavy mount, wait for or guide one of their arms across their own centerline (for example, as they frame against your chest) and pin their tricep tight against the side of their neck with your chest',
+      'Slide your arm on the trapped side deep underneath their neck with your palm facing up, and press the side of your head tight against their shoulder so their arm cannot slip back',
+      'Lock a palm-to-palm gable grip (or grab your own bicep) and drop your forehead toward the mat on the opposite side to take out all slack',
+      'Step your leg on the choking side off mount into side control on that side, sprawling your hips low to the mat with your weight driving forward through your shoulder',
+      'Walk your hips slightly toward their head and drive your shoulder steadily into the side of their neck until they tap, then release immediately',
+    ],
+    commonMistakes: [
+      'Trying to finish straight from mount with your hips high, where you have less leverage and risk being bridged over',
+      'Squeezing wildly with your arms instead of dropping your shoulder and chest weight low to the mat',
+      'Leaving space between your ear and their shoulder so they can pull their trapped elbow back in',
+    ],
+    drill:
+      'From mount: guide one arm across their neck, lock the head-and-arm with ear-to-shoulder pressure, step off to side control on the trapped-arm side, sprawl low, and apply slow shoulder pressure until the tap. 5 reps per side.',
+  },
   // Back
   {
     id: 'rear-naked-choke',
@@ -1983,12 +2028,23 @@ function seedPositions(now: number): Position[] {
   return positions.map((p) => ({ ...p, notes: '', createdAt: now, updatedAt: now }));
 }
 
+const BLUE_BELT_EXCLUDED_IDS: ReadonlySet<string> = new Set([
+  'wrist-grab-release',
+  'front-choke-defence',
+  'bear-hug-escape',
+  'standing-headlock-escape',
+  'ground-headlock-escape',
+  'omoplata-guard',
+]);
+
 /**
- * Deliberately every starter technique: each is a fundamental that blue belt tests commonly ask for, so a
- * technique added to the starter content lands on the list too. Kept as a set of ids so techniques stored
- * before the blue belt list existed get the same default as new ones (see `isOnBlueBeltTest`).
+ * Core live-rolling fundamentals that blue belt tests commonly ask for — every starter technique except the
+ * standalone self-defense drills and the omoplata transition. Kept as a set of ids so techniques stored before
+ * the blue belt list existed get the same default as new ones (see `isOnBlueBeltTest`).
  */
-export const STARTER_BLUE_BELT_TEST_IDS: ReadonlySet<string> = new Set(transitions.map((t) => t.id));
+export const STARTER_BLUE_BELT_TEST_IDS: ReadonlySet<string> = new Set(
+  transitions.filter((t) => !BLUE_BELT_EXCLUDED_IDS.has(t.id)).map((t) => t.id),
+);
 
 /** Who performs each starter technique, for copies stored before techniques had a role (see `performerRole`). */
 export const STARTER_ROLES: ReadonlyMap<string, PositionRole> = new Map(transitions.map((t) => [t.id, t.role]));
@@ -3506,6 +3562,22 @@ const videos: Omit<VideoBookmark, 'createdAt' | 'startSeconds'>[] = [
     linkedKind: 'transition',
     linkedId: 'turtle-sit-out',
     note: 'A short demonstration of the sit-out from the bottom of turtle.',
+  },
+  {
+    id: 'video-standing-guard-break',
+    title: 'How to Break Closed Guard | Posture, Hip Control & Standing Setup (10th Planet Colorado Springs)',
+    youtubeId: '_Cv1jqqSLu4',
+    linkedKind: 'transition',
+    linkedId: 'standing-guard-break',
+    note: 'Holding posture and controlling the hips as you step up to stand and pop the ankles open.',
+  },
+  {
+    id: 'video-arm-triangle-mount',
+    title: 'Fundamentals: Arm Triangle From Mount (Bellingham BJJ)',
+    youtubeId: 'A3q4YQQJKXs',
+    linkedKind: 'transition',
+    linkedId: 'arm-triangle-mount',
+    note: 'Isolating the arm across the neck from mount, stepping off to the side, and finishing with low shoulder pressure.',
   },
 ];
 

@@ -13,6 +13,7 @@ const STARTER_DEFENCES: readonly (readonly [attackId: string, defenceId: string]
   ['guillotine-guard', 'guillotine-defence'],
   ['kimura-guard', 'kimura-defence'],
   ['americana', 'americana-defence'],
+  ['americana-mount', 'americana-defence'],
   ['rear-naked-choke', 'rear-naked-choke-defence'],
   ['double-leg', 'sprawl'],
   ['single-leg', 'sprawl'],
@@ -43,6 +44,10 @@ const STARTER_DILEMMAS: readonly (readonly { id: string; when: string }[])[] = [
     { id: 'side-control-escape-knees', when: 'when they block your bottom knee' },
   ],
   [
+    { id: 'break-closed-guard', when: 'when their hips stay flat and you can wedge from your knees' },
+    { id: 'standing-guard-break', when: 'when their ankles stay locked tight against the kneeling break' },
+  ],
+  [
     { id: 'cross-collar-guard', when: 'when they keep both hands low on your hips or belt' },
     { id: 'armbar-guard', when: 'when they bring a hand up to strip the collar grip' },
     { id: 'scissor-sweep', when: 'when they posture up away from the collar grip' },
@@ -51,6 +56,7 @@ const STARTER_DILEMMAS: readonly (readonly { id: string; when: string }[])[] = [
     { id: 'cross-collar-choke', when: 'when they keep their elbows tight to their ribs' },
     { id: 'ezekiel-mount', when: 'when they hand-fight your collar grips' },
     { id: 'americana-mount', when: 'when a wrist comes up beside their head to frame' },
+    { id: 'arm-triangle-mount', when: 'when an arm crosses their centerline to frame or push your shoulder' },
     { id: 'armbar-mount', when: 'when they push your chest with a straight arm' },
     { id: 'mount-to-back', when: 'when they turn onto their side to escape' },
   ],
@@ -63,6 +69,13 @@ const STARTER_DILEMMAS: readonly (readonly { id: string; when: string }[])[] = [
   [
     { id: 'rear-naked-choke', when: 'when they fight your lapel grips and leave the neck open' },
     { id: 'sliding-collar-choke', when: 'when they tuck their chin against the bare-arm choke' },
+  ],
+  [
+    { id: 'rear-naked-choke-defence', when: 'when their choking arm is already threatening your neck' },
+    {
+      id: 'back-escape',
+      when: 'when your hands control the choking wrist and you can clear your shoulders to the mat',
+    },
   ],
   [
     { id: 'half-guard-underhook-sweep', when: 'when they press their weight in and leave the far armpit open' },
@@ -82,6 +95,10 @@ const STARTER_DILEMMAS: readonly (readonly { id: string; when: string }[])[] = [
     { id: 'tripod-sweep', when: 'when they stand up in your guard' },
   ],
   [
+    { id: 'guard-retention', when: 'when they pressure in close and you need to keep your legs in front' },
+    { id: 'technical-stand-up', when: 'when they back away and leave space to get back to your feet' },
+  ],
+  [
     { id: 'turtle-to-back', when: 'when a gap opens between their elbow and knee' },
     { id: 'turtle-breakdown', when: 'when they seal their elbows to their knees' },
   ],
@@ -93,6 +110,7 @@ const STARTER_DILEMMAS: readonly (readonly { id: string; when: string }[])[] = [
     { id: 'double-leg', when: 'when they stand square with their feet level' },
     { id: 'single-leg', when: 'when one foot steps out in front' },
     { id: 'hip-throw', when: 'when they lean in and push forward' },
+    { id: 'pull-guard', when: 'when they stall or win the wrestling exchange' },
   ],
 ];
 

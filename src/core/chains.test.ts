@@ -26,10 +26,10 @@ describe('techniqueLinks', () => {
   it('names only starter techniques: every pair and every dilemma resolves in the starter library', () => {
     const all = starter.transitions.map((t) => techniqueLinks(lib, t.id));
     const count = (pick: (links: (typeof all)[number]) => unknown[]) => all.reduce((n, l) => n + pick(l).length, 0);
-    // 8 attack and defence pairs; dilemmas of these sizes, each technique pointing at the others in its group.
-    const dilemmaSizes = [3, 4, 2, 2, 3, 5, 4, 2, 3, 2, 2, 2, 2, 2, 3];
-    expect(count((l) => l.defences)).toBe(8);
-    expect(count((l) => l.answers)).toBe(8);
+    // 9 attack and defence pairs; dilemmas of these sizes, each technique pointing at the others in its group.
+    const dilemmaSizes = [3, 4, 2, 2, 2, 3, 6, 4, 2, 2, 3, 2, 2, 2, 2, 2, 2, 4];
+    expect(count((l) => l.defences)).toBe(9);
+    expect(count((l) => l.answers)).toBe(9);
     expect(count((l) => l.followUps)).toBe(dilemmaSizes.reduce((n, size) => n + size * (size - 1), 0));
   });
 
