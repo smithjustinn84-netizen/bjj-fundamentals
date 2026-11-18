@@ -10,6 +10,7 @@ const starter = starterContent(0);
 const library = (reviews: ReviewState[] = []) =>
   buildLibrary(starter.concepts, starter.positions, starter.transitions, reviews);
 const first = FOUNDATION_LESSONS[0];
+const surviving = FOUNDATION_LESSONS[1];
 const NOW = 1_000_000_000_000;
 
 describe('foundation lessons', () => {
@@ -26,38 +27,37 @@ describe('foundation lessons', () => {
   });
 
   it('teach a lesson as its first concept, its position, techniques woven with concepts, then the situation', () => {
-    if (!first) throw new Error('no lessons');
-    expect(lessonCards(library(), first).map((card) => `${card.kind}:${card.id}`)).toEqual([
-      'concept:safety',
+    if (!surviving) throw new Error('no lessons');
+    expect(lessonCards(library(), surviving).map((card) => `${card.kind}:${card.id}`)).toEqual([
+      'concept:breathing',
       'position:side-control',
       'transition:side-control-escape',
-      'concept:breathing',
-      'transition:americana-defence',
       'concept:frames',
+      'transition:side-control-escape-knees',
       'concept:elbows-in',
+      'transition:americana-defence',
       'situation:side-control:bottom',
     ]);
   });
 
   it('leave out what the library no longer has', () => {
-    if (!first) throw new Error('no lessons');
+    if (!surviving) throw new Error('no lessons');
     const lib = buildLibrary(starter.concepts, starter.positions, [], []);
-    expect(lessonCards(lib, first).map((card) => card.kind)).toEqual([
+    expect(lessonCards(lib, surviving).map((card) => card.kind)).toEqual([
       'concept',
       'position',
       'concept',
       'concept',
-      'concept',
     ]);
-    expect(lessonCards(buildLibrary([], [], [], []), first)).toEqual([]);
+    expect(lessonCards(buildLibrary([], [], [], []), surviving)).toEqual([]);
   });
 
   it('count progress from the review state of the cards, and move on once a lesson is learned', () => {
     if (!first) throw new Error('no lessons');
-    expect(lessonProgress(library(), first)).toEqual({ total: 8, started: 0, learned: 0 });
+    expect(lessonProgress(library(), first)).toEqual({ total: 5, started: 0, learned: 0 });
     expect(currentLesson(library())?.id).toBe(first.id);
     const reviews = lessonCards(library(), first).map((card) => review(card.kind, card.id, { intervalDays: 8 }));
-    expect(lessonProgress(library(reviews.slice(0, 3)), first)).toEqual({ total: 8, started: 3, learned: 3 });
+    expect(lessonProgress(library(reviews.slice(0, 3)), first)).toEqual({ total: 5, started: 3, learned: 3 });
     expect(currentLesson(library(reviews))?.id).toBe(FOUNDATION_LESSONS[1]?.id);
     expect(currentLesson(buildLibrary([], [], [], []))).toBeNull();
   });
@@ -71,14 +71,14 @@ describe('foundation lessons', () => {
 
 describe('buildLessonQueue', () => {
   it('holds only the lesson cards: the due ones, then new ones in lesson order up to the limit', () => {
-    if (!first) throw new Error('no lessons');
+    if (!surviving) throw new Error('no lessons');
     const lib = library([
       review('position', 'side-control', { due: NOW - 1 }),
-      review('concept', 'safety', { due: NOW + 1 }), // not due
+      review('concept', 'breathing', { due: NOW + 1 }), // not due
       review('concept', 'posture', { due: NOW - 1 }), // due, but in another lesson
     ]);
-    const { queue, fresh } = buildLessonQueue(lib, first, 2, NOW);
-    expect(queue.map((card) => card.id)).toEqual(['side-control', 'side-control-escape', 'breathing']);
+    const { queue, fresh } = buildLessonQueue(lib, surviving, 2, NOW);
+    expect(queue.map((card) => card.id)).toEqual(['side-control', 'side-control-escape', 'frames']);
     expect(fresh.length).toBe(6);
   });
 });

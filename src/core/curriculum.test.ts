@@ -53,7 +53,7 @@ describe('lessonOrder', () => {
     expect(lessonOrder(buildLibrary([], [], [], []))).toEqual([]);
   });
 
-  it('gives every starter card exactly once, the foundation lessons first: safety, side control, its escape', () => {
+  it('gives every starter card exactly once, the foundation lessons first: day-one safety then survival', () => {
     const { concepts: c, positions: p, transitions: t } = starterContent(0);
     const lib = buildLibrary(c, p, t, []);
     const order = lessonOrder(lib);
@@ -63,16 +63,16 @@ describe('lessonOrder', () => {
     expect(order.length).toBe(c.length + p.length + t.length + situations);
     expect(keys.slice(0, 5)).toEqual([
       'concept:safety',
-      'position:side-control',
-      'transition:side-control-escape',
-      'concept:breathing',
-      'transition:americana-defence',
+      'transition:technical-stand-up',
+      'concept:breakfalls',
+      'concept:training-partner',
+      'concept:roll-to-learn',
     ]);
     const taught = lessonTechniques(lib).map((technique) => technique.id);
     expect(taught.length).toBe(t.length);
-    // The second lesson's mount escapes come before anything from the closed guard.
+    // The mount escapes come before anything from the closed guard.
     expect(taught.indexOf('elbow-knee-escape')).toBeLessThan(taught.indexOf('scissor-sweep'));
-    // What no lesson covers still follows by rule: an escape from a pin before a submission from one.
+    // Escapes from a pin come before submissions from one.
     expect(taught.indexOf('side-control-escape-knees')).toBeLessThan(taught.indexOf('cross-collar-choke'));
   });
 });
