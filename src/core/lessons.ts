@@ -66,7 +66,8 @@ export const FOUNDATION_LESSONS: readonly Lesson[] = [
   {
     id: 'closed-guard-sit-up-attacks',
     title: 'Closed guard: sit-up and collar attacks',
-    summary: 'Chain the hip bump reaction into the kimura and guillotine, and threaten the cross collar choke when they stay low.',
+    summary:
+      'Chain the hip bump reaction into the kimura and guillotine, and threaten the cross collar choke when they stay low.',
     conceptIds: ['action-reaction', 'two-on-one'],
     positionIds: ['closed-guard'],
     transitionIds: ['kimura-guard', 'guillotine-guard', 'cross-collar-guard'],

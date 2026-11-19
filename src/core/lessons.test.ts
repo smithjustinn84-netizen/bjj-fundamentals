@@ -43,12 +43,7 @@ describe('foundation lessons', () => {
   it('leave out what the library no longer has', () => {
     if (!surviving) throw new Error('no lessons');
     const lib = buildLibrary(starter.concepts, starter.positions, [], []);
-    expect(lessonCards(lib, surviving).map((card) => card.kind)).toEqual([
-      'concept',
-      'position',
-      'concept',
-      'concept',
-    ]);
+    expect(lessonCards(lib, surviving).map((card) => card.kind)).toEqual(['concept', 'position', 'concept', 'concept']);
     expect(lessonCards(buildLibrary([], [], [], []), surviving)).toEqual([]);
   });
 
